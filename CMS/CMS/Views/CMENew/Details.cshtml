@@ -1,0 +1,2013 @@
+﻿@model DataAccessLayer.DAL.Model.CMEDetails
+
+@{
+    ViewBag.Title = "Meeting Details";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/validatemin")'></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+@using (Html.BeginForm("Details", "CMENew", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div>
+        <p style="font-size:28px"><b>Meeting Details</b></p>
+        <br />
+        <!-- Buttons -->
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-2">
+                <div style="float:right;">
+                    <input type="hidden" value="@Model.HCPSJson" id="hcpsData" />
+                    <fieldset class="submit" id="NotBiopharmbtn" style="display:none;">
+                        @if (Model.RequestType == "Send" || Model.RequestType == "Send to RBD" || Model.RequestType == "Approved by SR" || Model.RequestType == "Approved by SM" || (Model.RequestType == "Approved by RBD" && Model.IsVirtual != true && Model.IsBTC == true) || Model.RequestType == "Send to cancel approve" || Model.RequestType == "Send to postpone")
+                        {
+                            <button type="submit" id="btnSave" class="btn add-btn" name="command" value="Approve" onclick="return SubmitApprove();">Approve</button>
+                            <button type="submit" id="btnSend" class="btn add-btn" name="command" value="Reject" onclick="return SubmitReject();">Reject</button>
+                        }
+                        @if (Model.RequestType == "Send" || Model.RequestType == "Resend by CT" || Model.RequestType == "Send to RBD" || Model.RequestType == "Approved by SR" || Model.RequestType == "Approved by SM")
+                        {
+                            //cancelation by approver
+                            <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                        }
+                        @if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <button type="submit" id="btnSend" class="btn add-btn" name="command" value="Close">Close</button>
+                            <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                            <button type="submit" id="btndownloadchln" class="btn add-btn" name="command" value="Challan" formaction=@Url.Action("Challan", new { id = Model.Form_ID }) formmethod="post">HCP Challan</button>
+                        }
+                        <button type="submit" id="btnPrint" class="btn add-btn" name="command" value="Print" formaction=@Url.Action("Print", new { id = Model.Form_ID }) formmethod="post">Print</button>
+                        @if (Model.RequestType == "Approved by CME Operation" || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <input type="button" id="btnPostpone" class="btn add-btn" name="command" value="Postpone" onclick="location.href='@Url.Action("Postpone", new { id = Model.Form_ID })'" />
+                        }
+                        <button type="submit" id="btndownloadall" class="btn add-btn" name="command" value="Downloadall" formaction=@Url.Action("DownloadAll", new { id = Model.Form_ID }) formmethod="post">Download All Documents</button>
+                        <button type="submit" id="btnCancel" class="btn add-btn" name="command" value="Cancel">Back</button>
+                    </fieldset>
+                    <fieldset class="submit" id="Biopharmbtn" style="display:none;">
+                        @if (Model.RequestType == "Send" || Model.RequestType == "Send to RBD" || Model.RequestType == "Approved by SM" || (Model.RequestType == "Approved by RBD1" && Model.TotalCost > 150000 && (Session["LoginUserRole"].ToString().ToUpper() != "KAM" || Session["LoginUserRole"].ToString().ToUpper() != "CT" || Session["LoginUserRole"].ToString().ToUpper() != "SR" || Session["LoginUserRole"].ToString().ToUpper() != "SM" || Session["LoginUserRole"].ToString().ToUpper() != "CTB"))
+|| Model.RequestType == "Approved by Hemophilia Medical" || Model.RequestType == "Approved by Growth Hormone Medical" || Model.RequestType == "Send to cancel approve" || Model.RequestType == "Send to postpone")
+                        {
+                            <button type="submit" id="btnSave" class="btn add-btn" name="command" value="Approve" onclick="return SubmitApprove();">Approve</button>
+                            <button type="submit" id="btnReject" class="btn add-btn" name="command" value="Reject" onclick="return SubmitReject();">Reject</button>
+                        }
+                        @if (Model.RequestType == "Send" || Model.RequestType == "Send to RBD" || Model.RequestType == "Approved by SR" || Model.RequestType == "Approved by SM")
+                        {
+                            //cancelation by approver
+                            <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                        }
+                        @if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <button type="submit" id="btnSend" class="btn add-btn" name="command" value="Close">Close</button>
+                            <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                            <button type="submit" id="btndownloadchln" class="btn add-btn" name="command" value="Challan" formaction=@Url.Action("Challan", new { id = Model.Form_ID }) formmethod="post">HCP Challan</button>
+                        }
+                        @if (Model.RequestType == "Approved by CME Operation" || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || Model.RequestType == "Resend by CT" || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <input type="button" id="btnPostpone" class="btn add-btn" name="command" value="Postpone" onclick="location.href='@Url.Action("Postpone", new { id = Model.Form_ID })'" />
+                        }
+                        <button type="submit" id="btnPrint" class="btn add-btn" name="command" value="Print" formaction=@Url.Action("Print", new { id = Model.Form_ID }) formmethod="post">Print</button>
+                        <button type="submit" id="btndownloadall" class="btn add-btn" name="command" value="Downloadall" formaction=@Url.Action("DownloadAll", new { id = Model.Form_ID }) formmethod="post">Download All Documents</button>
+                        <button type="submit" id="btnCancel" class="btn add-btn" name="command" value="Cancel">Back</button>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <!-- Nav tabs -->
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-2">
+                <div class="tabs">
+                    <ul id="apptabs" class="nav nav-tabs" role="tablist">
+                        <li id="PD" class="nav-item">
+                            <a class="nav-link active navlink" data-toggle="tab" href="#Nav1">PAF Details</a>
+                        </li>
+                        <li id="PHCP" class="nav-item">
+                            <a class="nav-link navlink TabDisplay1" data-toggle="tab" href="#Nav2">HCP List</a>
+                        </li>
+                        <li id="PC" class="nav-item">
+                            <a class="nav-link navlink TabDisplay2" data-toggle="tab" href="#Nav3">Cost </a>
+                        </li>
+                        <li id="PA" class="nav-item">
+                            <a class="nav-link navlink TabDisplay3" data-toggle="tab" href="#Nav4">PAF Approval Status & Comments</a>
+                        </li>
+                        <li id="PA" class="nav-item">
+                            <a class="nav-link navlink TabDisplay3" data-toggle="tab" href="#Nav5">Attachments</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.HCPs)
+        <div class="tab-content contentcolor">
+            <div id="Nav1" class="container tab-pane active">
+                <div class="form-group" id="CPVDate">
+                    <label style="color:red;font-size:17px; padding-left: 350px;"><b>Critical policy violation</b></label>
+                </div>
+                <div class="form-group" id="PVDate">
+                    <label style="color:#d11313;font-size:17px; padding-left: 350px;"><b>Acceptable policy violation</b></label>
+                </div>
+
+                @if ((Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || (Session["LoginUserRole"].ToString() == "CME Operation" && Model.IsBTC == true)) && ((Model.IssuedBy != Model.Login_User_id)))
+                {
+                    if (Model.Runrate == 100)
+                    {
+                        <label style="color:forestgreen;font-size:17px; padding-left: 350px;">Policy violation runrate is @Model.Runrate%</label>
+                    }
+                    else if (Model.Runrate < 100 && Model.Runrate >= 95)
+                    {
+                        <label style="color:blue;font-size:17px; padding-left: 350px;">Policy violation runrate is @Model.Runrate%</label>
+                    }
+                    else
+                    {
+                        <label style="color: red;font-size:17px; padding-left: 350px;">Policy violation runrate is @Model.Runrate%</label>
+                    }
+                }
+                <div>
+                    <label id="ApprovalRestriction" style="color: red;position: relative; left: 100px;"><span>@TempData["ApprovalRestriction"]</span></label>
+                </div>
+                <fieldset class="form-columns-2">
+                    <div class="user-details" style="padding-left: 270px;">
+                        @if (Model.RequestType.ToLower() == "closed" || Model.RequestType.ToLower() == "payment requested" || Model.RequestType == "Approved by CME Operation" || (Model.RequestType.ToLower() == "approved by rbd" && Model.IsBTC == false))
+                        {
+                            if (Model.RequestType.ToLower() == "closed" || Model.RequestType.ToLower() == "payment requested")
+                            {<label style="color:red;font-size:17px;"> Form is closed on <span style="color:red;font-size:17px;padding-right:10px">@Html.DisplayFor(model => model.ModifiedDate)</span> </label>
+                        }
+                        if (Model.IsDownloadSapFile == true)
+                        {
+                            <label style="color:red;font-size:17px;">
+                                Payment Made - @if (Model.IsDownloadSapFile == true)
+                                {<span style="color:red;font-size:17px;">Yes</span>}
+                                else
+                                { <span style="color:red;font-size:17px;">No</span>}
+                            </label>
+                        }
+                        else
+                        { <label style="color:red;font-size:17px ;padding-left: 90px;">
+                                Payment Made - <span style="color:red;font-size:17px;">No</span>
+                            </label>
+                        }
+                    }
+                    </div>
+                </fieldset>
+                <br />
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Issued By<br /> <span class="Details-span">@Html.DisplayFor(model => model.Issued_By_Initial)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Issued Date<br /> <span class="Details-span">@Html.DisplayFor(model => model.IssuedDate)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Form ID<br /><span class="Details-span">@Session["PAFChar"]@Html.DisplayFor(model => model.Form_ID)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Approver(s)<br /> <span class="Details-span">@Html.DisplayFor(model => model.Approver)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Hospital Meeting<br />
+                            @if (Model.HospitalMeeting == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>CME Type<br /><span class="Details-span">@Html.DisplayFor(model => model.CME_Type)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Brand/Event/Lecture<br />
+                            @if (Model.CME_Type.ToLower() == "standard meeting")
+                            {
+                                if (Model.LectureName == "")
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(model => model.BrandName) / @Html.DisplayFor(model => model.EventName)</span>
+                                }
+                                else
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(model => model.BrandName) / @Html.DisplayFor(model => model.EventName) / @Html.DisplayFor(model => model.LectureName) </span>
+                                }
+                            }
+                            else
+                            { <span>N/A</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Activity Name<br />
+                            @if (Model.CME_Type.ToLower() == "standard meeting")
+                            {<span class="Details-span">N/A</span> }
+                            else
+                            { <span class="Details-span">@Html.DisplayFor(model => model.ActivityName)</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Virtual<br />
+                            @if (Model.IsVirtual == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        @if (Model.CME_Type.ToLower() == "non-standard meeting" && Model.DiseaseArea_Type != null)
+                        {<label>Disease Area<br /> <span class="Details-span">@Html.DisplayFor(model => model.DiseaseArea_Type)</span></label>}
+                    else
+                    { <label></label>}
+                    </div>
+                    <div> <label></label></div>
+                    <div> <label></label></div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Activity Start Date<br /><span class="Details-span">@Html.DisplayFor(m => m.ActivityStartDate)</span> </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Activity End Date<br /><span class="Details-span">@Html.DisplayFor(m => m.ActivityEndDate)</span> </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Number of Days<br /> <span class="Details-span">@Html.DisplayFor(m => m.NumberofDays)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Proposed number of attendee(s)<br /><span class="Details-span">@Html.DisplayFor(m => m.Proposednumberofattendee)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Minimum number of guarantee<br /><span class="Details-span">@Html.DisplayFor(m => m.Minimumnumberofgaurantee)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>City<br /> <span class="Details-span">@Html.DisplayFor(m => m.CityName)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Venue/Hotel<br /> <span class="Details-span">@Html.DisplayFor(m => m.Venu_Hotel)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            5 Star Hotel?<br />
+                            @if (Model.Hotel_Star == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Meeting type<br /> <span class="Details-span">@Html.DisplayFor(m => m.MeetingTypeName)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            BTC Status<br />
+                            @if (Model.IsBTC == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Work Unit<br />
+                            @if (Model.WorkUnitName == null)
+                            {<span class="Details-span">N/A</span>}
+                            else
+                            { <span class="Details-span">@Html.DisplayFor(m => m.WorkUnitName)</span>}
+                        </label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        @if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <label>Actual Number of attendees</label><span class="mandatory-field">*</span>
+                            @Html.TextBoxFor(m => m.Actual_Attendees, new { @class = "form-control ActualAttendees", @type = "number", name = "Actual_Attendees" })
+                            @Html.ValidationMessageFor(x => x.Actual_Attendees)
+                            <span class="text-danger">@TempData["eActualAttendees"]</span>
+                        }
+                        else
+                        {
+                            <label>
+                                Actual Number of attendees<br />
+                                @if (Model.Actual_Attendees == null)
+                                {
+                                    <span class="Details-span">N/A</span>
+                                }
+                                else
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(m => m.Actual_Attendees)</span>
+                                }
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="Nav2" class="container tab-pane fade">
+
+
+                @if (Model.HCPs.Count > 0)
+                {
+
+                    <h6 style="text-align:left;">HCP List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>PAN</th>
+                            <th>Topic</th>
+                            <th>Cost</th>
+                            <th></th>
+                        </tr>
+                        @foreach (var item in Model.HCPs)
+                        {
+                            var fileupload1 = "file_" + Convert.ToString(item.Id);
+                            var lablel = "Invoice of " + Convert.ToString(item.Name);
+                            @Html.HiddenFor(modelItem => item.Id, new { id = "hdn1" })
+                            <tr>
+                                <td><b>@Html.DisplayFor(modelItem => item.Name)</b></td>
+                                @if (item.HCPAddress != null)
+                                {
+                                    <td id="Hcpaddress" class="hcp-cost-to-add">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                @if (item.PAN != "0000000000")
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                @if (item.Cost != 0)
+                                {
+                                    <td style="text-align:rigIspostponedht;">@Html.DisplayFor(modelItem => item.Cost)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td></td>
+
+                            </tr>
+                            if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Resend by CT") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                            {
+                                if (item.Is_Honorarium == false)
+                                {
+                                    if (item.Invoice_No == " ")
+                                    {
+                                        <tr>
+                                            <td><label><b>Invoice No:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Invoice_No)</span></td>
+
+                                            <td><label><b>Invoice Date:</b></label><br /></td>
+
+                                            <td><label><b>Net Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Net_Amount)</span></td>
+
+                                            <td><label><b>Tax Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Tax_Amount)</span></td>
+
+                                            <td><label><b>Total Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Total_Amount)</span></td>
+
+                                        </tr>
+                                    }
+                                }
+                                else if (item.Invoice_No != null)
+                                {
+                                    <tr>
+                                        <td><label><b>Invoice No:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Invoice_No)</span></td>
+
+                                        <td><label><b>Invoice Date:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Invoice_Date)</span></td>
+
+                                        <td><label><b>Net Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Net_Amount)</span></td>
+
+                                        <td><label><b>Tax Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Tax_Amount)</span></td>
+
+                                        <td><label><b>Total Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Total_Amount)</span></td>
+
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        @Html.HiddenFor(modelItem => item.Id, new { id = "hcpid" })
+                                        @Html.HiddenFor(modelItem => item.Cost, new { id = "hcpcost" })
+                                        @Html.HiddenFor(m => m.IHCPId)
+                                        @Html.HiddenFor(m => m.IHCPCost)
+
+                                        @if (item.Is_Honorarium == false)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Invoice No</label>
+                                                    @Html.TextBoxFor(m => m.Invoice_No, new { @class = "form-control InvoiceNo", name = "Invoice_No", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (Model.MeetingTypeName.ToLower() == "virtual" && (item.GST == false || item.GST == null))
+                                        {
+                                            var Invoiceno = "NN/NGST" + Convert.ToString(Model.Form_ID);
+                                            <td>
+                                                <label>Invoice No</label><br>
+                                                <span><b>@Invoiceno</b></span>
+                                            </td>
+                                        }
+                                        else if (item.GST == false || item.GST == null || item.GST == true)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Invoice No</label><span class="mandatory-field">*</span>
+                                                    @Html.TextBoxFor(m => m.Invoice_No, new { @class = "form-control InvoiceNo", name = "Invoice_No" })
+                                                    @Html.ValidationMessageFor(x => x.Invoice_No)
+                                                    <span class="text-danger">@TempData["HCPInvoice"]</span>
+                                                    <span class="text-danger">@TempData["ValidationForHCPInvoice"]</span>
+                                                </div>
+                                            </td>
+                                        }
+
+
+                                        @if (item.Is_Honorarium == false)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Invoice Date </label>
+                                                    @Html.TextBoxFor(m => m.Invoice_Date, new { @class = "form-control date-field InvoiceDate", name = "Invoice_Date", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.GST == false || item.GST == null || item.GST == true)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Invoice Date </label><span class="mandatory-field">*</span>
+                                                    @Html.TextBoxFor(m => m.Invoice_Date, new { @class = "form-control date-field InvoiceDate", name = "Invoice_Date", id = "changeStartDate", @value = "", @Readonly = "true" })
+                                                    @Html.ValidationMessageFor(x => x.Invoice_Date)
+                                                    <span class="text-danger">@TempData["HCPIDate"]</span>
+                                                </div>
+                                            </td>
+                                        }
+
+                                        @if (item.GST == true)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Net Amount </label><span class="mandatory-field">*</span>
+                                                    @Html.TextBoxFor(m => m.Net_Amount, new { @class = "form-control NetAmount", @type = "number", @tabindex = 10, name = "Net_Amount", @value = "" })
+
+                                                    <span class="text-danger">@TempData["HCPNet"]</span>
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.Is_Honorarium == false)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Net Amount </label>
+                                                    @Html.TextBoxFor(m => m.Net_Amount, new { @class = "form-control NetAmount", placeholder = "0", @type = "number", @tabindex = 10, name = "Net_Amount", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (Model.MeetingTypeName.ToLower() == "virtual")
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Net Amount </label>
+                                                    @Html.TextBoxFor(m => m.Net_Amount, new { @class = "form-control NetAmount", placeholder = "0", @type = "number", @tabindex = 10, name = "Net_Amount", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.GST == false || item.GST == null)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Net Amount </label>
+                                                    @Html.TextBoxFor(m => m.Net_Amount, new { @class = "form-control NetAmount", placeholder = "0", @type = "number", @tabindex = 10, name = "Net_Amount", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+
+
+                                        @if (item.GST == true)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Tax Amount </label><span class="mandatory-field">*</span>
+                                                    @Html.TextBoxFor(m => m.Tax_Amount, new { @class = "form-control TaxAmount", @type = "number", @tabindex = 10, name = "Tax_Amount", id = "TaxAmount" + item.Id })
+
+                                                    <span class="text-danger">@TempData["HCPTax"]</span>
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.Is_Honorarium == false)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Tax Amount </label>
+                                                    @Html.TextBoxFor(m => m.Tax_Amount, new { @class = "form-control TaxAmount", @type = "number", placeholder = "0", @tabindex = 10, name = "Tax_Amount", id = "TaxAmount" + item.Id, @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (Model.MeetingTypeName.ToLower() == "virtual")
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Tax Amount </label>
+                                                    @Html.TextBoxFor(m => m.Tax_Amount, new { @class = "form-control TaxAmount", @type = "number", placeholder = "0", @tabindex = 10, name = "Tax_Amount", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.GST == false || item.GST == null)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Tax Amount </label>
+                                                    @Html.TextBoxFor(m => m.Tax_Amount, new { @class = "form-control TaxAmount", @type = "number", placeholder = "0", @tabindex = 10, name = "Tax_Amount", @value = "", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+
+                                        @if (item.GST == true)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Total Amount </label><span class="mandatory-field">*</span>
+                                                    @Html.TextBoxFor(m => m.Total_Amount, new { @class = "form-control TotalAmount", @type = "number", @tabindex = 10, name = "Total_Amount" })
+                                                    <span class="text-danger">@TempData["HCPTotal"]</span>
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (item.Is_Honorarium == false)
+                                        {
+                                            <td>
+                                                <div class="form-group">
+                                                    <label>Total Amount </label>
+                                                    @Html.TextBoxFor(m => m.Total_Amount, new { @class = "form-control TotalAmount", @type = "number", placeholder = "0", @tabindex = 10, name = "Total_Amount", @Readonly = "true" })
+                                                </div>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            if (item.Cost != 0)
+                                            {
+                                                <td><label>Total Amount:</label><br /><span>@Html.DisplayFor(modelItem => item.Cost)</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                        }
+
+                                        @if (item.GST == true)
+                                        {
+                                            <td style="padding-top:30px">
+                                                <button id="GSTAddbutton" type="submit" class="btn add-btn btnHCPIDetails" name="command" value=AddGstInvoice>Add</button>
+                                            </td>
+                                        }
+                                        else if (item.Is_Honorarium == false)
+                                        {
+                                            <td style="padding-top:30px">
+                                                <button id="addnonhonorarium-button" type="submit" class="btn add-btn btnHCPIDetails" name="command" value=addnonhonorarium>Add</button>
+                                            </td>
+                                        }
+                                        else if (Model.MeetingTypeName.ToLower() == "virtual")
+                                        {
+                                            <td style="padding-top:30px">
+                                                <button id="VirtualAddbutton" type="submit" class="btn add-btn btnHCPIDetails" name="command" value=AddVirtualInvoice>Add</button>
+                                            </td>
+                                        }
+                                        else if (item.GST == false || item.GST == null)
+                                        {
+                                            <td style="padding-top:30px">
+                                                <button id="Non-GSTAddbutton" type="submit" class="btn add-btn btnHCPIDetails" name="command" value=AddNonGstInvoice>Add</button>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+
+
+                            }
+                        }
+
+                        @{
+                            var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                            if (sum != "0.00")
+                            {
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Total cost</b></td>
+                                    <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+                                    <td></td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                }
+                <span class="text-danger">@TempData["HCPInvoiceValidation"]</span><br />
+
+                @if (Model.Participants != null && Model.Participants.Count > 0)
+                {
+                    <h6 style="text-align:left;">Participant List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>PAN Number</th>
+                            <th>Email ID</th>
+                            <th>Phone Number</th>
+                            <th>Customer ID</th>
+                        </tr>
+                        @foreach (var item in Model.Participants)
+                        {
+                            <tr>
+
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Phone_Number)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Customer_ID)</td>
+
+                            </tr>
+                        }
+                    </table>
+                }
+            </div>
+            <div id="Nav3" class="container tab-pane fade">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Estimated Cost<br /><span class="Details-span">@Html.DisplayFor(m => m.TotalCost)</span></label>
+                    </div>
+
+                    <div class="col-md-8 mb-2">
+                        @if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                        {
+                            <label>Final CME expenses (Excluding Speaker Honorarium and Cab expenses)</label><span class="mandatory-field">*</span>
+                            @Html.TextBoxFor(m => m.Final_CME_Expenses, new { @class = "form-control Final_CME_Expenses", @type = "number", placeholder = "0", name = "Total_Amount" })
+                            <span class="text-danger">@TempData["eFinal_CME_Expenses"]</span>
+                        }
+                        else
+                        {
+                            <label>
+                                Final CME Expenses (Excluding Speaker Honorarium and Cab expenses)<br />
+                                @if (Model.Final_CME_Expenses == null)
+                                {
+                                    <span class="Details-span">N/A</span>
+                                }
+                                else
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(m => m.Final_CME_Expenses)</span>
+                                }
+                            </label>
+                        }
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Room rate(if accommodation provided)<br /><span class="Details-span">@Html.DisplayFor(m => m.Roomrate)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Banquet room rate<br /><span class="Details-span">
+                                @Html.DisplayFor(m => m.Banquetroomrate)
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Cost Per PAX<br /><span class="Details-span">
+                                @Html.DisplayFor(m => m.CostPerPAX)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                @if (Model.Miscellaneous.Count > 0)
+                {
+                    <h6 style="text-align:left;">Miscellaneous</h6>
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost</th>
+                        </tr>
+                        @foreach (var item in Model.Miscellaneous)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Cost)</td>
+                            </tr>
+                        }
+                    </table>
+                }
+                @if (Model.HCPs.Count > 0)
+                {
+                    <h6 style="text-align:left;">HCP List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>PAN</th>
+                            <th>Topic</th>
+                            <th>Cost</th>
+                        </tr>
+                        @foreach (var item in Model.HCPs)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                @if (item.HCPAddress != null)
+                                {
+                                    <td id="Hcpaddress" class="hcp-cost-to-add">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                @if (item.PAN != "0000000000")
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                @if (item.Cost != 0)
+                                {
+                                    <td style="text-align:right;">@Html.DisplayFor(modelItem => item.Cost)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            </tr>
+                        }
+                        @{
+                            var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                            if (sum != "0.00")
+                            {
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Total cost</b></td>
+                                    <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+
+                                </tr>
+                            }
+                        }
+                    </table>
+                }
+            </div>
+            <div id="Nav4" class="container tab-pane fade">
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-12 mb-2 ">
+                        <div class="form-controls position-relative">
+                            <label>Comments <span class="mandatory-field" id="mandatory_error">*</span></label>
+                            @Html.TextAreaFor(m => m.Comment, new { @class = "form-control textarea", id = "Rcomment" })
+                            @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                            <span class="text-danger" id="eDRcomment">@TempData["RejectComment"]</span>
+                            <span class="text-danger" id="name_error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <fieldset class="comments">
+
+                    <h6 style="text-align:left;">PAF Form Comments</h6>
+                    @if (Model.Comments.Count > 0)
+                    {
+                        <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                            <tr>
+
+                                <th>Initial</th>
+                                <th>Date</th>
+                                <th>Comment</th>
+                            </tr>
+                            @foreach (var item in Model.Comments)
+                            {
+                                <tr>
+
+                                    <td>@Html.DisplayFor(modelItem => item.Initial)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Comment)</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </fieldset>
+
+                <h6 style="text-align:left;">PAF Form Approval Status</h6>
+                @if (Model.PAFTransactions.Count > 0)
+                {
+
+                    <table cid="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+
+                            <th>Initial</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                        @foreach (var item in Model.PAFTransactions)
+                        {
+                            <tr>
+
+                                <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                                @if (item.RequestType == "Delete")
+                                {
+                                    item.RequestType = "Cancelled";
+                                    <td>@Html.DisplayFor(modelItem => item.RequestType)</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.RequestType)</td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                            </tr>
+                        }
+                    </table>
+
+                }
+
+            </div>
+            <div id="Nav5" class="container tab-pane fade">
+
+                @if (Model.RequestType == "Approved by CME Operation" || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false) || Model.RequestType == "Resend by CT" || (Model.RequestType == "Approved by RBD1" && Model.TotalCost <= 150000) || (Model.RequestType == "Approved by RBD2" && Model.TotalCost > 150000) || Model.RequestType == "Approved by RBD" && Model.IsVirtual == true)
+                {
+                    if (Request["referer"] != "Attend")
+                    {
+                        if (TempData["RequestType"] == "Resend by CT")
+                        {<span class="text-danger">Please remove existing post activity documents and upload again before closing.</span> }
+                        <h6>Post Activity Attachments</h6>
+                        <div class="row align-items-center">
+                            @if (Model.HCPs != null)
+                            {
+                                for (int i = 0; i < Model.HCPs.Count; i++)
+                                {
+                                    if (Model.HCPs[i].Is_Honorarium == true)
+                                    {
+                                        var fileupload1 = "file_" + Convert.ToString(Model.HCPs[i].Id);
+                                        var lablel = "Invoice of " + Convert.ToString(Model.HCPs[i].Name);
+                                        @Html.HiddenFor(m => m.HCPs[i].Id, new { id = "hdn1" })
+
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-controls position-relative">
+                                                <label>@lablel <span class="mandatory-field">*</span></label>
+                                                <div class="Auploads">
+                                                    <input type="file" id="@fileupload1" name="@fileupload1" class="upload-attachment" />
+                                                    <label for=@fileupload1 class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                                </div>
+                                            </div>
+                                            <span class="text-danger @fileupload1"></span>
+                                        </div>
+                                    }
+                                }
+
+                            }
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Activity Material <span class="mandatory-field">*</span></label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.LMImageFile, new { type = "file", id = "file1", multiple = "multiple", onchange = "javascript:updateListLM()" })
+                                        <label for="file1" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+
+                                    </div>
+                                    @if (@Model.LMImageFile == null)
+                                    {
+                                        <span class="text-danger">@TempData["eLMImageFile"]</span>
+                                        <span class="text-danger doc-validation"></span>
+                                        @Html.ValidationMessageFor(model => model.LMImageFile, "", new { @class = "text-danger", @id = "error_LMImageFile" })
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Compliance Checklist <span class="mandatory-field">*</span></label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.CCImageFile, new { type = "file", id = "file2" })
+                                        <label for="file2" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+
+                                    </div>
+                                    @if (@Model.CCImageFile == null)
+                                    {
+
+                                        @Html.ValidationMessageFor(model => model.CCImageFile, "", new { @class = "text-danger", @id = "errmessage_CCImageFile" })
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <span class="text-danger" id="filesize"></span>
+                        <span class="text-danger">@TempData["eSICPImageFile"]</span>
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative" id="divHotelQuotationDoc">
+                                    <label>Attendance Sheet <span class="mandatory-field">*</span></label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.ASImageFile, new { type = "file", id = "file3" })
+                                        <label for="file3" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+
+                                    </div>
+                                    @if (@Model.ASImageFile == null)
+                                    {
+
+                                        @Html.ValidationMessageFor(model => model.ASImageFile, "", new { @class = "text-danger", @id = "errmessage_ASImageFile" })
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative" id="EventPictures" style="display:none;">
+
+                                    <label>Pictures of the Event <span class="mandatory-field">*</span></label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.PEImageFile, new { type = "file", id = "file4", multiple = "multiple", onchange = "javascript:updatePEListLM()" })
+                                        <label for="file4" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+
+                                    </div>
+                                    @if (@Model.PEImageFile == null)
+                                    {
+                                        <span class="text-danger">@TempData["ePEImageFile"]</span>
+                                        @Html.ValidationMessageFor(model => model.PEImageFile, "", new { @class = "text-danger" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-danger" id="file1size"></span>
+                        <span class="text-danger">@TempData["eSLMImageFile"]</span>
+
+                        <span class="text-danger" id="file2size"></span>
+                        <span class="text-danger">@TempData["eSCCImageFile"]</span>
+                        <div class="row align-items-center">
+                        </div>
+                        <span class="text-danger" id="file3size"></span>
+                        <span class="text-danger">@TempData["eSASImageFile"]</span>
+                        <div class="row align-items-center">
+                        </div>
+                        <span class="text-danger" id="file4size"></span>
+                        <span class="text-danger">@TempData["eSPEImageFile"]</span>
+                    }
+                }
+
+
+                <div class="attachments" id="preattachments" style="display:none;">
+                    @if (Model.CME_Type.ToLower() == "non-standard meeting" && Model.RequestType == "Approved by SM")
+                    {
+                        <h6>Pre Activity Attachments</h6>
+
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Activity Material</label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.LMImageFile, new { type = "file", id = "file4", multiple = "multiple", onchange = "javascript:updatePreListLM()" })
+                                        <label for="file4" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                    </div>
+                                    <span class="text-danger" id="file4size"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Proposed Agenda and FMV</label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.PAImageFile, new { type = "file", id = "file5" })
+                                        <label for="file5" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                    </div>
+                                    @if (@Model.PAImageFile == null)
+                                    {
+                                        <br />
+                                        @Html.ValidationMessageFor(model => model.PAImageFile, "", new { @class = "text-danger" })
+                                    }
+                                    <span class="text-danger" id="file5size"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center"><span class="text-danger" style="text-align: center">@TempData["PARestriction"]</span></div>
+                    }
+                </div>
+
+
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                    @if (Model.ImagePath.Count() > 0)
+                    {
+                        <tr>
+                            <th>Attachement type</th>
+                            <th>Files</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">Attachments</td>
+                            <td>
+                                @foreach (var image in Model.ImagePath)
+                                {
+                                    if (image.Type == "PA" && Model.CME_Type.ToLower() == "non-standard meeting" && Model.RequestType == "Approved by SM")
+                                    {
+                                        if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                        }
+                                        else if (@image.Extension.ToLower() == ".pdf")
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <br />
+                                                string path = ViewBag.Website + image.SavedDocName;
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName=image.DocName, downloadFileName="PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                <br />
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                        }
+                                        else if (@image.Extension.ToLower() == ".pdf")
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-download fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (image.Type == "Post Activity")
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeletePAFile","CMENew", new { id = Model.Form_ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <i class="fa fa-download fa-3"></i>
+                                                    <span>@image.DocName</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                string path = ViewBag.Website + image.SavedDocName;
+                                                <br />
+
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                                    <i class="fa fa-download fa-3"></i>
+                                                    <span>@image.DocName</span>
+                                                </a>
+                                            }
+
+
+                                        }
+                                    }
+                                }
+
+                                @*post activity attachment*@
+                                <div class="upload-item">
+                                    <div id="fileListHCP"></div>
+                                </div>
+                                <div class="upload-item">
+                                    <div id="fileList"></div>
+                                </div>
+                                <div class="upload-item">
+                                    <div id="fileListLM"></div>
+                                </div>
+                                <div id="div_aRemoveFileCC" class="upload-item">
+                                    <label title="Remove" id="aRemoveFileCC" style="font-weight: bold;">X</label>
+                                    <i id="file_CC_img" style="margin-bottom:-20px;"></i>
+                                    <span id="ComplianceChecklist" style="margin-bottom:-20px;"></span>
+                                </div>
+                                <div id="div_AttendanceSheet" class="upload-item">
+                                    <label title="Remove" id="AttendanceSheet" style="font-weight: bold;">X</label>
+                                    <i id="file_AS_img" style="margin-bottom:-20px;"></i>
+                                    <span id="fileAttendanceSheet" style="margin-bottom:-20px;"></span>
+                                </div>
+                                <div class="upload-item">
+                                    <div id="fileListPE"></div>
+                                </div>
+
+                                @*pre activity attachment biopharm*@
+                                <div class="upload-item">
+                                    <div id="filePreListLM"></div>
+                                </div>
+                                <div id="div_aRemoveFileMA" class="upload-item">
+                                    <label title="Remove" id="aRemoveFileMA" style="font-weight: bold;">X</label>
+                                    <i id="file_MA_img" style="margin-bottom:-20px;"></i>
+                                    <span id="fileMeetingAgenda" style="margin-bottom:-20px;"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.LMFiles != null && Model.LMFiles.Count() > 0)
+                    {
+                        <tr>
+                            <td style="text-align:left;" id="fileAttachmentsLM">Activity Material Attachments</td>
+                            <td>
+                                @foreach (var image in Model.LMFiles)
+                                {
+                                    string path = ViewBag.Website + image.DocName;
+
+                                    <a href="@Url.Action("DownLoadFileLM", "CMENew", new { fileName = image.DocName, filepath = image.DocPath })">
+                                        <div class="upload-item">
+                                            <i class="fa fa-download fa-3"></i>
+                                            <span>@image.DocName</span>
+                                        </div>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.AssessmentDocName != null)
+                    {
+                        <tr>
+                            <td style="text-align:left;" id="fileAttachmentsLM">Assessment Attachments</td>
+                            <td>
+                                @{
+                                    string path = ViewBag.Website + Model.AssessmentDocPath;
+
+                                    <a href="@Url.Action("DownLoadFileLM", "CMENew", new { fileName = Model.AssessmentDocName, filePath = Model.AssessmentDocPath})">
+
+                                        <div class="upload-item">
+                                            <i class="fa fa-download fa-3"></i>
+                                            <span>@Model.AssessmentDocName</span>
+                                        </div>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+
+    function SubmitApprove() {
+
+        if ($('form').valid()) {
+            if (confirm("Are you sure you want send the form for approval?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    function SubmitReject() {
+        if ($('form').valid()) {
+            if (confirm("Are you sure you want send the form for Rejection?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    function SubmitPostpone() {
+        if (confirm("Are you sure you want send the form for Postpone?"))
+            {
+                true;
+            } else {
+              return  false;
+            }
+        if (true) {
+            var comments = $("#Rcomment").val();
+            if (comments == "") {
+                nameError = "* Please enter comment";
+                $('.nav-tabs li:eq(3) a').tab('show');
+                $('#eDRcomment').text(' ');
+                document.getElementById("name_error").innerHTML = nameError;
+                document.getElementById("Rcomment").focus();
+                mandatoryerror = "*"
+                document.getElementById("mandatory_error").innerHTML = mandatoryerror;
+                return false;
+            }
+            else {
+                var id1 = '@Model.Form_ID'
+                var id = parseInt(id1)
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Postpone")',
+                    data: { id: id, Comment: comments },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+
+                            window.location.href = "/Home/Index";
+                        }
+                        else {
+                            window.location.href = "/CMENew/Details/" + id;
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+        $(document).ready(function () {
+
+            if ('@TempData["TabDisplay"]' == 'Valid0') {
+                $('.nav-tabs li:eq(0) a').tab('show');
+            }
+
+            if ('@TempData["TabDisplay"]' == 'Valid1') {
+                $('.nav-tabs li:eq(1) a').tab('show');
+            }
+
+             if ('@TempData["TabDisplay"]' == 'Valid2') {
+                $('.nav-tabs li:eq(4) a').tab('show');
+            }
+            if ('@TempData["TabDisplay"]' == 'Valid3') {
+                $('.nav-tabs li:eq(3) a').tab('show');
+            }
+
+
+        $("#PVDate").hide();
+        $("#CPVDate").hide();
+            if ('@Model.Policy_Violation' == 'True' && '@Model.IsDateDeviation' == 'True') {
+            $("#CPVDate").show();
+        }
+            else if ('@Model.Policy_Violation' == 'False' && '@Model.IsDateDeviation' == 'True') {
+            $("#PVDate").show();
+        }
+        if ('@Model.IHCPId' !='0') {
+            $(".InvoiceNo").val("");
+            $(".InvoiceDate").val("");
+            $(".NetAmount").val("");
+            $(".TaxAmount").val("");
+            $(".TotalAmount").val("");
+            $(".IHCPId").val('');
+        }
+
+        $("#aRemoveFileCC").hide();
+        $("#AttendanceSheet").hide();
+        $("#fileAttachments").hide();
+        $("#aRemoveFileMA").hide();
+
+        $("#Rcomment").click(function () {
+            $('#eDRcomment').text(' ');
+        });
+
+        var Zone_Name = '@Session["LoginUserZone"]';
+        var maxFileSize = 104857600;
+
+            if (Zone_Name == "Rare Disease") {
+            $("#EventPictures").show();
+            $(".EventPicturesComments").show();
+            $("#preattachments").show();
+            $("#NotBiopharmbtn").hide();
+            $("#Biopharmbtn").show();
+        }
+        else {
+            $("#NotBiopharmbtn").show();
+            $("#Biopharmbtn").hide();
+        }
+
+        $('#changeStartDate').datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-10:+1",
+        });
+
+        $('#file2').change(function () {
+            var icp = $("#file").val();
+            var lmp = $("#file1").val();
+            var cc = $("#file2").val();
+            var asf = $("#file3").val();
+            var pc = $("#file4").val();
+            if (icp == cc || lmp == cc || asf == cc|| pc==cc) {
+                $('#file2size').text('File already uploaded ! Please upload valid file.').show();
+                $("#ComplianceChecklist").empty();
+                $("#file_CC_img").removeClass();
+                $("#aRemoveFileCC").hide();
+                var control = $("#file2");
+                clearBn = $("#div_aRemoveFileCC");
+                clearBn.on("click", function () {
+                    control.replaceWith(control.val('').clone(true));
+                });
+            }
+            else {
+                $('#file2size').text('File already uploaded ! Please upload valid file.').hide();
+                var fileName = $('#file2')[0].files[0].name;
+                var fileExtension = fileName.split('.').pop();
+                $('#file2size').text('');
+                if ($('#file2')[0].files[0].size != 0) {
+                    if ($('#file2')[0].files[0].size < maxFileSize) {
+                        $("#fileAttachments").show();
+                        if (fileExtension == "png" || fileExtension == "jpeg") {
+                            $('#ComplianceChecklist').html(fileName);
+                            $("#file_CC_img").addClass("fa fa-picture-o");
+                            $("#aRemoveFileCC").show();
+                        }
+                        else if (fileExtension == "pdf") {
+                            $('#ComplianceChecklist').html(fileName);
+                            $("#file_CC_img").addClass("fa fa-file-pdf-o");
+                            $("#aRemoveFileCC").show();
+                        }
+                        else {
+                            $('#ComplianceChecklist').html(fileName);
+                            $("#file_CC_img").addClass("fa fa-file fa-3");
+                            $("#aRemoveFileCC").show();
+                        }
+                    }
+                    else { $('#file2size').text('File too big ! Select file less than 100 MB') }
+                }
+                else { $('#file2size').text('File is invalid ! Please upload valid file.') }
+            }
+        });
+
+        $('#file3').change(function () {
+            var icp = $("#file").val();
+            var lmp = $("#file1").val();
+            var cc = $("#file2").val();
+            var asf = $("#file3").val();
+            var pc = $("#file4").val();
+            if (icp == asf || lmp == asf || cc == asf || pc == asf) {
+                $('#file3size').text('File already uploaded ! Please upload valid file.').show();
+                $("#fileAttendanceSheet").empty();
+                $("#file_AS_img").removeClass();
+                $("#AttendanceSheet").hide();
+                var control = $("#file3");
+                clearBn = $("#div_AttendanceSheet");
+                clearBn.on("click", function () {
+                    control.replaceWith(control.val('').clone(true));
+                });
+
+            }
+            else {
+                $('#file3size').text('File already uploaded ! Please upload valid file.').hide();
+                var fileName = $('#file3')[0].files[0].name;
+                var fileExtension = fileName.split('.').pop();
+                $('#file3size').text('');
+                if ($('#file3')[0].files[0].size != 0) {
+                    if ($('#file3')[0].files[0].size < maxFileSize) {
+                        $("#fileAttachments").show();
+                        if (fileExtension == "png" || fileExtension == "jpeg") {
+                            $('#fileAttendanceSheet').html(fileName);
+                            $("#file_AS_img").addClass("fa fa-picture-o");
+                            $("#AttendanceSheet").show();
+                        }
+                        else if (fileExtension == "pdf") {
+                            $('#fileAttendanceSheet').html(fileName);
+                            $("#file_AS_img").addClass("fa fa-file-pdf-o");
+                            $("#AttendanceSheet").show();
+                        }
+                        else {
+                            $('#fileAttendanceSheet').html(fileName);
+                            $("#file_AS_img").addClass("fa fa-file fa-3");
+                            $("#AttendanceSheet").show();
+                        }
+                    }
+                    else { $('#file3size').text('File too big ! Select file less than 100 MB') }
+                }
+                else { $('#file3size').text('File is invalid ! Please upload valid file.') }
+            }
+        });
+
+        $("#aRemoveFileCC").click(function () {
+            $("#ComplianceChecklist").empty();
+            $("#file_CC_img").removeClass();
+            $("#aRemoveFileCC").hide();
+            var control = $("#file2");
+            clearBn = $("#div_aRemoveFileCC");
+            clearBn.on("click", function () {
+                control.replaceWith(control.val('').clone(true));
+            });
+        });
+
+        $("#AttendanceSheet").click(function () {
+            $("#fileAttendanceSheet").empty();
+            $("#file_AS_img").removeClass();
+            $("#AttendanceSheet").hide();
+            var control = $("#file3");
+            clearBn = $("#div_AttendanceSheet");
+            clearBn.on("click", function () {
+                control.replaceWith(control.val('').clone(true));
+            });
+        });
+
+        if ($('#eDRcomment').text() != '') {
+            $('#Rcomment').focus();
+        }
+
+        updateList = function () {
+            var icp = $("#file").val();
+            var lmp = $("#file1").val();
+            var cc = $("#file2").val();
+            var asf = $("#file3").val();
+            var pc = $("#file4").val();
+            if (lmp == icp || cc == icp || asf == icp || pc == icp ) {
+                $('#filesize').text('File already uploaded ! Please upload valid file.').show();
+                var id =0;
+                $("#fileInvProof" + id).empty();
+                $("#file_ICP_img" + id).removeClass();
+                $("#aRemoveFileICP" + id).hide();
+                $('#file').prop("value", "");
+            }
+            else {
+                $('#filesize').text('File already uploaded ! Please upload valid file.').hide();
+                var input = document.getElementById('file');
+                var output = document.getElementById('fileList');
+                var children = "";
+                for (var i = 0; i < input.files.length; ++i) {
+                    var fileName = $('#file')[0].files[i].name;
+                    var fileExtension = fileName.split('.').pop();
+                    if ($('#file')[0].files[i].size != 0) {
+                        if ($('#file')[0].files[i].size < maxFileSize) {
+                            if (fileExtension == "png" || fileExtension == "jpeg") {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else if (fileExtension == "pdf") {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                        }
+                        else { $('#filesize').text('File too big ! Select file less than 100 MB') }
+                    }
+                    else { $('#filesize').text('File is invalid ! Please upload valid file.') }
+                }
+                output.innerHTML = children;
+                $("#fileAttachments").show();
+            }
+        }
+
+        $(document).on('click', '.RemoveFileICP', function () {
+
+            var id = $(this).data('fileid');
+            $("#fileInvProof" + id).empty();
+            $("#file_ICP_img" + id).removeClass();
+            $("#aRemoveFileICP" + id).hide();
+            $('#file').prop("value", "");
+        });
+
+        updateListLM = function () {
+            var icp = $("#file").val();
+            var lmp = $("#file1").val();
+            var cc = $("#file2").val();
+            var asf = $("#file3").val();
+            var pc = $("#file4").val();
+            if (icp == lmp || cc == lmp || asf == lmp || pc == lmp) {
+                $('#file1size').text('File already uploaded ! Please upload valid file.').show();
+                var id = 0;
+                $("#fileActM" + id).empty();
+                $("#file_ActM_img" + id).removeClass();
+                $("#aRemoveFileActM" + id).hide();
+                $('#file1').prop("value", "");
+            }
+            else {
+                $('#file1size').text('File already uploaded ! Please upload valid file.').hide();
+                var input = document.getElementById('file1');
+                var output = document.getElementById('fileListLM');
+                var children = "";
+                for (var i = 0; i < input.files.length; ++i) {
+                    var fileName = $('#file1')[0].files[i].name;
+                    var fileExtension = fileName.split('.').pop();
+                    if ($('#file1')[0].files[i].size != 0) {
+                        if ($('#file1')[0].files[i].size < maxFileSize) {
+                            if (fileExtension == "png" || fileExtension == "jpeg") {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileActM" data-fileid="' + i + '" id="aRemoveFileActM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_ActM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActM' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else if (fileExtension == "pdf") {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileActM" data-fileid="' + i + '" id="aRemoveFileActM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_ActM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActM' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else {
+                                children += '<div class="upload-item"><label title="Remove" class="RemoveFileActM" data-fileid="' + i + '" id="aRemoveFileActM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_ActM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActM' + i + '" style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                        }
+                        else { $('#file1size').text('File too big ! Select file less than 100 MB') }
+                    }
+                    else { $('#file1size').text('File is invalid ! Please upload valid file.') }
+                }
+                output.innerHTML = children;
+                $("#fileAttachments").show();
+            }
+        }
+        $(document).on('click', '.RemoveFileActM', function () {
+
+            var id = $(this).data('fileid');
+            $("#fileActM" + id).empty();
+            $("#file_ActM_img" + id).removeClass();
+            $("#aRemoveFileActM" + id).hide();
+            $('#file1').prop("value", "");
+        });
+
+
+            if (Zone_Name == "Rare Disease")
+            {
+            updatePreListLM = function () {
+                var icp = $("#file").val();
+                var lmp = $("#file1").val();
+                var cc = $("#file2").val();
+                var asf = $("#file3").val();
+                var pc = $("#file4").val();
+                if (icp == pc || cc == pc || asf == pc || lmp == pc) {
+                    $('#file4size').text('File already uploaded ! Please upload valid file.').show();
+                    var id =0;
+
+                    $("#fileActivityMaterial" + id).empty();
+                    $("#file_AM_img" + id).removeClass();
+                    $("#aRemoveFileAM" + id).hide();
+                    $('#file4').prop("value", "");
+                }
+                else {
+                    $('#file4size').text('File already uploaded ! Please upload valid file.').hide();
+                    $('#file4size').empty();
+                    var input = document.getElementById('file4');
+                    var output = document.getElementById('filePreListLM');
+                    var children = "";
+                    for (var i = 0; i < input.files.length; ++i) {
+                        var fileName = $('#file4')[0].files[i].name;
+                        var fileExtension = fileName.split('.').pop();
+                        if ($('#file4')[0].files[i].size != 0) {
+                            if ($('#file4')[0].files[i].size < maxFileSize) {
+                                if (fileExtension == "png" || fileExtension == "jpeg") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFile" data-fileid="' + i + '" id="aRemoveFileAM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_AM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActivityMaterial' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else if (fileExtension == "pdf") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFile" data-fileid="' + i + '" id="aRemoveFileAM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_AM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActivityMaterial' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFile" data-fileid="' + i + '" id="aRemoveFileAM' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_AM_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileActivityMaterial' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                            }
+                            else { $('#file4size').text('File too big ! Select file less than 100 MB') }
+                        }
+                        else { $('#file4size').text('File is invalid ! Please upload valid file.') }
+                    }
+                    output.innerHTML = children;
+                    $("#fileAttachments").show();
+                }
+            }
+
+            updatePEListLM = function () {
+                var input = document.getElementById('file4');
+                var output = document.getElementById('fileListPE');
+                var icp = $("#file").val();
+                var lmp = $("#file1").val();
+                var cc = $("#file2").val();
+                var asf = $("#file3").val();
+                var pc = $("#file4").val();
+                if (icp == pc || cc == pc || asf == pc || lmp == pc) {
+                    $('#file4size').text('File already uploaded ! Please upload valid file.').show();
+                     var id =0;
+                    $("#filePE" + id).empty();
+                    $("#file_PE_img" + id).removeClass();
+                    $("#aRemoveFilePE" + id).hide();
+                    $('#file4').prop("value", "")
+                }
+                else {
+                    $('#file4size').text('File already uploaded ! Please upload valid file.').hide();
+                    var children = "";
+                    for (var i = 0; i < input.files.length; ++i) {
+                        var fileName = $('#file4')[0].files[i].name;
+                        var fileExtension = fileName.split('.').pop();
+                        if ($('#file4')[0].files[i].size != 0) {
+                            if ($('#file4')[0].files[i].size < maxFileSize) {
+                                if (fileExtension == "png" || fileExtension == "jpeg") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFilePE" data-fileid="' + i + '" id="aRemoveFilePE' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_PE_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="filePE' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else if (fileExtension == "pdf") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFilePE" data-fileid="' + i + '" id="aRemoveFilePE' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_PE_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="filePE' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFilePE" data-fileid="' + i + '" id="aRemoveFilePE' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_PE_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="filePE' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                            }
+                            else { $('#file4size').text('File too big ! Select file less than 100 MB') }
+                        }
+                        else { $('#file4size').text('File is invalid ! Please upload valid file.') }
+                    }
+                    output.innerHTML = children;
+                    $("#fileAttachments").show();
+                }
+            }
+
+            $('#file5').change(function () {
+                var icp = $("#file").val();
+                var lmp = $("#file1").val();
+                var cc = $("#file2").val();
+                var asf = $("#file3").val();
+                var pc = $("#file4").val();
+                var ma = $("#file5").val();
+                if (icp == ma || cc == ma || asf == ma || lmp == ma || pc == ma ) {
+                    $('#file5size').text('File already uploaded ! Please upload valid file.').show();
+                    $("#fileMeetingAgenda").empty();
+                    $("#file_MA_img").removeClass();
+                    $("#aRemoveFileMA").hide();
+                    var control = $("#file5");
+                    clearBn = $("#div_aRemoveFileMA");
+                    clearBn.on("click", function () {
+                        control.replaceWith(control.val('').clone(true));
+                    });
+                }
+                else {
+                    $('#file5size').text('File already uploaded ! Please upload valid file.').hide();
+                    var fileName = $('#file5')[0].files[0].name;
+                    var fileExtension = fileName.split('.').pop();
+                    $('#file5size').text('');
+                    $("#fileAttachments").show();
+                    if ($('#file5')[0].files[0].size != 0) {
+                        if ($('#file5')[0].files[0].size < maxFileSize) {
+                            if (fileExtension == "png" || fileExtension == "jpeg") {
+                                $('#fileMeetingAgenda').html(fileName);
+                                $("#file_MA_img").addClass("fa fa-picture-o");
+                                $("#aRemoveFileMA").show();
+                            }
+                            else if (fileExtension == "pdf") {
+                                $('#fileMeetingAgenda').html(fileName);
+                                $("#file_MA_img").addClass("fa fa-file-pdf-o");
+                                $("#aRemoveFileMA").show();
+                            }
+                            else {
+                                $('#fileMeetingAgenda').html(fileName);
+                                $("#file_MA_img").addClass("fa fa-file fa-3");
+                                $("#aRemoveFileMA").show();
+                            }
+                        }
+                        else { $('#file5size').text('File too big ! Select file less than 100 MB') }
+                    }
+                    else { $('#file5size').text('File is invalid ! Please upload valid file.') }
+                }
+            });
+
+            $("#aRemoveFileMA").click(function () {
+                $("#fileMeetingAgenda").empty();
+                $("#file_MA_img").removeClass();
+                $("#aRemoveFileMA").hide();
+                var control = $("#file5");
+                clearBn = $("#div_aRemoveFileMA");
+                clearBn.on("click", function () {
+                    control.replaceWith(control.val('').clone(true));
+                });
+            });
+
+            $(document).on('click', '.RemoveFile', function () {
+
+                var id = $(this).data('fileid');
+
+                $("#fileActivityMaterial" + id).empty();
+                $("#file_AM_img" + id).removeClass();
+                $("#aRemoveFileAM" + id).hide();
+                $('#file4').prop("value", "");
+            });
+
+            $(document).on('click', '.RemoveFilePE', function () {
+
+                var id = $(this).data('fileid');
+
+                $("#filePE" + id).empty();
+                $("#file_PE_img" + id).removeClass();
+                $("#aRemoveFilePE" + id).hide();
+                $('#file4').prop("value", "");
+            });        }
+
+
+            $(".btnHCPIDetails").click(function () {
+                var data = $("#hcpid").val();
+                $("#IHCPId").val(data);
+                var data1 = $("#hcpcost").val();
+                $("#IHCPCost").val(data1);
+        });
+
+        });
+
+
+    $(document).ready(function () {
+        var list = $("input:file", this)[0].files.length;
+        console.log(list);
+
+
+    });
+
+    $(document).ready(function () {
+
+        //$(".actualAttendees").text("* Please enter Actual Number of Attendess").hide();
+
+        //  var ss = JSON.parse($("#hcpsData").val());
+        //  for (var item = 0; item < ss.length; item++) {
+        //      var data = $("#file_" + ss[item].id).val();
+        //      if (data === "" || data === "") {
+        //          $(".file_" + ss[item].Id).text("* Please upload document");
+        //      }
+        //      else {
+        //          $(".file_" + ss[item].Id).hide();
+        //      }
+
+        //  }
+
+        //  $(".file_").text("* Please upload document");
+
+          $("#btnSend").on('click', function () {
+
+              var ss = JSON.parse($("#hcpsData").val());
+              var hcsp = [];
+
+              var a = 0;              
+
+                  for(var item = 0; item < ss.length; item++)
+                  {
+                      var data = $("#file_" + ss[item].Id).val();
+                      if (data === "" || data === null) {
+                          $(".file_" + ss[item].Id).text("* Please upload document").delay(10000).show(0);
+                          a++;
+                      }
+                  }
+
+              if (a != 0)
+              {
+                  return false;
+              }
+
+        });
+      });
+
+
+
+        $(document).ready(function () {
+            $(".upload-attachment").on("change", function (e) {
+                var value = e.target;
+                var maxFileSize = 104857600;
+                var icp = ($(value).val());
+                var lmp = $("#file1").val();
+                var cc = $("#file2").val();
+                var asf = $("#file3").val();
+                var pc = $("#file4").val();
+                if (lmp == icp || cc == icp || asf == icp || pc == icp) {
+                    $('#filesize1').text('File already uploaded ! Please upload valid file.').show();
+                    var id = 0;
+                    $("#fileInvProof" + id).empty();
+                    $("#file_ICP_img" + id).removeClass();
+                    $("#aRemoveFileICP" + id).hide();
+                    $(value).prop("value", "");
+                }
+                else {
+                    $('#filesize1').text('File already uploaded ! Please upload valid file.').hide();
+                    var input = value;
+                    var output = document.getElementById('fileListHCP');
+                    var children = "";
+
+                    for (var i = 0; i < input.files.length; ++i) {
+                        var fileName = $(value)[0].files[i].name;
+                        var fileExtension = fileName.split('.').pop();
+                        if ($(value)[0].files[i].size != 0) {
+                            if ($(value)[0].files[i].size < maxFileSize) {
+                                if (fileExtension == "png" || fileExtension == "jpeg") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFileHCP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else if (fileExtension == "pdf") {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFileHCP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                                else {
+                                    children += '<div class="upload-item"><label title="Remove" class="RemoveFileHCP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                        + input.files.item(i).name + '</span></div>';
+                                }
+                            }
+                            else { $('#filesize').text('File too big ! Select file less than 100 MB') }
+                        }
+                        else { $('#filesize').text('File is invalid ! Please upload valid file.') }
+                    }
+                    output.innerHTML += children;
+                    $("#fileAttachments").show();
+
+                }
+            })
+        })
+
+    $(document).on('click', '.RemoveFileHCP', function () {
+
+        var id = $(this).data('fileid');
+        $("#fileInvProof" + id).empty();
+        $("#file_ICP_img" + id).removeClass();
+        $("#aRemoveFileICP" + id).hide();
+        $('#file').prop("value", "");
+    });
+
+    $("#file2").on('change', function () {
+        var value = $("#file2").val();
+        if (value == "") {
+            alert(value);
+            $("#errmessage_CCImageFile").show();
+        } else {
+            $("#errmessage_CCImageFile").hide();
+        }
+    });
+
+    $("#file3").on('change', function () {
+        var value = $("#file3").val();
+        if (value == "") {
+            alert(value);
+            $("#errmessage_ASImageFile").show();
+        } else {
+            $("#errmessage_ASImageFile").hide();
+        }
+    });
+        $("#file1").on('change', function () {
+            var value = $("#file1").val();
+            if (value == "") {
+                alert(value);
+                $("#error_LMImageFile").show();
+            } else {
+                $("#error_LMImageFile").hide();
+            }
+        });
+</script>
+<script>
+     function SubmitCancel() {
+
+            if (confirm("Are you sure you want send the form for Cancellation?"))
+            {
+                true;
+            } else {
+              return  false;
+            }
+        if (true) {
+            var comments = $("#Rcomment").val();
+            if (comments == "") {
+                nameError = "* Please enter comment";
+                $('.nav-tabs li:eq(3) a').tab('show');
+                $('#eDRcomment').text(' ');
+                document.getElementById("name_error").innerHTML = nameError;
+                document.getElementById("Rcomment").focus();
+                mandatoryerror = "*"
+                document.getElementById("mandatory_error").innerHTML = mandatoryerror;
+                return false;
+            }
+            else {
+                var id1 = '@Model.Form_ID'
+                var id = parseInt(id1)
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("CancelEvent")',
+                    data: { id: id, Comment: comments },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+                            window.location.href = "@Url.Action("Index", "Home")";
+                        }
+                        else {
+                            window.location.href = "@Url.Action("Details", "CMENew")?id=" + id;
+                        }
+                    }
+                });
+            }
+        }
+        //}
+    }
+</script>
+

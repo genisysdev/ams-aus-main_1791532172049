@@ -1,0 +1,127 @@
+﻿@model CME.Models.Lectures
+
+@{
+    ViewBag.Title = "Activity Material Detail";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Activity Material Detail</h2>
+
+@using (Html.BeginForm("Edit", "Lectures", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Therapy Area <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a Therapy Area -", new { @class = "form-control", disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Brand <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedBrand, Model.Brand, "- Please select a Brand -", new { @class = "form-control", disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.SelectedBrand, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Event <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedEvent, Model.Event, "- Please select a Event -", new { @class = "form-control", disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.SelectedEvent, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Package Type <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedPackageType, Model.PackageType, "- Please select a PackageType -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SelectedPackageType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Lecture <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Lecture, new { @class = "form-control", maxlength = 250, placeholder = "Name" })
+                        @Html.ValidationMessageFor(model => model.Lecture, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        @Html.LabelFor(model => model.ImagePath)<span class="mandatory-field" style=" position: relative;  top: 13px; left: -9px;">*</span>
+                        <div class="Auploads">
+                            @Html.TextBoxFor(m => m.ImageFile, new { type = "file", id = "file7", multiple = "multiple", onchange = "javascript:updateListLM()" })
+                            <label for="file7" class="m-0 fileupload-img" style="width: 95%; height: 34px;border-radius: 8px;">File</label>
+                            @Html.ValidationMessageFor(m => m.ImageFile)
+                        </div>
+                        <span class="nameresume"></span>
+                        <span class="text-danger" id="file7size"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    @Html.LabelFor(model => model.Status)<span class="mandatory-field">*</span>
+                    @Html.CheckBoxFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                </div>
+                <fieldset class="uploads">
+                    @foreach (var image in Model.ImagePath)
+                    {
+                        if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                        {
+                            <a title="Remove" href="@Url.Action("DeleteFile", "Lectures", new { id = Model.ID, fileName = image.DocName, filePath = image.DocPath })" style="font-weight: bold;">X</a>
+                            <a href="@Url.Action("DownLoadFile", "Lectures", new { fileName = image.DocName , filePath = image.DocPath })">
+                                <div class="upload-item">
+                                    <i class="fa fa-picture-o"></i>
+                                    <span>@image.DocName</span>
+                                </div>
+                            </a>
+                        }
+                        else if (@image.Extension.ToLower() == ".pdf")
+                        {
+                            <a title="Remove" href="@Url.Action("DeleteFile", "Lectures", new { id = Model.ID, fileName = image.DocName, filePath = image.DocPath })" style="font-weight: bold;">X</a>
+                            <a href="@Url.Action("DownLoadFile", "Lectures", new { fileName = image.DocName , filePath = image.DocPath })">
+                                <div class="upload-item">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                    <span>@image.DocName</span>
+                                </div>
+                            </a>
+                        }
+                        else
+                        {
+                            <a title="Remove" href="@Url.Action("DeleteFile", "Lectures", new { id = Model.ID, fileName = image.DocName, filePath = image.DocPath })" style="font-weight: bold;">X</a>
+                            <a href="@Url.Action("DownLoadFile", "Lectures", new { fileName = image.DocName , filePath = image.DocPath })">
+                                <div class="upload-item">
+                                    <i class="fa fa-file fa-3"></i>
+                                    <span>@image.DocName</span>
+                                </div>
+                            </a>
+                        }
+                    }
+                </fieldset>
+                <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                    <button type="submit" class="btn add-btn" id="UpdateLM">Update</button>
+                    <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "Lectures")'" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    var maxFileSize = 104857600;
+    $('#file7').change(function () {
+        $('#file7size').text('');
+        for (var i = 0; i < input.files.length; ++i) {
+            if ($('#file7')[0].files[i].size != 0) {
+                if ($('#file7')[0].files[i].size > maxFileSize) {
+                    $('#file7size').text('File too big ! Select file less than 100 MB');
+                    $("#UpdateLM").attr("disabled", true);
+                }
+                else { $('#UpdateLM').attr("disabled", false); }
+            }
+            else { $('#file7size').text('File is invalid ! Please upload valid file.'); }
+        }
+    });
+</script>

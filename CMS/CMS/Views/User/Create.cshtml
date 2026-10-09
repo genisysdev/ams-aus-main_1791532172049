@@ -1,0 +1,254 @@
+﻿@model CME.Models.UserViewModel
+
+@{
+    ViewBag.Title = "Create User";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Create User</h2>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ddRole").change(function () {
+            if ($("#ddRole option:selected").text() == "Admin") {
+                $("#IsAdmin_True").prop("checked", true);
+            }
+            else { $("#IsAdmin_false").prop("checked", true); }
+        });
+
+      $("#ddZone").val('');
+        $("#ddZone").change(function () {
+            $("#ddMI").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetManagerByZone")',
+                dataType: 'json',
+                data: { id: $("#ddZone").val() },
+                success: function (events) {
+                    $.each(events, function (i, event) {
+                        $("#ddMI").append('<option value="'
+                            + event.Value + '">'
+                            + event.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve states.' + ex);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+@using (Html.BeginForm("Create", "User", FormMethod.Post, new { role = "form" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Name: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Surname: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Initial: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Initial, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Initial, "", new { @class = "text-danger" })
+                        <span class="text-danger">@TempData["userInitials"]</span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Role: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedRole, Model.Role, "- Please select a Role -", new { @class = "form-control", @tabindex = 1, id = "ddRole" })
+                        @Html.ValidationMessageFor(model => model.SelectedRole, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Manager: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.Manager, Model.ManagerList, "- Please select Manager -", new { @class = "form-control", @tabindex = 5, id = "ddMI" })
+                        @Html.ValidationMessageFor(model => model.Manager, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Position: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Position, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Therapy Area: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 3, id = "ddTA" })
+                        @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Cost Centre: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.CostCenter, Model.CostCenterList, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 4, id = "ddCC" })
+                        @Html.ValidationMessageFor(model => model.CostCenter, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Email Id: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.EmailId, new { @class = "form-control", id = "txtEmailId" })
+                        @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Employee Id:</label>
+                        @Html.TextBoxFor(m => m.EmpId, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label>Is Admin: </label>
+                    <div>
+                        @Html.RadioButtonFor(model => model.IsAdmin, "Yes", new { @class = "form-radio", id = "IsAdmin_True" })
+                        <span style="color:#0a78bf; font-weight: bold;margin-right:10px;">Yes</span>
+                        @Html.RadioButtonFor(model => model.IsAdmin, "No", new { @class = "form-radio", @checked = "checked", id = "IsAdmin_false" })
+                        <span style="color:#0a78bf; font-weight: bold;">No</span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label>Status: </label>
+                    <div>
+                        @Html.RadioButtonFor(model => model.Status, "Active", new { @class = "form-radio", @checked = "checked", id = "Active_User" })
+                        <span style="color:#0a78bf; font-weight: bold;margin-right:10px;">Active</span>
+                        @Html.RadioButtonFor(model => model.Status, "Inactive", new { @class = "form-radio", id = "Inactive_User" })
+                        <span style="color:#0a78bf; font-weight: bold;">Inactive</span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+
+                    </div>
+                </div>
+                @*<div class="col-md-4 mb-2">
+                        <div class="form-HCPcontrols position-relative">
+                            <label>Therapy Area: <span class="mandatory-field">*</span></label>
+                            @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 3, id = "ddTA" })
+                            @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                        <div class="form-group">
+                        <label>Name: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Surname: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Initial: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Initial, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Initial, "", new { @class = "text-danger" })
+                        <span class="text-danger">@TempData["userInitials"]</span>
+                    </div>
+                    <div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Role: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedRole, Model.Role, "- Please select a Role -", new { @class = "form-control", @tabindex = 1, id = "ddRole" })
+                        @Html.ValidationMessageFor(model => model.SelectedRole, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Zone: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedZone, Model.Zone, "- Please select a Zone -", new { @class = "form-control", @tabindex = 2, id = "ddZone" })
+                        @Html.ValidationMessageFor(model => model.SelectedZone, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Manager: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.Manager, Model.ManagerList, "- Please select Manager -", new { @class = "form-control", @tabindex = 5, id = "ddMI" })
+                        @Html.ValidationMessageFor(model => model.Manager, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Position: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Position, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Therapy Area: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 3, id = "ddTA" })
+                        @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Cost Centre: <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.CostCenter, Model.CostCenterList, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 4, id = "ddCC" })
+                        @Html.ValidationMessageFor(model => model.CostCenter, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Is Admin: </label>
+                        @Html.RadioButtonFor(model => model.IsAdmin, "Yes", new { @class = "form-radio", id = "IsAdmin_True" })
+                        Yes
+                        @Html.RadioButtonFor(model => model.IsAdmin, "No", new { @class = "form-radio", @checked = "checked", id = "IsAdmin_false" })
+                        No
+                    </div>
+                    <div class="form-group">
+                        <label>Status: </label>
+                        @Html.RadioButtonFor(model => model.status, "Active", new { @class = "form-radio", @checked = "checked", id = "Active_User" })
+                        Active
+                        @Html.RadioButtonFor(model => model.status, "Inactive", new { @class = "form-radio", id = "Inactive_User" })
+                        Inactive
+                    </div>
+                    <div class="form-group">
+                        <label>Email Id: <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.EmailId, new { @class = "form-control", id = "txtEmailId" })
+                        @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Employee Id:</label>
+                        @Html.TextBoxFor(m => m.EmpId, new { @class = "form-control" })
+                    </div>
+                        <div class="col-md-4 mb-2">
+                        <div class="form-HCPcontrols position-relative">
+                            <label>Is Admin: </label>
+                            @Html.RadioButtonFor(model => model.IsAdmin, "Yes", new { @class = "form-radio", id = "IsAdmin_True" })
+                            Yes
+                            @Html.RadioButtonFor(model => model.IsAdmin, "No", new { @class = "form-radio", @checked = "checked", id = "IsAdmin_false" })
+                            No
+                        </div>
+                    </div>
+
+
+                            <div class="col-md-4 mb-2">
+                        <div class="form-HCPcontrols position-relative">
+                            <label>Status: </label>
+                            @Html.RadioButtonFor(model => model.status, "Active", new { @class = "form-radio", @checked = "checked", id = "Active_User" })
+                            Active
+                            @Html.RadioButtonFor(model => model.status, "Inactive", new { @class = "form-radio", id = "Inactive_User" })
+                            Inactive
+                        </div>
+                    </div>*@
+
+                <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                    <button type="submit" class="btn add-btn">Create User</button>
+                    <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "User")'" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

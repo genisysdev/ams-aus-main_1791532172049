@@ -1,0 +1,88 @@
+﻿@model CME.Models.HCPView
+
+@{
+    ViewBag.Title = "HCP Detail";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">HCP Detail</h2>
+
+@using (Html.BeginForm("Edit", "HCPList", FormMethod.Post, new { role = "form" }))
+{
+    <div class="contentcolor">
+        <div class="row align-items-center">
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Vendor Number <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.VendorNo, new { @class = "form-control", maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.VendorNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>PAN Number <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.PanNo, new { @class = "form-control", maxlength = 10 })
+                    @Html.ValidationMessageFor(model => model.PanNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>CMS Number <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.CMSNo, new { @class = "form-control", maxlength = 15, @type = "number" })
+                    @Html.ValidationMessageFor(model => model.CMSNo, "", new { @class = "text-danger" })
+                    <span class="text-danger">@TempData["hcpCMENo"]</span>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Name <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", maxlength = 50 })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>No Of Lecture <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.NoOfLecture, new { @class = "form-control", maxlength = 5, @type = "number" })
+                    @Html.ValidationMessageFor(model => model.NoOfLecture, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Address of HCP <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.HCPAddress, new { @class = "form-control", maxlength = 1000 })
+                    @Html.ValidationMessageFor(model => model.HCPAddress, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>HCP Type <span class="mandatory-field">*</span></label>
+                    @Html.DropDownListFor(model => model.SelectedHCPType, Model.HCPType, "- Please select a HCP type -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SelectedHCPType, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Zone <span class="mandatory-field">*</span></label>
+                    @Html.DropDownListFor(model => model.SelectedZone, Model.Zone, "- Please select a zone -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SelectedZone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Work Unit <span class="mandatory-field">*</span></label>
+                    @Html.DropDownListFor(model => model.SelectedUnit, Model.Unit, "- Please select a unit -", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SelectedUnit, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn add-btn">Update</button>
+            <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "HCPList")'" />
+        </div>
+    </div>
+}

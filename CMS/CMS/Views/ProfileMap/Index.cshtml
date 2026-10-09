@@ -1,0 +1,93 @@
+﻿@model CME.Models.ProfileMapViewModel
+
+@{
+    ViewBag.Title = "User Mapping";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">User Mapping</h2>
+@using (Html.BeginForm("Index", "ProfileMap", FormMethod.Post, new { role = "form" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Role <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedProfile, Model.Profile, "- Please select a Role -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SelectedProfile, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>User Initial <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedUser, Model.User, "- Please select a User Initial -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SelectedUser, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                    <button type="submit" class="btn add-btn" name="command" value="Save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.ProfileMapList.Count == 0)
+{
+    <br />
+    <h4>No Records Found</h4>
+}
+else
+{
+    <div class="responsible-table">
+        <table class="table">
+            <tr>
+                <th style="visibility:hidden">
+                    FunctionalId
+                </th>
+                <th>
+                    Role Name
+                </th>
+                <th>
+                    User Initials
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.ProfileMapList)
+            {
+                <tr>
+                    <td style="visibility:hidden">
+                        @Html.DisplayFor(modelItem => item.ProfileId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProfileName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserInitial)
+                    </td>
+                    <td class="user-action">
+                        <a href="@Url.Action("Edit", "ProfileMap", new { id = item.ProfileId })">
+                            <img src="~/Content/Images/edit-icon.svg" alt="Edit" />
+                        </a> |
+                        <a href="@Url.Action("Delete", "ProfileMap", new { fmId = item.ProfileId })" onclick="return Submit();">
+                            <img src="~/Content/Images/trash-icon.svg" alt="Delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+
+    <script type="text/javascript">
+        function Submit() {
+            if (confirm("Are you sure you want to delete record?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c2777b263b90441f8bbbd96ad75ebf4c" Name="Diagram1" ZoomLevel="57">
+        <EntityTypeShape EntityType="NovoNordiskModel.AMS_Config" Width="1.5" PointX="5.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.AMS_RawData" Width="1.5" PointX="7.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Assessment" Width="1.5" PointX="9.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Brand" Width="1.5" PointX="8" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Cost_Centre" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.CostCentre_To_CT" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Deviation_Type" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Division_To_User" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Event" Width="1.5" PointX="10.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Lecture_Materials" Width="1.5" PointX="5.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Lecture" Width="1.5" PointX="2.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Miscellaneous_Type" Width="1.5" PointX="11.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Package_Type" Width="1.5" PointX="7.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF" Width="1.5" PointX="9.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Attachment" Width="1.5" PointX="11.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Command" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Deviation" Width="1.5" PointX="12.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_HCP" Width="1.5" PointX="4.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Meetingtype" Width="1.5" PointX="13.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Miscellaneous" Width="1.5" PointX="13.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Participants" Width="1.5" PointX="13.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Request_Type" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Status" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_Transaction" Width="1.5" PointX="6.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Profile" Width="1.5" PointX="0.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Profiles_To_User" Width="1.5" PointX="15.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Therapy_Area" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Type_Of_HCP" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.User" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="NovoNordiskModel.Zone" Width="1.5" PointX="11.75" PointY="17.75" IsExpanded="true" />
+        <AssociationConnector Association="NovoNordiskModel.FK__Brand__Therapy_A" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK__Event__Brand_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK__CostCentr__CostC__02FC7413" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK__CostCentr__CostC__07C12930" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK__CostCentr__User___03F0984C" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK__CostCentr__User___08B54D69" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK_Division_To_User_User_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="NovoNordiskModel.FK_Lectures_Brand_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_Lectures_Event_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_Lectures_PT_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_Lecture_Materials_Lecture_Id" />
+        <EntityTypeShape EntityType="NovoNordiskModel.HCP" Width="1.5" PointX="20" PointY="6.625" />
+        <AssociationConnector Association="NovoNordiskModel.FK_HCP_TA_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_HCP_Zone_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_User_CC_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_User_TA_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_User_Mgr_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_User_Zone_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Meetingtype_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_ModifiedBy" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Request_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Status_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Transaction_PAF_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Transaction_Request_Id" />
+        <AssociationConnector Association="NovoNordiskModel.FK_PAF_Transaction_CreatedBy" />
+        <EntityTypeShape EntityType="NovoNordiskModel.PAF_ActivityType" Width="1.5" PointX="14.375" PointY="17.75" />
+        <AssociationConnector Association="NovoNordiskModel.FK__PAF__ActivityType_Id" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

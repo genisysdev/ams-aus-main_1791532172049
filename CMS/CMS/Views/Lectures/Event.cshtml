@@ -1,0 +1,98 @@
+﻿@model CME.Models.EventModel
+
+@{
+    ViewBag.Title = "ADD New Event";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Add New Event</h2>
+
+@using (Html.BeginForm("Event", "Lectures", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                @*<fieldset class="form-columns-3 col4-label-ht">*@
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Therapy Area <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a Therapy Area -", new { @class = "form-control", id = "ddTherapyArea" })
+                        @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Therapy Area <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a Therapy Area -", new { @class = "form-control", id = "ddTherapyArea" })
+                        @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                    </div>*@
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Brand <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedBrand, new SelectList(string.Empty, "Value", "Text"), "- Please select a Brand -", new { @class = "form-control", id = "ddBrand" })
+                        @Html.ValidationMessageFor(model => model.SelectedBrand, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group form-dropdown form-activity-dropdown">
+                        <label>Brand <span class="mandatory-field">*</span></label>
+                        @Html.DropDownListFor(model => model.SelectedBrand, new SelectList(string.Empty, "Value", "Text"), "- Please select a Brand -", new { @class = "form-control", id = "ddBrand" })
+                        @Html.ValidationMessageFor(model => model.SelectedBrand, "", new { @class = "text-danger" })
+                    </div>*@
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Event <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", maxlength = 250, placeholder = "Event name" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        <label>Event <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", maxlength = 250 })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>*@
+                @*</fieldset>*@
+                <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                    <button type="submit" class="btn add-btn">Create</button>
+                    <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "Lectures")'" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    function Submit() {
+        if (confirm("Are you sure you want to create record?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+<script type="text/javascript">
+        $(document).ready(function () {
+        $("#ddTherapyArea").val('');
+        $("#ddTherapyArea").change(function () {
+            $("#ddBrand").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBrandByTAId")',
+                dataType: 'json',
+                data: { id: $("#ddTherapyArea").val() },
+                success: function (events) {
+                    $.each(events, function (i, event) {
+                        $("#ddBrand").append('<option value="'
+                            + event.Value + '">'
+                            + event.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve states.' + ex);
+                }
+            });
+            return false;
+        })
+    });
+</script>
+

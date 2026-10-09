@@ -1,0 +1,100 @@
+﻿@model PagedList.IPagedList<CME.Models.ProfileViewModel>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Role Mapping";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<h2 class="section-ttl" style="padding-top:20px;">Role Mapping</h2>
+
+@*<div class=" hcpheader">
+    <a href="~/Profile/Create" class="create-new" style="position: relative; top: 6px;">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Create New
+    </a>
+</div>*@
+
+<div class="tab-content contentcolor">
+    <div class="form-otrcontainer">
+        <div class="row align-items-center">
+            <form asp-action="Index" method="get" class="search-box">
+                <div class="col-md-12 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Find by name:</label>
+                        <input id="searchString" class="search-field" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Name" />
+                    </div>
+                </div>
+                <div class="form-group" style="position: relative; left: 12px; top: 15px;">
+                    <button type="submit" class="btn add-btn" tabindex="7">Search</button>
+                    <button type="submit" class="btn add-btn" formaction=@Url.Action("Reset") formmethod="post">Reset</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <br />
+    <h4>No Records Found</h4>
+}
+else
+{
+    <div class="responsible-table">
+        <table class="table">
+            <tr>
+                <td style="visibility:hidden">
+                    Id
+                </td>
+                <th>
+                    @Html.ActionLink("Name", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByName })
+                </th>
+                <th>
+                    @Html.ActionLink("Description", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByDescription })
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="visibility:hidden">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td class="user-action">
+                        <a href="@Url.Action("Edit", "Profile", new { id = item.Id })">
+                            <img src="~/Content/Images/edit-icon.svg" alt="Edit" />
+                        </a> |
+                        <a href="@Url.Action("Delete", "Profile", new { id = item.Id })" onclick="return Submit();">
+                            <img src="~/Content/Images/trash-icon.svg" alt="Delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+    <div id='Paging' class="paging">
+        <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+        <div class="pagination-container">@Html.PagedListPager(Model, page => Url.Action("Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortOrder, page }))</div>
+    </div>
+
+    <script type="text/javascript">
+        function Submit() {
+            if (confirm("Are you sure you want to delete record?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+}

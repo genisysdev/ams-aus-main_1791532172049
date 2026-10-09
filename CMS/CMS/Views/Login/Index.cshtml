@@ -1,0 +1,112 @@
+﻿@model CME.Models.Login
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <title>@ViewBag.Title - Activity Management System</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/datepicker.min.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/style.css" rel="stylesheet">
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/Content/Images/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/Content/Images/favicon-32x32.png" sizes="32x32">
+</head>
+<body>
+    <div class="outer-wrap">
+        <header class="main-nav">
+            <div class="container header-container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+                        <nav class="navbar navbar-expand-sm navbar-default" id="navbar" role="navigation">
+                            <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 logo-container">
+                                <a class="navbar-brand logo" href="@Url.Action("Index", "Login")">
+                                    <img src="~/Content/Images/novo-nordisk-1-logo-png-transparent.png" class="" alt="Home" />
+                                </a>
+                                <h1 class="header-txt">Activity Management System</h1>
+
+                            </div>
+                            <div class="main-menu hidden-md hidden-sm hidden-xs">
+                                <div class="col-lg-8 col-md-8 nav-bottom-left hidden-md hidden-sm hidden-xs ">
+
+                                </div>
+
+                            </div>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container outer-container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { role = "form", id = "prospects_form", enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-container">
+                                <h4></h4>
+                                <hr />
+                                @if (TempData["Message"] != null)
+                                {
+                                    <fieldset class="form-columns-3 col4-label-ht">
+                                        <div class="alert @TempData["MessageClass"].ToString() alert-dismissable" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            @TempData["Message"]
+                                        </div>
+                                    </fieldset>
+                                }
+                                <fieldset class="form-columns-3 col4-label-ht">
+                                    <div class="form-group">
+                                        <label>User Name </label>
+                                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @type = "text", maxlength = 20 })
+                                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                                    </div>
+                                </fieldset>
+                                <fieldset class="form-columns-3 col4-label-ht">
+                                    <div class="form-group">
+                                        <label>Password </label>
+                                        @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @type = "password", maxlength = 20 })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                    </div>
+                                </fieldset>
+
+
+                                <fieldset class="form-columns-2 col4-label-ht">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn add-btn">Login</button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Script files -->
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src='@System.Web.Optimization.Scripts.Url("~/bundles/datepicker")'></script>
+    <script src='@System.Web.Optimization.Scripts.Url("~/bundles/validatemin")'></script>
+    <script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+    <script src="~/Scripts/script.js"></script>
+</body>
+</html>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        border: 5px solid white;
+    }
+</style>
+
+

@@ -1,0 +1,335 @@
+﻿@model DataAccessLayer.DAL.Model.PAFSearch
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Home</h2>
+
+
+<div class="card_section">
+    <div class="card_layout d-flex">
+        <ul>
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li style="background-color: #BCB7D3;">
+                    <div class="bg_color Saved" style="background-color:#574b90">
+                        <span id="spanDraft"></span>
+                    </div>
+                    <h6><b>Saved Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="Pending" style="background-color:#ACB0BA;">
+                    <div class="bg_color Pending" style="background-color:#303a52">
+                        <span id="spanInprocess"></span>
+                    </div>
+                    <h6><b>Pending Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="Rejected" style="background-color:#B2E6ED;">
+                    <div class="bg_color Rejected" style="background-color:#3ec1d3">
+                        <span id="spanRejected"></span>
+                    </div>
+                    <h6><b>Rejected Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="Approved" style="background-color:#FDC9DD;">
+                    <div class="bg_color Approved" style="background-color:#f978aa;">
+                        <span id="spanApproved"></span>
+                    </div>
+                    <h6><b>Approved Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="Closed" style="background-color:#F9D3C1;">
+                    <div class="bg_color Closed" style=" background-color:#f19065;">
+                        <span id="spanClosed"></span>
+                    </div>
+                    <h6><b>Closed Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="Attend" style="background-color:#BBC5F5;">
+                    <div class="bg_color Attend" style="background-color:#556ee6;">
+                        <span id="spanAttend"></span>
+                    </div>
+                    <h6><b>Attend Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN")
+            {
+                <li class="Removed" style="background-color:#F7DD99;">
+                    <div class="bg_color Removed" style="background-color:#eaab00;">
+                        <span id="spanRemoved"></span>
+                    </div>
+                    <h6><b>Removed Forms</b></h6>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "CT")
+            {
+                <li class="Removed" style="background-color:#F3BFB3;">
+                    <div class="bg_color Removed" style="background-color:#e26042;">
+                        <span>@Session["Pendingverificationformcount"]</span>
+                    </div>
+                    <h6><b>Pending verification Forms</b></h6>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+
+@if ((Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM") || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+{
+    <p style="text-align:right;">
+        <a href="~/CMENew/Index" class="create-new">
+            New PAF Form
+        </a>
+    </p>
+}
+
+@using (Html.BeginForm("IndexNew", "Home", FormMethod.Post, new { role = "form" }))
+{
+    <div class="contentcolor">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Search By</label>
+                    @Html.TextBoxFor(m => m.PAFId, new { @class = "form-control", placeholder = "Enter PAF Id / Initial / Manager Initial / Hotel Name", @tabindex = 1, maxlength = 10 })
+                </div>
+            </div>
+            <div class="col-md-3 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Start Date</label>
+                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control date-field", placeholder = "Start Date", @tabindex = 2, @readonly = "true" } })
+                </div>
+            </div>
+            <div class="col-md-3 mb-2">
+                <div class="form-controls position-relative">
+                    <label>End Date</label>
+                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control date-field", placeholder = "End Date", @tabindex = 3, @readonly = "true" } })
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Therapy Area</label>
+                    @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a Brand -", new { @class = "form-control", @tabindex = 5 })
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Brand</label>
+                    @Html.DropDownListFor(model => model.SelectedBrand, Model.Brand, "- Please select a Brand -", new { @class = "form-control", @tabindex = 6 })
+                </div>
+            </div>
+        </div>
+        <fieldset class="form-columns-2 col4-label-ht">
+            <div class="form-group">
+                <button type="submit" class="btn add-btn" tabindex="7" formaction=@Url.Action("Index") formmethod="post">Search</button>
+                <button type="submit" class="btn add-btn" tabindex="8" formaction=@Url.Action("Reset") formmethod="post">Reset</button>
+            </div>
+        </fieldset>
+    </div>
+
+
+}
+
+<div>
+    <!-- Nav tabs -->
+
+    <div class="tabs">
+        <ul id="tabstrip" class="nav nav-tabs" role="tablist">
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item active">
+                    <a class="nav-link" data-toggle="tab" href="#_FirstTab">Saved PAFs</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item @((Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL") ? "active" : "")">
+                    <a class="nav-link" data-toggle="tab" href="#_SecondTab">Pending Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_ThirdTab">Rejected Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_FourthTab">Approved Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item @((Session["LoginUserRole"].ToString().ToUpper() == "ADMIN") ? "active" : "")">
+                    <a class="nav-link" data-toggle="tab" href="#_FifthTab">Closed Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_SixthTab">Attend Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_SeventhTab">Form Status</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_EighthTab">Removed Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString() == "CME Operation")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_NinthTab">ALL Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "PMH" || Session["LoginUserRole"].ToString().ToUpper() == "PMGH" || Session["LoginUserRole"].ToString().ToUpper() == "RMA")
+            {
+                <li class="nav-item @((Session["LoginUserRole"].ToString().ToUpper() == "PMH") ? "active" : ""),@((Session["LoginUserRole"].ToString().ToUpper() == "PMGH") ? "active" : ""),@((Session["LoginUserRole"].ToString().ToUpper() == "RMA") ? "active" : "")">
+                    <a class="nav-link" data-toggle="tab" href="#_TenthTab">ALL Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "CTB" || Session["LoginUserRole"].ToString().ToUpper() == "CT")//|| Session["LoginUserRole"].ToString() == "CME Operation"
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_EleventhTab">Edit Forms</a>
+                </li>
+            }
+            @if (Session["LoginUserRole"].ToString().ToUpper() == "CT")
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#_ThirteenthTab">Pending verification Forms</a>
+                </li>
+            }
+        </ul>
+
+    </div>
+
+    <div class="tab-content contentcolor">
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane active" id="_FirstTab">
+                @Html.Action("Draft", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane @(( Session["LoginUserRole"].ToString().ToUpper() == "RBD"  || Session["LoginUserRole"].ToString() == "CME Operation"|| Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL") ? "active" : "")" id="_SecondTab">
+                @Html.Action("Pending", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane fade" id="_ThirdTab">
+                @Html.Action("Rejected", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane fade" id="_FourthTab">
+                @Html.Action("Approved", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane @(Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" ? "active" : "")" id="_FifthTab">
+                @Html.Action("Closed", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString() == "CME Operation" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "RBD" || Session["LoginUserRole"].ToString().ToUpper() == "RBD1" || Session["LoginUserRole"].ToString().ToUpper() == "RBD2" || Session["LoginUserRole"].ToString().ToUpper() == "HEMOPHILIA MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "GROWTH HORMONE MEDICAL" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane fade" id="_SixthTab">
+                @Html.Action("Attend", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+        {
+            <div class="container tab-pane fade" id="_SeventhTab">
+                @Html.Action("Status", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN")
+        {
+            <div class="container tab-pane fade" id="_EighthTab">
+                @Html.Action("Removed", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString() == "CME Operation")
+        {
+            <div class="container tab-pane fade" id="_NinthTab">
+                @Html.Action("AllForm", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "PMH" || Session["LoginUserRole"].ToString().ToUpper() == "PMGH" || Session["LoginUserRole"].ToString().ToUpper() == "RMA")
+        {
+            <div class="container tab-pane fade @(Session["LoginUserRole"].ToString().ToUpper() == "PMH" ? "active" : ""),@(Session["LoginUserRole"].ToString().ToUpper() == "PMGH" ? "active" : ""),@(Session["LoginUserRole"].ToString().ToUpper() == "RMA" ? "active" : "")" id="_TenthTab">
+                @Html.Action("AllZoneForm", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "CTB" || Session["LoginUserRole"].ToString() == "CME Operation")
+        {
+            <div class="container tab-pane fade" id="_EleventhTab">
+                @Html.Action("GetForm", "Home")
+            </div>
+        }
+        @if (Session["LoginUserRole"].ToString().ToUpper() == "CT")
+        {
+            <div class="container tab-pane fade" id="_ThirteenthTab">
+                @Html.Action("PendingVarificationForm", "Home")
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#spanClosed").text(@Session["closedformcount"]);
+        $("#spanDraft").text(@Session["Draftformcount"]);
+        $("#spanInprocess").text(@Session["Inprocessformcount"]);
+        $("#spanRejected").text(@Session["Rejectedformcount"]);
+        $("#spanAttend").text(@Session["Attendformcount"]);
+        $("#spanApproved").text(@Session["Approvedformcount"]);
+        $("#spanRemoved").text(@Session["removedformcount"]);
+        $('input[type=datetime]').datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-10:+1"
+        });
+        $('#home-div input').val('');
+
+    });
+</script>

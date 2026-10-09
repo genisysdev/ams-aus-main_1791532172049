@@ -1,0 +1,106 @@
+﻿@model PagedList.IPagedList<DataAccessLayer.DAL.Model.LecturesView>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "EventList";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<h2 class="section-ttl" style="padding-top:20px;">Event List</h2>
+
+<form asp-action="EventList" method="get" class="search-box">
+    <p>
+        Find by Event: <input id="searchString" class="search-field" name="searchString" type="text" value="@ViewBag.SearchString" />
+        <button type="submit" class="btn add-btn" id="CreateLM">SearchEvent</button>
+    </p>
+</form>
+
+@using (Html.BeginForm("EventList", "Lectures", FormMethod.Post))
+{
+    if (Model.Count == 0)
+    {
+        <br />
+        <h4>No Records Found</h4>
+    }
+    else
+    {
+        <div class="responsible-table">
+            <table class="table">
+                <tr>
+                    <th style="visibility:hidden">
+                        ID
+                    </th>
+                    <th>
+                        @Html.ActionLink("TherapyArea", "EventList", new { sortOrder = ViewBag.SortByTherapyArea })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Brand", "EventList", new { sortOrder = ViewBag.SortByBrand })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Event", "EventList", new { sortOrder = ViewBag.SortByEvent })
+                    </th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="visibility:hidden">
+                            @Html.DisplayFor(modelItem => item.EventId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TherapyAreaName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BrandName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EventName)
+                        </td>
+                        <td class="user-action">
+                            <div class="form-group">
+                                @if (item.IsActive == true)
+                                {
+                                    @Html.CheckBoxFor(modelItem => item.IsActive, new { id = "Active", @checked = "checked", @class = ("active_" + item.EventId) })
+
+                                }
+                                else
+                                {
+                                    @Html.CheckBoxFor(modelItem => item.IsActive, new { id = "Inactive", @class = ("active_" + item.EventId) })
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn add-btn" name="Update" onclick="UpdateDate(@item.EventId)"> Update </button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <br />
+        <div id='Paging' class="paging">
+            <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+            <div class="pagination-container">@Html.PagedListPager(Model, page => Url.Action("EventList", new { sortOrder = ViewBag.SortOrder, page }))</div>
+        </div>
+    }
+}
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/validatemin")'></script>
+<script>
+            function UpdateDate(eventId) {
+                var activeClass = "active_" + eventId;
+                var isactive = $("."+activeClass).prop('checked');
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("EventList", "Lectures")",
+                    data: { id: eventId, active: isactive }
+                });
+            }
+</script>

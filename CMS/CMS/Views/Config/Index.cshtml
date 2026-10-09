@@ -1,0 +1,93 @@
+﻿@*@model PagedList.IPagedList<DataAccessLayer.DAL.Model.AMSConfigViewModel>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Config List";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<h2 class="section-ttl" style="padding-top:20px;">Config List</h2>
+<br />
+<p>
+    <a href="~/Config/Create" class="create-new">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Create New
+    </a>
+</p>
+
+@using (Html.BeginForm("Index", "Config", FormMethod.Post))
+{
+    if (Model.Count == 0)
+    {
+        <br />
+        <h4>No Records Found</h4>
+    }
+    else
+    {
+        <div class="responsible-table">
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>
+                        @Html.ActionLink("Name", "List", new { sortOrder = ViewBag.SortByName })
+                    </th>
+                    <th>Value</th>
+                    <th>
+                        @Html.ActionLink("Description", "List", new { sortOrder = ViewBag.SortByDescription })
+                    </th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td></td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Value)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td class="user-action">
+                            <div class="form-group">
+                                @if (item.Status == true)
+                                {@Html.CheckBox("Checked", true, new { @disabled = "disabled" }) }
+                            else
+                            { @Html.CheckBox("Checked", false, new { @disabled = "disabled" })}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Config", new { name = item.Name })">
+                                <img src="~/Content/Images/edit-icon.svg" alt="Edit" style="width: 24px;" />
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <br />
+        <div id='Paging' class="paging">
+            <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+            <div class="pagination-container">@Html.PagedListPager(Model, page => Url.Action("EventList", new { sortOrder = ViewBag.SortOrder, page }))</div>
+        </div>
+        <script>
+
+            function UpdateDate(eventId) {
+                var activeClass = "active_" + eventId;
+                var isactive = $("."+activeClass).prop('checked');
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("EventList", "Lectures")",
+                    data: { id: eventId, active: isactive }
+                });
+            }
+        </script>
+    }
+}*@

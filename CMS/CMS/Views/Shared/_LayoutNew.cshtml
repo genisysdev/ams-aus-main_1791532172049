@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Activity Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    @*<link rel="stylesheet" href="./style.css">*@
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/StyleOrg.css" rel="stylesheet" />
+    <link href="~/Content/datepicker.min.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        #myDIV {
+            width: 100%;
+            padding: 50px 0;
+            text-align: center;
+            background-color: lightblue;
+            margin-top: 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+        #myDIV {
+            width: 15%;
+            height: 30%;
+            padding: 50px 0;
+            text-align: center;
+            background-color: #001965;
+            margin-top: 20px;
+            position: fixed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-content">
+        <header>
+            <nav class="navigation">
+                <div class="logo">
+                    <img src="~/Content/Images/nn_logo_rgb_White_large.png" />
+                </div>
+                <ul class="navigation__menu" id="mainnav-menu">
+                    <li class="navigation__menu__link @ViewBag.HomeMenu" title="Home">
+                        <a href="@Url.Action("Index", "Home")">
+                            <img src="~/Content/Images/icon white/Dashboard.svg" alt="Home" class="Active-image">
+                            <img src="~/Content/Images/icon blue/Dashboard_1.svg" alt="Home" class="Inactive-image">
+                        </a>
+                    </li>
+                    @if (!string.IsNullOrEmpty(Convert.ToString(Session["LoginUserRole"])) && Session["LoginUserRole"].ToString().ToUpper() == "ADMIN")
+                    {
+                        <li class="navigation__menu__link dropdown @ViewBag.AdminMenu" title="Home">
+                            <a href="#">
+                                <img src="~/Content/Images/icon white/Admin.svg" alt="Administration" class="Active-image">
+                                <img src="~/Content/Images/icon blue/Admin_1.svg" alt="Administration" class="Inactive-image">
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="@ViewBag.UserMenu">
+                                    <a href="@Url.Action("Index", "User")">Users</a>
+                                </li>
+                                <li class="@ViewBag.FunctionalMenu">
+                                    <a href="@Url.Action("Index", "Profile")">Role Mapping</a>
+                                </li>
+                                <li class="@ViewBag.FunctionalMapMenu">
+                                    <a href="@Url.Action("Index", "ProfileMap")">User Mapping</a>
+                                </li>
+                                <li class="@ViewBag.LectureMenu">
+                                    <a href="@Url.Action("Index", "Lectures")">Activity Material</a>
+                                </li>
+                                <li class="@ViewBag.EventMenu">
+                                    <a href="@Url.Action("EventList", "Lectures")">Event List</a>
+                                </li>
+                                <li class="@ViewBag.UserMenu">
+                                    <a href="@Url.Action("ImportExcel", "User")">Update Cost Center</a>
+                                </li>
+                                @*<li class="@ViewBag.ConfigMenu">
+                                    <a href="@Url.Action("Index", "Config")">Config List</a>
+                                </li>*@
+                                <li class="@ViewBag.CostCenterMenu">
+                                    <a href="@Url.Action("Index", "CTCostCentre")">CT Cost center Mapping</a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (Session["LoginUserRole"].ToString().ToUpper() == "SR" || Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "SM" || Session["LoginUserRole"].ToString().ToUpper() == "KAM" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+                    {
+                        <li class="navigation__menu__link" @ViewBag.CMSMenu title="PAF Create">
+                            <a href="@Url.Action("Index", "CMENew")">
+                                <img src="~/Content/Images/icon white/PAF.svg" alt="New PAF" class="Active-image">
+                                <img src="~/Content/Images/icon blue/PAF_1.svg" alt="New PAF" class="Inactive-image">
+                            </a>
+                        </li>
+                    }
+                    @*@if (Session["LoginUserRole"].ToString().ToUpper() == "CT" || Session["LoginUserRole"].ToString().ToUpper() == "CTB")
+                    {
+                        <li class="navigation__menu__link @ViewBag.CMSPaymentMenu" title="SAP Report">
+                            <a href="@Url.Action("CMEPaymentDownload", "CMEPayment")">
+                                <img src="~/Content/Images/icon white/Report.svg" alt="Report" class="Active-image">
+                                <img src="~/Content/Images/icon blue/Report_1.svg" alt="Report" class="Inactive-image">
+                            </a>
+                        </li>
+                    }*@
+                    @if (!string.IsNullOrEmpty(Convert.ToString(Session["LoginUserRole"])) && (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "CT"))
+                    {
+                        <li class="navigation__menu__link @ViewBag.HCPListMenu" title="HCP List">
+                            <a href="@Url.Action("Index", "HCPList")">
+                                <img src="~/Content/Images/icon white/HCP.svg" alt="HCP Master" class="Active-image">
+                                <img src="~/Content/Images/icon blue/HCP_1.svg" alt="HCP Master" class="Inactive-image">
+                            </a>
+                        </li>
+                    }
+                    @*@if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN" || Session["LoginUserRole"].ToString().ToUpper() == "CT")
+                    {
+
+                        <li class="navigation__menu__link dropdown @ViewBag.ReportMenu">
+                            <a href="#">
+                                <img src="~/Content/Images/icon white/Report.svg" alt="Report" class="Active-image">
+                                <img src="~/Content/Images/icon blue/Report_1.svg" alt="Report" class="Inactive-image">
+
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="@ViewBag.PAFReportMenu" title="Report">
+                                    <a href="@Url.Action("Index", "Report")">Report</a>
+                                </li>
+                                @if (Session["LoginUserRole"].ToString().ToUpper() == "ADMIN")
+                                {
+                                    <li class="@ViewBag.UserMenu">
+                                        <a href="@Url.Action("CMEPaymentDownload", "CMEPayment")">SAP download</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }*@
+                    @if (Session["IsSuperAdmin"].ToString().ToUpper() == "YES")
+                    {
+                        <li class="navigation__menu__link" title="Switch To Admin">
+                            <a href="@Url.Action("SwitchToAdmin", "Home")">
+                                <img src="~/Content/Images/icon white/Admin.svg" alt="Administrator" class="Active-image">
+                                <img src="~/Content/Images/icon blue/Admin_1.svg" alt="Administrator" class="Inactive-image">
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </header>
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-8 mb-1 welcome-user">
+                    <h1>Hi @Session["LoginUserName"].ToString(), Welcome back</h1>
+
+                </div>
+                <div class="col-md-4 mb-1 d-flex align-items-center justify-content-md-end">
+                    <div class="user-logout">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown">
+                                <span>@Session["TestingInitial"].ToString()</span>
+                                @Session["LoginUserName"].ToString()
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <a class="dropdown-item" href="javascript:void(0);">Position: @Session["LoginUserPosition"].ToString()</a>
+                                <a class="dropdown-item" href="javascript:void(0);">Manager Initial: @Session["LoginUserManager"].ToString()</a>
+                                <a class="dropdown-item" href="javascript:void(0);">Initial: @Session["TestingName"].ToString()</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                @RenderBody()
+                <footer>
+                    <br /><br />
+                    <p>&copy; @DateTime.Now.Year - Activity Management System</p>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        //active class
+        function setNavigation() {
+            var path = window.location.pathname;
+            path = path.replace(/\/$/, "");
+            path = decodeURIComponent(path);
+            //path = path.split('/')[2];
+
+
+
+            $("#mainnav-menu li a").each(function () {
+                var href = $(this).attr('href');
+                $(this).parents('li').removeClass('active-link');
+                //href = href.split('/')[2];
+                if (path === href) {
+                    if ($(this).parents('#mainnav-menu').length >= 1) {
+                        $(this).parents('li').addClass('active-link');
+                        //$(this).parents(".has-menu").addClass('active');
+                        //$(this).parents('.has-menu').last().addClass('activeparents');
+                    }
+                    else {
+                        $(this).addClass('activeparents');
+                        $(this).parents('li').addClass('activeparents');
+                    }
+
+
+
+
+                }
+            });
+        }
+
+
+        setNavigation();
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        $(window).load(function () {
+            $('#dropdownMenuButton1').click(function () {
+                $(this).$('.dropdown').toggleClass('show');
+                $(this).$('.dropdown-menu').toggleClass('show')
+            })
+        })
+    </script>
+</body>
+
+</html>

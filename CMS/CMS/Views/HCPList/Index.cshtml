@@ -1,0 +1,129 @@
+﻿@model PagedList.IPagedList<DataAccessLayer.DAL.Model.HCPViewModel>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "HCP Master";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">HCP Master</h2>
+<p>
+    <a href="~/HCPList/Create" class="create-new">
+        Create / Update HCP
+    </a>
+</p>
+<div class="contentcolor">
+    @using (Html.BeginForm("Index", "HCPList", FormMethod.Get, new { role = "form" }))
+    {
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-2">
+                <div class="form-controls position-relative">
+                    <label> Find by name</label>
+                    <input id="searchString" class="search-field" name="searchString" type="text" value="@ViewBag.SearchString" />
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="form-controls position-relative">
+                    <label>Find by Coupa Number</label>
+                    <input id="searchStringCN" class="search-field" name="searchStringCN" type="text" value="@ViewBag.SearchCN" />
+                </div>
+            </div>
+        </div>
+        <fieldset class="form-columns-2 col4-label-ht">
+            <div class="form-group">
+                <input type="submit" class="btn add-btn" value="Search" />&nbsp; &nbsp;
+                <button type="submit" class="btn add-btn" formaction=@Url.Action("Reset") formmethod="post">Reset</button>
+            </div>
+        </fieldset>
+    }
+</div>
+
+<div style="padding-top:15px;">
+    <div class="contentcolor">
+        @if (Model.Count == 0)
+        {
+            <br />
+            <h4>No Records Found</h4>
+        }
+        else
+        {
+            <div>
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                    <tr>
+                        <th style="display:none">
+                            ID
+                        </th>
+                        <th>
+                            @Html.ActionLink("Vendor Number", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByVendor })
+                        </th>
+                        <th>
+                            @Html.ActionLink("TMF Number", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByTMF })
+                        </th>
+                        <th>
+                            @Html.ActionLink("First Name", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByFName })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Last Name", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByLName })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Therapy Area", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByWorkUnit })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Coupa Number", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByCoupaNumber })
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="display:none">
+                                @Html.DisplayFor(modelItem => item.ID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VendorNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TMFNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TAName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CMSNo)
+                            </td>
+                            <td class="user-action">
+                                <a href="@Url.Action("Delete", "HCPList", new { id = item.ID })" onclick="return Submit();">
+                                    <img src="~/Content/Images/trash-icon.svg" alt="Delete" style="width:20px" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+            </div>
+            <br />
+            <div id='Paging' class="paging">
+                <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+                <div class="pagination-container">@Html.PagedListPager(Model, page => Url.Action("Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortOrder, page }))</div>
+            </div>
+
+            <script type="text/javascript">
+                function Submit() {
+                    if (confirm("Are you sure you want to delete record?")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            </script>
+        }
+
+    </div>
+</div>

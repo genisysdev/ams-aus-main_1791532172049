@@ -1,0 +1,48 @@
+﻿@*@model CME.Models.ConfigViewModel
+
+@{
+    ViewBag.Title = "Update Config Details";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Update Config Detail</h2>
+
+@using (Html.BeginForm("Edit", "Config", FormMethod.Post, new { role = "form" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Name</label>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", maxlength = 250, placeholder = "Name", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Value <span class="mandatory-field">*</span></label>
+                        @Html.TextBoxFor(m => m.Value, new { @class = "form-control", maxlength = 1000, placeholder = "Value" })
+                        @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label>Status <span class="mandatory-field">*</span></label>
+                    @Html.CheckBoxFor(m => m.Status)
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Description <span class="mandatory-field" id="mandatory_error">*</span></label>
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control textarea", id = "Rcomment" })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group" style="position: relative; left: 9px; top: 13px;">
+                    <button type="submit" class="btn add-btn" id="UpdateLM">Update</button>
+                    <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "Config")'" />
+                </div>
+            </div>
+        </div>
+    </div>
+}*@

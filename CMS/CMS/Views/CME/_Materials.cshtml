@@ -1,0 +1,16 @@
+﻿@model CME.Models.CMEViewModel
+
+<body>
+    <div>
+        @if (Model.LMFiles != null && Model.LMFiles.Count() > 0)
+        {
+            foreach (var aa in Model.LMFiles)
+            {
+                <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = aa.DocName, filePath = aa.DocPath })">
+                    @aa.DocName
+                </a>
+                <br />
+            }
+        }
+    </div>
+</body>

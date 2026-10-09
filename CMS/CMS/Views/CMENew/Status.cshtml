@@ -1,0 +1,759 @@
+﻿@model DataAccessLayer.DAL.Model.CMEDetails
+
+@{
+    ViewBag.Title = "Meeting Details Status";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/validatemin")'></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+@using (Html.BeginForm("Status", "CMENew", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div>
+
+        <p style="font-size:28px"><b>Meeting Details</b></p>
+        <br />
+        <!-- Buttons -->
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-2">
+                <div style="float:right;">
+                    @if ((Model.RequestType == "Send" || Model.RequestType == "Approved by SM" || ((Model.RequestType == "Approved by RBD") && (Model.IsBTC == true)) || Model.RequestType == "Send to RBD") && (Model.Login_User_role_name == "SR" || Model.Login_User_role_name == "SM" || Model.Login_User_role_name == "CT" || Model.Login_User_role_name == "KAM") && (Model.IssuedBy == Model.Login_User_id))
+                    {
+                        <input type="button" id="btnSave" class="btn add-btn" name="command" value="Recall" onclick="location.href='@Url.Action("RecallPAF","CMENew", new { id = Model.Form_ID })'" />
+                    }
+                    @if ((Model.Login_User_role_name == "CT" || Model.Login_User_role_name == "CTB" || Model.Login_User_role_name == "Admin") && (Model.RequestType == "Payment requested"))
+                    {
+                        <input type="button" id="btnResend" class="btn add-btn" name="command" value="Resend" onclick="SubmitResend();" />
+                    }
+                    @if ((Model.RequestType == "Approved by SM" || Model.RequestType == "Send to CTB" || Model.RequestType == "Approved by SR" || Model.RequestType == "Approved by CME Operation") && (Model.Login_User_role_name == "SM" || Model.Login_User_role_name == "CT" || Model.Login_User_role_name == "RBD" || Model.Login_User_role_name == "CME Operation"))
+                    {
+                        //cancelation by approver
+                        <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                    }
+                    @if ((Model.RequestType == "Approved by SM" && (Model.Login_User_role_name == "SR" || Model.Login_User_role_name == "KAM")) || ((Model.RequestType == "Send to RBD") && (Model.Login_User_role_name == "SM")))
+                    {
+                        //cancelation by Requester
+                        <input type="button" id="btnRemovePAF" class="btn add-btn" name="command" value="Cancel Event" onclick="SubmitCancel();" />
+                    }
+                    <button type="submit" id="btnPrint" class="btn add-btn" name="command" value="Print" formaction=@Url.Action("Print","CME", new { id = Model.Form_ID }) formmethod="post">Print</button>
+                    <button type="submit" id="btndownloadall" class="btn add-btn" name="command" value="Downloadall" formaction=@Url.Action("DownloadAll", new { id = Model.Form_ID }) formmethod="post">Download All Documents</button>
+
+                    @if ((Model.Login_User_role_name == "CT" || Model.Login_User_role_name == "CTB" || Model.Login_User_role_name == "Admin") && (Model.RequestType == "Approved by CME Operation" || Model.RequestType == "Approved by RBD" || Model.RequestType == "Approved by RBD1" || Model.RequestType == "Approved by RBD2" || Model.RequestType == "Send to CTB"))
+                    {
+                        <button type="submit" id="btndownloadinv" class="btn add-btn" name="command" value="DownloadInv" formaction=@Url.Action("DownloadInv", new { id = Model.Form_ID }) formmethod="post">Download HCP Invoice</button>
+                    }
+                    @if ((Model.Login_User_role_name == "CT" || Model.Login_User_role_name == "CTB" || Model.Login_User_role_name == "Admin") && (Model.RequestType == "Payment requested"))
+                    {
+                        <button type="submit" id="btndownloadchln" class="btn add-btn" name="command" value="Challan" formaction=@Url.Action("Challan", new { id = Model.Form_ID }) formmethod="post">HCP Challan</button>
+                        <button type="submit" id="btndownloadinv" class="btn add-btn" name="command" value="Verified" formaction=@Url.Action("Paymentverification", new { id = Model.Form_ID }) formmethod="post">Verified</button>
+                    }
+                    <button type="submit" id="btnCancel" class="btn add-btn" name="command" value="Cancel">Back</button>
+                </div>
+
+            </div>
+        </div>
+
+        <br>
+        <!-- Nav tabs -->
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-2">
+                <div class="tabs">
+                    <ul id="apptabs" class="nav nav-tabs" role="tablist">
+                        <li id="PD" class="nav-item">
+                            <a class="nav-link active navlink" data-toggle="tab" href="#Nav1">PAF Details</a>
+                        </li>
+                        <li id="PHCP" class="nav-item">
+                            <a class="nav-link navlink TabDisplay1" data-toggle="tab" href="#Nav2">HCP List</a>
+                        </li>
+                        <li id="PC" class="nav-item">
+                            <a class="nav-link navlink TabDisplay2" data-toggle="tab" href="#Nav3">Cost </a>
+                        </li>
+                        <li id="PA" class="nav-item">
+                            <a class="nav-link navlink TabDisplay3" data-toggle="tab" href="#Nav4">PAF Approval Status & Comments</a>
+                        </li>
+                        <li id="PA" class="nav-item">
+                            <a class="nav-link navlink TabDisplay3" data-toggle="tab" href="#Nav5">Attachments</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.HCPs)
+        <div class="tab-content contentcolor">
+            <div id="Nav1" class="container tab-pane active">
+                @if (Model.IsDateDeviation == true)
+                {
+                    if (Model.Policy_Violation == true)
+                    {
+                        <label style="color:red;font-size:17px; padding-left: 350px;"><b>Critical policy violation</b></label>
+                    }
+                    else
+                    {
+                        <label style="color:#d11313;font-size:17px; padding-left: 350px;"><b>Acceptable policy violation</b></label>
+                    }
+                }
+                <div class="user-details">
+                    @if (Model.RequestType == "Closed" || Model.RequestType == "Approved by CME Operation" || Model.RequestType == "Payment requested")
+                    {
+                        if (Model.RequestType == "Closed" || Model.RequestType == "Payment requested")
+                        {<label style="color:red;font-size:17px;"> Form is closed on <span style="color:red;font-size:17px;">@Html.DisplayFor(model => model.ModifiedDate)</span> </label>
+                    }
+                    if (Model.IsDownloadSapFile == true)
+                    {
+                        <label style="color:red;font-size:17px;padding-left: 370px;">
+                            Payment Made - @if (Model.IsDownloadSapFile == true)
+                            {<span style="color:red;font-size:17px;">Yes</span>}
+                            else
+                            { <span style="color:red;font-size:17px;">No</span>}
+                        </label>
+                    }
+                    else
+                    { <label style="color:red;font-size:17px;padding-left: 370px;">
+                            Payment Made - <span style="color:red;font-size:17px;">No</span>
+                        </label>
+                    }
+                }
+                </div>
+
+                <br />
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Issued By<br /> <span class="Details-span">@Html.DisplayFor(model => model.Issued_By_Initial)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Issued Date<br /> <span class="Details-span">@Html.DisplayFor(model => model.IssuedDate)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Form ID<br /><span class="Details-span">@Session["PAFChar"]@Html.DisplayFor(model => model.Form_ID)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Approver(s)<br /> <span class="Details-span">@Html.DisplayFor(model => model.Approver)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Hospital Meeting<br />
+                            @if (Model.HospitalMeeting == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>CME Type<br /><span class="Details-span">@Html.DisplayFor(model => model.CME_Type)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Brand/Event/Lecture<br />
+                            @if (Model.CME_Type.ToLower() == "standard meeting")
+                            {
+                                if (Model.LectureName == "")
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(model => model.BrandName) / @Html.DisplayFor(model => model.EventName)</span>
+                                }
+                                else
+                                {
+                                    <span class="Details-span">@Html.DisplayFor(model => model.BrandName) / @Html.DisplayFor(model => model.EventName) / @Html.DisplayFor(model => model.LectureName) </span>
+                                }
+                            }
+                            else
+                            { <span>N/A</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Activity Name<br />
+                            @if (Model.CME_Type.ToLower() == "standard meeting")
+                            {<span class="Details-span">N/A</span> }
+                            else
+                            { <span class="Details-span">@Html.DisplayFor(model => model.ActivityName)</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Virtual<br />
+                            @if (Model.IsVirtual == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        @if (Model.CME_Type.ToLower() == "non-standard meeting" && Model.DiseaseArea_Type != null)
+                        {<label>Disease Area<br /> <span class="Details-span">@Html.DisplayFor(model => model.DiseaseArea_Type)</span></label>}
+                    else
+                    { <label></label>}
+                    </div>
+                    <div> <label></label></div>
+                    <div> <label></label></div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Activity Start Date<br /><span class="Details-span">@Html.DisplayFor(m => m.ActivityStartDate)</span> </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Activity End Date<br /><span class="Details-span">@Html.DisplayFor(m => m.ActivityEndDate)</span> </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Number of Days<br /> <span class="Details-span">@Html.DisplayFor(m => m.NumberofDays)</span></label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Proposed number of attendee(s)<br /><span class="Details-span">@Html.DisplayFor(m => m.Proposednumberofattendee)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>Minimum number of guarantee<br /><span class="Details-span">@Html.DisplayFor(m => m.Minimumnumberofgaurantee)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>City<br /> <span class="Details-span">@Html.DisplayFor(m => m.CityName)</span></label>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Venue/Hotel<br /> <span class="Details-span">@Html.DisplayFor(m => m.Venu_Hotel)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            5 Star Hotel?<br />
+                            @if (Model.Hotel_Star == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Meeting type<br /> <span class="Details-span">@Html.DisplayFor(m => m.MeetingTypeName)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            BTC Status<br />
+                            @if (Model.IsBTC == true)
+                            {<span class="Details-span">Yes</span>}
+                            else
+                            { <span class="Details-span">No</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Work Unit<br />
+                            @if (Model.WorkUnitName == null)
+                            {<span class="Details-span">N/A</span>}
+                            else
+                            { <span class="Details-span">@Html.DisplayFor(m => m.WorkUnitName)</span>}
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Actual Number of attendees<br />
+                            @if (Model.Actual_Attendees == null)
+                            {
+                                <span class="Details-span">N/A</span>
+                            }
+                            else
+                            {
+                                <span class="Details-span">@Html.DisplayFor(m => m.Actual_Attendees)</span>
+                            }
+                        </label>
+                    </div>
+                </div>
+            </div>
+           
+            <div id="Nav2" class="container tab-pane fade">
+
+                @if (Model.HCPs.Count > 0)
+                {
+
+                    <h6 style="text-align:left;">HCP List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>PAN</th>
+                            <th>Topic</th>
+                            <th>Cost</th>
+
+                        </tr>
+                        @foreach (var item in Model.HCPs)
+                        {
+                            var fileupload1 = "file_" + Convert.ToString(item.Id);
+                            var lablel = "Invoice of " + Convert.ToString(item.Name);
+                            @Html.HiddenFor(modelItem => item.Id, new { id = "hdn1" })
+                            <tr>
+                                <td><b>@Html.DisplayFor(modelItem => item.Name)</b></td>
+                                @if (item.HCPAddress != null)
+                                {
+                                    <td id="Hcpaddress" class="hcp-cost-to-add">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+ }
+                                else
+                                {
+                                    <td></td>
+}
+                                @if (item.PAN != "0000000000")
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+}
+                                else
+                                {
+                                    <td></td>
+}
+                                <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                @if (item.Cost != 0)
+                                {
+                                    <td style="text-align:right;">@Html.DisplayFor(modelItem => item.Cost)</td>
+ }
+                                else
+                                {
+                                    <td></td>
+}
+                            </tr>
+                            if ((Model.RequestType == "Approved by CME Operation") || (Model.RequestType == "Approved by RBD" && Model.IsVirtual == true) || (Model.RequestType == "Approved by RBD" && Model.IsBTC == false))
+                            {
+                                if (item.Invoice_No != null)
+                                {
+                                    <tr>
+                                        <td><label><b>Invoice No:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Invoice_No)</span></td>
+
+                                        <td><label><b>Invoice Date:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Invoice_Date)</span></td>
+
+                                        <td><label><b>Net Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Net_Amount)</span></td>
+
+                                        <td><label><b>Tax Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Tax_Amount)</span></td>
+
+                                        <td><label><b>Total Amount:</b></label><br /><span>@Html.DisplayFor(modelItem => item.Total_Amount)</span></td>
+
+                                    </tr>
+                                }
+                            }
+                        }
+
+                        @{
+                            var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                            if (sum != "0.00")
+                            {
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Total cost</b></td>
+                                    <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+
+                                </tr>
+                            }
+                        }
+                    </table>
+                }
+
+
+                @if (Model.Participants != null && Model.Participants.Count > 0)
+                {
+                    <h6 style="text-align:left;">Participant List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+
+                            <th>Name</th>
+                            <th>PAN Number</th>
+                            <th>Email ID</th>
+                            <th>Phone Number</th>
+                            <th>Customer ID</th>
+
+                        </tr>
+                        @foreach (var item in Model.Participants)
+                        {
+                            <tr>
+
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email_Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Phone_Number)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Customer_ID)</td>
+
+                            </tr>
+                        }
+                    </table>
+                }
+            </div>
+           
+            <div id="Nav3" class="container tab-pane fade">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Estimated Cost<br /><span class="Details-span">@Html.DisplayFor(m => m.TotalCost)</span></label>
+                    </div>
+
+                    <div class="col-md-8 mb-2">
+                        <label>
+                            Final CME expenses (Excluding Speaker Honorarium and Cab expenses)<br />
+                            @if (Model.Final_CME_Expenses == null)
+                            {
+                                <span class="Details-span">N/A</span>
+                            }
+                            else
+                            {
+                                <span class="Details-span">@Html.DisplayFor(m => m.Final_CME_Expenses)</span>
+                            }
+                        </label>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-2">
+                        <label>Room rate(if accommodation provided)<br /><span class="Details-span">@Html.DisplayFor(m => m.Roomrate)</span></label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Banquet room rate<br /><span class="Details-span">
+                                @Html.DisplayFor(m => m.Banquetroomrate)
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label>
+                            Cost Per PAX<br /><span class="Details-span">
+                                @Html.DisplayFor(m => m.CostPerPAX)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                @if (Model.Miscellaneous.Count > 0)
+                {
+                    <h6 style="text-align:left;">Miscellaneous</h6>
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost</th>
+                        </tr>
+                        @foreach (var item in Model.Miscellaneous)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Cost)</td>
+                            </tr>
+                        }
+                    </table>
+                }
+                @if (Model.HCPs.Count > 0)
+                {
+
+                    <h6 style="text-align:left;">HCP List</h6>
+
+                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>PAN</th>
+                            <th>Topic</th>
+                            <th>Cost</th>
+
+                        </tr>
+                        @foreach (var item in Model.HCPs)
+                        {
+                            <tr>
+
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                @if (item.HCPAddress != null)
+                                {
+                                    <td id="Hcpaddress" class="hcp-cost-to-add">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+ }
+                                else
+                                {
+                                    <td></td>
+}
+                                @if (item.PAN != "0000000000")
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+}
+                                else
+                                {
+                                    <td></td>
+}
+                                <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                @if (item.Cost != 0)
+                                {
+                                    <td style="text-align:right;">@Html.DisplayFor(modelItem => item.Cost)</td>
+ }
+                                else
+                                {
+                                    <td></td>
+}
+                            </tr>
+                        }
+                        @{
+                            var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                            if (sum != "0.00")
+                            {
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Total cost</b></td>
+                                    <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+
+                                </tr>
+                            }
+                        }
+
+                    </table>
+                }
+            </div>
+           
+            <div id="Nav4" class="container tab-pane fade">
+                <fieldset class="comments">
+                    @if ((Model.RequestType == "Payment requested") && (Model.Login_User_role_name == "CT"))
+                    {
+                        <div class="row align-items-center">
+
+                            <div class="col-md-12 mb-2 ">
+                                <div class="form-controls position-relative">
+                                    <label>Comments <span class="mandatory-field" id="mandatory_error">*</span></label>
+                                    @Html.TextAreaFor(m => m.Comment, new { @class = "form-control textarea", id = "Rcomment" })
+                                    @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                                    <span class="text-danger" id="eDRcomment">@TempData["RejectComment"]</span>
+                                    <span class="text-danger" id="name_error"></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <h6 style="text-align:left;">PAF Form Comments</h6>
+                    @if (Model.Comments.Count > 0)
+                    {
+
+
+                        <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                            <tr>
+
+                                <th>Initial</th>
+                                <th>Date</th>
+                                <th>Comment</th>
+                            </tr>
+                            @foreach (var item in Model.Comments)
+                            {
+                                <tr>
+
+                                    <td>@Html.DisplayFor(modelItem => item.Initial)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Comment)</td>
+                                </tr>
+                            }
+                        </table>
+
+                    }
+                </fieldset>
+
+                <h6 style="text-align:left;">PAF Form Approval Status</h6>
+                @if (Model.PAFTransactions.Count > 0)
+                {
+
+                    <table cid="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                        <tr>
+
+                            <th>Initial</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                        @foreach (var item in Model.PAFTransactions)
+                        {
+                            <tr>
+
+                                <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                                @if (item.RequestType == "Delete")
+                                {
+                                    item.RequestType = "Cancelled";
+                                    <td>@Html.DisplayFor(modelItem => item.RequestType)</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.DisplayFor(modelItem => item.RequestType)</td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                            </tr>
+                        }
+                    </table>
+
+                }
+
+            </div>
+           
+            <div id="Nav5" class="container tab-pane fade">
+
+
+                <table id="dtBasicExample" class="table table-striped table-bordered table-sm table-style" cellspacing="0" width="100%">
+                    @if (Model.ImagePath.Count() > 0)
+                    {
+                        <tr>
+                            <th>Attachement type</th>
+                            <th>Files</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">Attachments</td>
+                            <td>
+                                @foreach (var image in Model.ImagePath)
+                                {
+                                    if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                                    {
+                                        string path = ViewBag.Website + image.SavedDocName;
+                                        <br />
+                                        <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                            <i class="fa fa-download fa-3"></i>
+                                            <span>@image.DocName</span>
+                                        </a>
+                                    }
+                                    else if (@image.Extension.ToLower() == ".pdf")
+                                    {
+                                        string path = ViewBag.Website + image.SavedDocName;
+                                        <br />
+                                        <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                            <div class="upload-item">
+                                                <i class="fa fa-download fa-3"></i>
+                                                <span>@image.DocName</span>
+                                            </div>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        string path = ViewBag.Website + image.SavedDocName;
+                                        <br />
+                                        <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF/" + image.SavedDocName })">
+                                            <i class="fa fa-download fa-3"></i>
+                                            <span>@image.DocName</span>
+                                        </a>
+                                    }
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                    @if (Model.LMFiles != null && Model.LMFiles.Count() > 0)
+                    {
+                        <tr>
+                            <td style="text-align:left;" id="fileAttachmentsLM">Activity Material Attachments</td>
+                            <td>
+                                @foreach (var image in Model.LMFiles)
+                                {
+                                    string path = ViewBag.Website + image.SavedDocName;
+                                    <br />
+                                    <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = image.DocName, filepath = image.DocPath })">
+                                        <i class="fa fa-download fa-3"></i>
+                                        <span>@image.DocName</span>
+                                    </a>
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.AssessmentDocName != null)
+                    {
+                        <tr>
+                            <td style="text-align:left;" id="fileAttachmentsLM">Assessment Attachments</td>
+                            <td>
+                                @{
+                                    string path = ViewBag.Website + Model.AssessmentDocPath;
+                                    <br />
+                                    <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = Model.AssessmentDocName, filePath = Model.AssessmentDocPath})">
+                                        <i class="fa fa-download fa-3"></i>
+                                        <span>@Model.AssessmentDocName</span>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+function SubmitCancel() {
+        if ($('form').valid())
+        {
+            if (confirm("Are you sure you want send the form for Cancellation?"))
+            {
+                true;
+            } else {
+              return  false;
+            }
+            if (true) {
+                var id1 = '@Model.Form_ID'
+                var id = parseInt(id1)
+                $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CancelEvent")',
+                data: { id: id },
+                dataType: 'json',
+                success: function (result) {
+                if (result == 1) {
+                //window.location.href = "/Home/Index";
+                    window.location.href = "@Url.Action("Index", "Home")";
+                }
+                else {
+                //window.location.href = "/CME/Details/" + id;
+                    window.location.href = "@Url.Action("Details", "CME")?id=" + id;
+                }
+                }
+                })
+            }
+        }
+}
+
+    function SubmitResend() {
+            if (confirm("Are you sure you want send the form for Resend?"))
+            {
+                true;
+            } else {
+              return  false;
+        }
+
+        if (true) {
+            var comments = $("#Rcomment").val();
+            if (comments == "") {
+                nameError = "* Please enter comment";
+                $('.nav-tabs li:eq(3) a').tab('show');
+                $('#eDRcomment').text(' ');
+                document.getElementById("name_error").innerHTML = nameError;
+                document.getElementById("Rcomment").focus();
+                mandatoryerror = "*"
+                document.getElementById("mandatory_error").innerHTML = mandatoryerror;
+                return false;
+            }
+            else {
+                var id1 = '@Model.Form_ID'
+                var id = parseInt(id1)
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ReSendPAF")',
+                    data: { id: id, Comment: comments },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+                            //window.location.href = "/Home/Index";
+                            window.location.href = "@Url.Action("Index", "Home")";
+                        }
+                        else {
+                            //window.location.href = "/CMENew/Status/" + id;
+                            window.location.href = "@Url.Action("Status", "CMENew")?id=" + id;
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>

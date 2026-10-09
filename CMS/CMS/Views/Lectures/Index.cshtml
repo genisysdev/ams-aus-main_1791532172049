@@ -1,0 +1,209 @@
+﻿@model DataAccessLayer.DAL.Model.LecturesViewModel
+
+@{
+    ViewBag.Title = "Activity Material List";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<h2 class="section-ttl" style="padding-top:20px;">Activity Material List</h2>
+<div class=" hcpheader">
+    <h3 class="section-ttl" style="padding-top:20px;"><b>Search</b></h3>
+    <a href="~/Lectures/Create" class="create-new">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Create New
+    </a>
+</div>
+@using (Html.BeginForm("Index", "Lectures", FormMethod.Post, new { role = "form" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Therapy Area</label>
+                        @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a Therapy Area -", new { @class = "form-control", id = "ddTherapyArea" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Brand</label>
+                        @Html.DropDownListFor(model => model.SelectedBrand, new SelectList(string.Empty, "Value", "Text"), "- Please select a Brand -", new { @class = "form-control", id = "ddBrand" })
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-controls position-relative">
+                        <label>Event</label>
+                        @Html.DropDownListFor(model => model.SelectedEvent, new SelectList(string.Empty, "Value", "Text"), "- Please select a Event -", new { @class = "form-control", id = "ddEvent" })
+                        @Html.HiddenFor(m => m.SelectedEvent[0])
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Lecture Name</label>
+                        <input id="searchString" class="search-field" name="searchString" type="text" value="@ViewBag.SearchString" placeholder="Name" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <a href="~/Lectures/Event" class="create-new">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Add New Event
+                    </a>
+                </div>
+                <div class="col-md-4 mb-2">
+
+                </div>
+                <br /><br />
+                <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                    <button type="submit" class="btn add-btn" tabindex="7" formaction=@Url.Action("Index") formmethod="post">Search</button>&nbsp;&nbsp;
+                    <button type="submit" class="btn add-btn" tabindex="8" formaction=@Url.Action("EditEvent") formmethod="get">Edit Event</button>&nbsp;&nbsp;
+                    <button type="submit" class="btn add-btn" tabindex="9" formaction=@Url.Action("DeleteEvent") formmethod="post">Delete Event</button>&nbsp;&nbsp;
+                    <button type="submit" class="btn add-btn" tabindex="10" formaction=@Url.Action("Reset") formmethod="post">Reset</button>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <span class="text-danger" style="font-size:medium">@TempData["selectEvent"]</span>
+                    <span class="text-danger" style="font-size:medium">@TempData["eventDelete"]</span>
+                    <span class="text-danger" style="font-size:medium">@TempData["eventDeletecount"]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Lectures.Count == 0)
+{
+    <br />
+    <h4>No Records Found</h4>
+}
+else
+{
+    <div class="responsible-table">
+        <table class="table">
+            <tr>
+                <th style="visibility:hidden">
+                    ID
+                </th>
+                <th>
+                    @Html.ActionLink("Brand", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByBrand })
+                </th>
+                <th>
+                    @Html.ActionLink("Event", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByEvent })
+                </th>
+                <th>
+                    @Html.ActionLink("Lecture", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByLecture })
+                </th>
+                <th>
+                    @Html.ActionLink("Package Type", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByPackage })
+                </th>
+                <th>
+                    @Html.ActionLink("Status", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.SortByStatus })
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.Lectures)
+            {
+                <tr>
+                    <td style="visibility:hidden">
+                        @Html.DisplayFor(modelItem => item.ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BrandName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EventName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Lecture)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PackageTypeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+
+                    <td class="user-action">
+                        <a href="@Url.Action("Edit", "Lectures", new { id = item.ID })">
+                            <img src="~/Content/Images/edit-icon.svg" alt="Edit" />
+                        </a> |
+                        <a href="@Url.Action("Delete", "Lectures", new { id = item.ID })" onclick="return Submit();">
+                            <img src="~/Content/Images/trash-icon.svg" alt="Delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        function Submit() {
+            if (confirm("Are you sure you want to delete record?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        $("#ddTherapyArea").change(function () {
+    $("#ddBrand").empty();
+    $.ajax({
+        type: 'POST',
+        url: '@Url.Action("GetBrandByTAId")',
+        dataType: 'json',
+        data: { id: $("#ddTherapyArea").val() },
+        success: function (brands) {
+            $("#ddBrand").append('<option value="">- Please select a Brand -</option>');
+            $.each(brands, function (i, brand) {
+                $("#ddBrand").append('<option value="' + brand.Value + '">' + brand.Text + '</option>');
+            });
+        },
+        error: function (ex) {
+            alert('Failed to retrieve brands: ' + ex);
+        }
+    });
+    return false;
+});
+
+        $("#ddBrand").change(function () {
+            populateEventsByBrandId();
+        });
+
+        if ($("#ddBrand").val() !== "") {
+            populateEventsByBrandId();
+        }
+                });
+
+        function populateEventsByBrandId() {
+    $("#ddEvent").empty();
+
+    var brandId = $("#ddBrand").val();
+    if (brandId === "") {
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '@Url.Action("GetEventsByBrandId")',
+        dataType: 'json',
+        data: { id: brandId },
+        success: function (events) {
+            $("#ddEvent").append('<option value="">- Please select an Event -</option>');
+            $.each(events, function (i, event) {
+                $("#ddEvent").append('<option value="' + event.Value + '">' + event.Text + '</option>');
+            });
+        },
+        error: function (ex) {
+            alert('Failed to retrieve events: ' + ex);
+        }
+    });
+}
+    </script>
+}

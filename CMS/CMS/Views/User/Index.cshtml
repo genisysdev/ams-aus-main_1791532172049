@@ -1,0 +1,170 @@
+﻿@model PagedList.IPagedList<CME.Models.UserViewModel>
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<h2 class="section-ttl" style="padding-top:20px;">User Management</h2>
+
+<div class=" hcpheader">
+    <h3 class="section-ttl" style="padding-top:20px;"><b>Search</b></h3>
+    <a href="~/User/Create" class="create-new">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Create New User
+    </a>
+</div>
+
+@using (Html.BeginForm("Index", "User", FormMethod.Post, new { role = "form" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Search Initial</label>
+                        <input id="initial" class="form-control" name="initial" type="text" value="@ViewBag.SearchByinitial" placeholder="Initial" />
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Search by First Name</label>
+                        <input id="name" class="form-control" name="name" type="text" value="@ViewBag.SearchByname" placeholder="First Name" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Search by Surname</label>
+                        <input id="surName" class="form-control" name="surName" type="text" value="@ViewBag.SearchBySurname" placeholder="Surname" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Search by Manager</label>
+                        <input id="Manager" class="form-control" name="Manager" type="text" value="@ViewBag.SearchByManager" placeholder="Manager initial" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-HCPcontrols position-relative">
+                        <label>Search by Cost Center</label>
+                        <input id="CostCenter" class="form-control" name="CostCenter" type="text" value="@ViewBag.SearchByCostCenter" placeholder="Cost Center" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                </div>
+                <fieldset class="form-columns-2 col4-label-ht">
+                    <div class="form-group" style="position: relative; left: 18px; top: 15px;">
+                        <button type="submit" class="btn add-btn" tabindex="7">Search</button>
+                        <button type="submit" class="btn add-btn" tabindex="8" formaction=@Url.Action("Reset") formmethod="post">Reset</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <br />
+    <h4>No Records Found</h4>
+}
+else
+{
+    <div class="responsible-table">
+        <table class="table">
+            <tr>
+                <th style="visibility:hidden">
+                    ID
+                </th>
+                <th>
+                    @Html.ActionLink("Initial", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByInitial })
+                </th>
+                <th>
+                    @Html.ActionLink("Cost Centre", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByCC })
+                </th>
+                <th>
+                    @Html.ActionLink("Name", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByName })
+                </th>
+                <th>
+                    @Html.ActionLink("Surname", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortBySurName })
+                </th>
+                <th>
+                    @Html.ActionLink("Manager", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByMgr })
+                </th>
+                <th>
+                    @Html.ActionLink("Position", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByposition })
+                </th>
+                <th>
+                    @Html.ActionLink("Admin", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortByIsAdmin })
+                </th>
+                <th>
+                    @Html.ActionLink("Locked", "Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortBylocked })
+                </th>
+                <th>
+                    processes
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="visibility:hidden">
+                        @Html.DisplayFor(modelItem => item.ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Initial)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CostCenter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Manager)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Position)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsAdmin)
+                    </td>
+                    <td>
+                        @switch (item.Status.ToLower())
+                        {
+                            case "true":
+                                <span class="locked locked-true"></span>
+                                break;
+
+                            case "false":
+                                <span class="locked locked-false"></span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("AccountSwitch", "User", new { initial = item.Initial })" class="switch-account"><i class="fa fa-sign-in"></i></a>
+                    </td>
+                    <td class="user-action">
+                        <a href="@Url.Action("Edit", "User", new { id = item.ID })">
+                            <img src="~/Content/Images/edit-icon.svg" alt="Edit" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+    <div id='Paging' class="paging">
+        <p>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</p>
+        <div class="pagination-container">@Html.PagedListPager(Model, page => Url.Action("Index", new { costCenter = ViewBag.SearchBycostCenter, initial = ViewBag.SearchByinitial, manager = ViewBag.SearchByManager, name = ViewBag.SearchByname, surName = ViewBag.SearchBySurname, sortOrder = ViewBag.SortOrder, page }))</div>
+    </div>
+}

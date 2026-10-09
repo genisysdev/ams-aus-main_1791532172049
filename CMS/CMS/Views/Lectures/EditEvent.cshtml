@@ -1,0 +1,50 @@
+﻿@model CME.Models.EventModel
+
+@{
+    ViewBag.Title = "EditEvent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Edit Event</h2>
+
+@using (Html.BeginForm("EditEvent", "Lectures", new { role = "form" }))
+{
+    <div class="form-otrcontainer">
+        <div class="form-container">
+            <fieldset class="form-columns-2 col2-label-ht">
+                <div class="form-group">
+                    <label>Name: <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @if (Model.IsActive == true)
+                    {
+                        <div class="form-group">
+                            <label>Status: </label>
+                            @Html.RadioButtonFor(model => model.IsActive, "Active", new { @class = "form-radio", @checked = "checked" })
+                            Active
+                            @Html.RadioButtonFor(model => model.IsActive, "Inactive", new { @class = "form-radio" })
+                            Inactive
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label>Status: </label>
+                            @Html.RadioButtonFor(model => model.IsActive, "Active", new { @class = "form-radio" })
+                            Active
+                            @Html.RadioButtonFor(model => model.IsActive, "Inactive", new { @class = "form-radio", @checked = "checked" })
+                            Inactive
+                        </div>
+                    }
+                </div>
+            </fieldset>
+            @Html.HiddenFor(model => model.ID, new { @class = "form-control", id = "eventId" })
+            <div class="form-group">
+                <button type="submit" class="btn add-btn" formaction=@Url.Action("EditEvent") formmethod="post">Update</button>
+                <input type="button" class="btn add-btn" value="Back to List" onclick="location.href='@Url.Action("Index", "Lectures")'" />
+            </div>
+        </div>
+    </div>
+}

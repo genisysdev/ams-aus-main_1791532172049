@@ -1,0 +1,13 @@
+﻿@model CME.Models.CMEViewModel
+
+<body>
+    <div>
+        @if (Model.AssessmentDocName != null)
+        {
+            <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = Model.AssessmentDocName, filePath = Model.AssessmentDocPath})">
+                @Model.AssessmentDocName
+            </a>
+            <br />
+        }
+    </div>
+</body>

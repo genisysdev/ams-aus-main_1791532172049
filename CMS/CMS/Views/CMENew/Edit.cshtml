@@ -1,0 +1,2108 @@
+﻿@model CME.Models.CMEViewModel
+
+@{
+    ViewBag.Title = "CME Activity";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "CMENew", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div>
+        <p style="font-size:28px"><b>Edit CME Activity</b></p>
+        <br>
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-2">
+                <div style="float:right;">
+                    <fieldset class="submit" style="display:none;" id="dispaybuttons">
+                        @if (Model.RequestType == "Draft" || Model.RequestType == "Send to postpone" || Model.RequestType == "Reject by SM" || Model.RequestType == "Reject by RBD" || Model.RequestType == "Rejected by RBD1" || Model.RequestType == "Rejected by RBD2" || Model.RequestType == "Reject by CME Operation" || Model.RequestType == "Rejected by Hemophilia Medical" || Model.RequestType == "Rejected by Growth Hormone Medical")
+                        {
+                            <button type="submit" id="btnSave" class="btn add-btn" name="command" value="Draft" onclick="return  submitPAFForm();">Save</button>
+                        }
+                        @if (Model.RequestType == "Draft" && (Model.RequestType != "Reject by SM" || Model.RequestType != "Reject by RBD" || Model.RequestType != "Reject by CT" || Model.RequestType == "Reject by SM" || Model.RequestType == "Rejected by RBD1" || Model.RequestType == "Rejected by RBD2" || Model.RequestType == "Rejected by Hemophilia Medical" || Model.RequestType == "Rejected by Growth Hormone Medical"))
+                        {
+                            <button type="submit" id="btnDelete" class="btn add-btn" name="command" value="Delete">Delete</button>
+                        }
+                        @*@if ((Model.RequestType == "Draft" || Model.RequestType == "Reject by SM" || Model.RequestType == "Reject by RBD" || Model.RequestType == "Reject by CT") && @HttpContext.Current.Session["LoginUserZone"].ToString() != "Biopharm")
+                            {
+                                <button type="submit" id="btnSend" class="btn add-btn" name="command" value="Send" onclick="return  submitPAFForm();">Send Form</button>
+                            }*@
+                        @if (Model.RequestType == "Draft" || Model.RequestType == "Send to postpone" || Model.RequestType == "Reject by SM" || Model.RequestType == "Reject by RBD" || Model.RequestType == "Reject by CME Operation" || Model.RequestType == "Reject by CT" || Model.RequestType == "Rejected by RBD1" || Model.RequestType == "Rejected by RBD2" || Model.RequestType == "Rejected by Hemophilia Medical" || Model.RequestType == "Rejected by Growth Hormone Medical")
+                        {
+                            <button type="submit" id="btnSend" class="btn add-btn" name="command" value="Send" onclick="return  submitPAFForm();">Send Form</button>
+                        }
+                        <button type="submit" id="btndownloadall" class="btn add-btn" name="command" value="Downloadall" formaction=@Url.Action("DownloadAll", new { id = Model.ID }) formmethod="post">Download All Documents</button>
+                        <button type="submit" id="btnCancel" class="btn add-btn" name="command" value="Cancel">Cancel</button>
+
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <!-- Nav tabs -->
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-2">
+                <div class="tabs">
+                    <ul id="apptabs" class="nav nav-tabs" role="tablist">
+                        <li id="PD" class="nav-item">
+                            <a class="nav-link active navlink" data-toggle="tab" href="#Nav1">PAF Details</a>
+
+                        </li>
+                        <li id="PHCP" class="nav-item">
+                            <a class="nav-link navlink TabDisplay1" data-toggle="tab" href="#Nav2">HCP Details</a>
+                        </li>
+                        <li id="PC" class="nav-item">
+                            <a class="nav-link navlink TabDisplay2" data-toggle="tab" href="#Nav3">Cost Details</a>
+                        </li>
+                        <li id="PA" class="nav-item">
+                            <a class="nav-link navlink TabDisplay3" data-toggle="tab" href="#Nav4">Attachment</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn_next">
+                    <button type="submit" id="btnNext" class="btn add-btn" name="command" value="" style="float:right;">Next</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab-content contentcolor">
+            <div id="Nav1" class="container tab-pane active">
+                @Html.HiddenFor(m => m.HCPType, new { @class = "form-control", id = "hcpType" })
+                @Html.HiddenFor(model => model.IsDateDeviation)
+                @Html.HiddenFor(model => model.Policy_Violation)
+                @Html.HiddenFor(model => model.IsVirtual)
+                <div class="form-group" id="CPVDate" style="display:none;">
+                    <label style="color:red;font-size:17px; padding-left: 350px;"><b>Critical policy violation</b></label>
+                </div>
+                <div class="form-group" id="PVDate" style="display:none;">
+                    <label style="color:#d11313;font-size:17px; padding-left: 350px;"><b>Acceptable policy violation</b></label>
+                </div>
+                <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Issued By </label>
+                                <div class="Input_span">
+                                    <span>@Session["LoginUserInitial"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Issued Date </label>
+                                <div class="Input_span">
+                                    <span>@Html.DisplayFor(model => model.IssuedDate)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Form ID </label>
+                                <div class="Input_span">
+                                    <span>@Session["PAFChar"]@Html.DisplayFor(model => model.ID)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Approver(s) </label>
+                                <div class="Input_span">
+                                    <span>@Html.DisplayFor(model => model.Approver)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="col-md-4 mb-2">
+
+                                <label class="label_span_Checkbox">
+                                    @Html.CheckBoxFor(m => m.HospitalMeeting, new { id = "cbHM" })<br />
+                                </label>
+                                <div class="Input_span_Checkbox">
+                                    Hospital Meeting
+                                </div>
+                            </div>*@
+                        <div class="col-md-4 mb-2 Radioandcheck">
+                            <label>
+                                @Html.CheckBoxFor(m => m.HospitalMeeting, new { id = "cbHM" })<br />
+                                Hospital Meeting
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-8 mb-2">
+                            @if (Model.CME_Type == "Standard Meeting")
+                            {
+                                <label class="label_span_Checkbox">Form Type <span class="mandatory-field">*</span></label><br />
+                                <div class="Input_span_Checkbox">
+                                    @Html.RadioButtonFor(model => model.CME_Type, "Standard Meeting", new { @class = "form-radio", @checked = "checked", id = "rbSM" })
+                                    Standard Meeting
+                                    <span style="padding-left:180px"></span>
+                                    @Html.RadioButtonFor(model => model.CME_Type, "Non-Standard Meeting", new { @class = "form-radio", id = "rbNSM" })
+                                    Non-Standard Meeting
+                                </div>
+                            }
+                            else
+                            {
+                                <label class="label_span_Checkbox">Form Type <span class="mandatory-field">*</span></label><br />
+                                <div class="Input_span_Checkbox">
+                                    @Html.RadioButtonFor(model => model.CME_Type, "Standard Meeting", new { @class = "form-radio", id = "rbSM" })
+                                    Standard Meeting
+                                    <span style="padding-left:180px"></span>
+                                    @Html.RadioButtonFor(model => model.CME_Type, "Non-Standard Meeting", new { @class = "form-radio", @checked = "checked", id = "rbNSM" })
+                                    Non-Standard Meeting
+                                </div>
+                            }
+                        </div>@*<span style="padding:20px"></span>*@
+                        <div class="col-md-4 mb-2">
+                            <div id="divdiseasearea" style="display:none;">
+                                @if (Model.DiseaseArea_Type == "Hemophilia Medical")
+                                {
+                                    <label class="label_span_Checkbox">Disease Area <span class="mandatory-field">*</span></label>
+                                    <div class="Input_span_Checkbox">
+                                        @Html.RadioButtonFor(model => model.DiseaseArea_Type, "Hemophilia Medical", new { @class = "form-radio", @checked = "checked", id = "rbHM" })
+                                        <span for="Hemophilia">Hemophilia</span>
+                                        @Html.RadioButtonFor(model => model.DiseaseArea_Type, "Growth Hormone Medical", new { @class = "form-radio", id = "rbGHM" })
+                                        <span for="GrowthHormone">Growth Hormone</span><br>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <label class="label_span_Checkbox">Disease Area <span class="mandatory-field">*</span></label>
+                                    <div class="Input_span_Checkbox">
+                                        @Html.RadioButtonFor(model => model.DiseaseArea_Type, "Hemophilia Medical", new { @class = "form-radio", id = "rbHM" })
+                                        <span for="Hemophilia">Hemophilia</span>
+                                        @Html.RadioButtonFor(model => model.DiseaseArea_Type, "Growth Hormone Medical", new { @class = "form-radio", @checked = "checked", id = "rbGHM" })
+                                        <span for="GrowthHormone">Growth Hormone</span><br>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative" id="divTheraphy">
+                                <div id="NonstdT">
+                                    <label>Therapy Area</label>
+                                    <div class="Input_span">
+                                        <span style="color: #3a3a3a;font-weight: bold;text-transform: uppercase;">
+                                            @Html.DisplayFor(model => model.TherapyAreaName)
+                                        </span>
+                                        <span>@Html.HiddenFor(model => model.TherapyAreaId, new { id = "TherapyAreaId" })</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-controls position-relative" id="stdT">
+                                <label>Therapy Area <span class="mandatory-field">*</span></label>
+                                @Html.DropDownListFor(model => model.SelectedTherapyArea, Model.TherapyArea, "- Please select a TherapyArea -", new { @class = "form-control", @tabindex = 1, id = "ddTherapyArea" })
+                                @Html.ValidationMessageFor(model => model.SelectedTherapyArea, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["sTherapyArea"]</span>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2" id="divBrand">
+                            <div class="form-controls position-relative">
+                                <label>Brand <span class="mandatory-field">*</span></label>
+                                @Html.DropDownListFor(model => model.SelectedBrand, Model.Brand, "- Please select a Brand -", new { @class = "form-control", id = "ddBrand", })
+                                @Html.ValidationMessageFor(model => model.SelectedBrand, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["sBrandArea"]</span>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <div id="divActivityName" style="display:none;">
+                                    <label>Activity Name <span class="mandatory-field">*</span></label>
+                                    @Html.TextBoxFor(m => m.ActivityName, new { @class = "form-control", maxlength = 250, @tabindex = 3, id = "txtActivityName" })
+                                    @Html.ValidationMessageFor(model => model.ActivityName, "", new { @class = "text-danger" })
+                                </div>
+                                <div id="divEventList">
+                                    <label id="lblEvent">Event <span class="mandatory-field">*</span></label>
+                                    @Html.DropDownListFor(model => model.SelectedEvent, Model.Event, "- Please select a Event -", new { @class = "form-control", id = "ddEvent" })
+                                    @Html.ValidationMessageFor(model => model.SelectedEvent, "", new { @class = "text-danger" })
+                                    <span class="text-danger">@TempData["sEventArea"]</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2" id="divLecture">
+                            <div class="form-controls position-relative">
+
+                                <label>Lecture <span class="mandatory-field">*</span></label>
+                                @Html.DropDownListFor(model => model.SelectedLecture, Model.Lectures, "- Please select a Lecture -", new { @class = "form-control", id = "ddLecture" })
+                                @Html.ValidationMessageFor(model => model.SelectedLecture, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["sLecture"]</span>
+                                <div id="divPartialView">
+                                    @{Html.RenderPartial("~/Views/CME/_Materials.cshtml");}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Activity Start Date <span class="mandatory-field">*</span></label>
+                                @Html.EditorFor(model => model.ActivityStartDate, new { htmlAttributes = new { @class = "form-control date-field", @tabindex = 4, @readonly = "true", id = "startDate" } })
+                                @Html.ValidationMessageFor(model => model.ActivityStartDate, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["ActivityStartDate"]</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Activity End Date <span class="mandatory-field">*</span></label>
+                                @Html.EditorFor(model => model.ActivityEndDate, new { htmlAttributes = new { @class = "form-control date-field", @tabindex = 5, @readonly = "true", id = "endDate" } })
+                                @Html.ValidationMessageFor(model => model.ActivityEndDate, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["ActivityEndDate"]</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Number of Days <span class="mandatory-field">*</span></label>
+                                @Html.TextBoxFor(m => m.NumberofDays, new { @class = "form-control", @readonly = "readonly", @type = "number", id = "noDays", @tabindex = 6 })
+                                @Html.ValidationMessageFor(model => model.NumberofDays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Proposed number of attendee(s) <span class="mandatory-field">*</span></label>
+                                @Html.TextBoxFor(m => m.Proposednumberofattendee, new { @class = "form-control", @type = "number", @tabindex = 7, id = "Proposednumberofattendee" })
+                                @Html.ValidationMessageFor(model => model.Proposednumberofattendee, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Minimum number of guarantee <span class="mandatory-field">*</span></label>
+                                @Html.TextBoxFor(m => m.Minimumnumberofgaurantee, new { @class = "form-control", @type = "number", @tabindex = 8 })
+                                @Html.ValidationMessageFor(model => model.Minimumnumberofgaurantee, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["Minnuofgu"]</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>City <span class="mandatory-field">*</span></label>
+                                @Html.TextBoxFor(m => m.City, new { @class = "form-control", @tabindex = 13 })
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-12 mb-2 ">
+                            <div class="row align-items-center">
+                                <div class="col-md-12 mb-0">
+                                    <label style="float:left;">
+                                        @Html.CheckBoxFor(m => m.Hotel_Star, new { @tabindex = 14, id = "ckbHotelStar" }) 5 Star Hotel?
+                                        @Html.ValidationMessageFor(x => x.Hotel_Star)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-controls position-relative">
+                                <label>Venue/Hotel <span class="mandatory-field">*</span></label>
+                                @Html.TextAreaFor(m => m.Venu_Hotel, new { @class = "form-control textarea", @tabindex = 15 })
+                                @Html.ValidationMessageFor(model => model.Venu_Hotel, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Meeting type <span class="mandatory-field">*</span></label>
+                                @Html.DropDownListFor(model => model.SelectedMeetingType, Model.MeetingType, "- Please select a MeetingType -", new { @class = "form-control", @tabindex = 1, id = "ddMeetingType" })
+                                @Html.ValidationMessageFor(model => model.SelectedMeetingType, "", new { @class = "text-danger" })
+                                <span class="text-danger">@TempData["sMeetingType"]</span>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+
+                            <label>BTC Status <span class="mandatory-field">*</span></label>
+                            <div>
+                                @Html.RadioButtonFor(model => model.IsBTC, "false", new { @class = "form-radio", id = "isBTC" })
+                                <span style="color:#0a78bf; font-weight: bold;margin-right:10px;">No</span>
+                                @Html.RadioButtonFor(model => model.IsBTC, "true", new { @class = "form-radio", id = "isNotBTC" })
+                                <span style="color:#0a78bf; font-weight: bold;">Yes</span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.IsBTC, "", new { @class = "text-danger" })
+                            <span class="text-danger">@TempData["sBTC"]</span>
+
+                        </div>
+                        @*<div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative" id="stdT">
+                                    <label>Assessment </label>
+                                    @Html.DropDownListFor(model => model.SelectedAssessment, Model.Assessment, "- Please select a Assessment -", new { @class = "form-control", id = "Assessment" })
+                                    @Html.ValidationMessageFor(model => model.SelectedAssessment, "", new { @class = "text-danger" })
+                                    <div id="divAssessmentPartialView">
+                                        @{Html.RenderPartial("~/Views/CME/_Assessment.cshtml");}
+                                    </div>
+
+                                    @if (Model.AssessmentDocName != null)
+                                    {
+                                        <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = Model.AssessmentDocName, filePath = Model.AssessmentDocPath })">
+                                            <div class="upload-item">
+                                                <span>@Model.AssessmentDocName</span>
+                                            </div>
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="row align-items-center">
+
+                        <div class="col-md-12 mb-2 ">
+                            <div class="form-controls position-relative">
+                                <label>Comments <span class="mandatory-field">*</span></label>
+                                @Html.TextAreaFor(m => m.Comment, new { @class = "form-control textarea", @tabindex = 14 })
+                                @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="Nav2" class="container tab-pane fade">
+                <div>
+                    <ul class="nav nav-tabs navlinksubTag" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active navlinksub" data-toggle="tab" href="#Hon">Honorarium</a>
+
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navlinksub" data-toggle="tab" href="#NHon">Non Honorarium</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+
+                        <div id="Hon" class="container tab-pane fade active show">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-controls position-relative">
+                                        <label>HCP Role <span class="mandatory-field">*</span></label>
+                                        @Html.DropDownListFor(model => model.SelectedTypeofHCP, Model.TypeofHCP, "- Please select a HCP Type -", new { @class = "form-control", id = "HCPTypeH" })
+                                        @Html.ValidationMessageFor(model => model.SelectedTypeofHCP, "", new { @class = "text-danger" })
+                                        <span class="text-danger">@TempData["eHCPType"]</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-controls position-relative">
+                                        <label>HCP <span class="mandatory-field">*</span></label>
+                                        @Html.DropDownListFor(model => model.SelectedNameoftheHCP, Model.NameoftheHCP, "- Please select a HCP Name -", new { @class = "form-control", id = "HCPNameH" })
+                                        @Html.ValidationMessageFor(model => model.SelectedNameoftheHCP, "", new { @class = "text-danger" })
+                                        <span class="text-danger">@TempData["eHCPName"]</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-controls position-relative">
+                                        <label>Honorarium payable to HCP <span>(Amount in Rupees)</span><span class="mandatory-field">*</span></label>
+                                        @Html.TextBoxFor(m => m.HCPCost, new { @class = "form-control", @type = "number", id = "PtoHcp" })
+                                        <span class="text-danger">@TempData["eHCPNCost"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-controls position-relative">
+                                        <label>HCP topic <span class="mandatory-field Htopicmandatory">*</span></label>
+                                        @Html.TextBoxFor(m => m.HCPtopic, new { @class = "form-control", id = "HcpTopicH" })
+                                        <span class="text-danger">@TempData["eHCPNTopic"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-md-4 mb-2">
+                                    <button type="submit" onclick="return setHCPType('Hon');" class="btn add-btn" name="command" value="Add HCP" id="btnAddHcpH">Add HCP</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="NHon" class="container tab-pane fade">
+                            <div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative">
+                                            <label>HCP Role <span class="mandatory-field">*</span></label>
+                                            @Html.DropDownListFor(model => model.SelectedTypeofHCP, Model.TypeofHCP, "- Please select a HCP Type -", new { @class = "form-control", id = "HCPTypeNoH" })
+                                            @Html.ValidationMessageFor(model => model.SelectedTypeofHCP, "", new { @class = "text-danger" })
+                                            <span class="text-danger">@TempData["eHCPNType"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative">
+                                            <label>PAN Number</label>
+                                            @Html.TextBoxFor(m => m.TMFNo, new { @class = "form-control", id = "TmfNo" })
+                                            @Html.ValidationMessageFor(x => x.TMFNo, "", new { @class = "text-danger" })
+                                            <span class="text-danger">@TempData["eHCPNTmf"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative">
+                                            <label>Name of the HCP <span class="mandatory-field">*</span></label>
+                                            @Html.TextBoxFor(m => m.HCPFirstName, new { @class = "form-control", id = "HcpFNameNoH" })
+                                            @Html.ValidationMessageFor(x => x.HCPFirstName, "", new { @class = "text-danger" })
+                                            <span class="text-danger">@TempData["eHCPNName"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative">
+                                            <label>Name of the HCP <span class="mandatory-field">*</span></label>
+                                            @Html.TextBoxFor(m => m.HCPLastName, new { @class = "form-control", id = "HcpLNameNoH" })
+                                            @Html.ValidationMessageFor(x => x.HCPLastName, "", new { @class = "text-danger" })
+                                            <span class="text-danger">@TempData["eHCPNName"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative NHForm">
+                                            <div class="">
+                                                <label class="m-0 NHlabel">Terms of Engagement/Pre-approved Invitation mail<span class="mandatory-field">*</span></label>
+                                            </div>
+                                            <div>
+                                                @Html.TextBoxFor(m => m.NOHImageFile, new { type = "file", id = "file5", multiple = "multiple", onchange = "javascript:updateListHCP()" })
+                                                <label for="file5" class="btn upload-btn m-0">Choose file</label>
+                                                @if (@Model.NOHImageFile == null)
+                                                {
+                                                    <br />
+                                                    @Html.ValidationMessageFor(model => model.NOHImageFile, "", new { @class = "text-danger" })
+
+                                                }
+                                                <span class="text-danger">@TempData["eHCPNfile"]</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-controls position-relative">
+                                            <label>HCP topic <span class="mandatory-field NoHtopicmandatory">*</span></label>
+                                            @Html.TextBoxFor(m => m.HCPtopicNoH, new { @class = "form-control", id = "HcpTopicNoH" })
+                                            <span class="text-danger">@TempData["eHCPNNTopic"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="upload-item">
+                                            <div id="fileListHCP"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 mb-2">
+                                        <button type="submit" onclick="return setHCPType('NoHon');" class="btn add-btn" name="command" value="Add HCP" id="btnAddHcpNoH">Add HCP</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div><br><span class="text-danger">@TempData["eAddHCP"]</span></div>
+                        <div><span class="text-danger">@TempData["eNolect"]</span></div>
+                        <div><span class="text-danger">@TempData["SameUser"]</span></div>
+
+                        @if (Model.HCPs != null && Model.HCPs.Count > 0)
+                        {
+                            <table class="table" id="tHCPNoH">
+                                <tr>
+                                    <th style="visibility:hidden">ID</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>PAN</th>
+                                    <th>Topic</th>
+                                    <th>Cost</th>
+                                    <th></th>
+                                </tr>
+                                @foreach (var item in Model.HCPs)
+                                {
+                                    <tr>
+                                        <td style="visibility:hidden">@Html.DisplayFor(modelItem => item.Id)</td>
+                                        <td id="hcpName">@Html.DisplayFor(modelItem => item.First_Name + item.Last_Name)</td>
+                                        @if (item.HCPAddress != null)
+                                        {
+                                            <td id="Hcpaddress">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+ }
+                                        else
+                                        {
+                                            <td></td>
+}
+                                        @if (item.TMF_No != "0000000000")
+                                        {
+                                            <td>@Html.DisplayFor(modelItem => item.TMF_No)</td>
+}
+                                        else
+                                        {
+                                            <td></td>
+}
+                                        <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                        @if (item.Cost != 0)
+                                        {
+                                            <td id="Hcpcost" class="hcp-cost-to-add" style="text-align:right;">@Html.DisplayFor(modelItem => item.Cost)</td>
+ }
+                                        else
+                                        {
+                                            <td></td>
+}
+                                        <td>
+                                            <button type="submit" class="btn-link btn-remove" name="command" value="RMHCP-@item.TMF_No-@item.First_Name+@item.AttachedFile">Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                                @{
+                                    var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                                    if (sum != "0.00")
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><b>Total cost</b></td>
+                                            <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                }
+
+                            </table>
+                        }
+
+                    </div>
+                </div>
+                @*<div>
+                        <ul class="nav nav-tabs navlinksubTag" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active navlinksub" data-toggle="modal" data-target="#exampleModal">Participants</a>
+
+                            </li>
+
+                        </ul>
+                        @if (Model.Participants != null && Model.Participants.Count > 0)
+                        {
+
+                            <div class="responsible-table">
+                                <table class="table" id="ptable">
+                                    <tr>
+                                        <th style="visibility:hidden">ID</th>
+                                        <th>Name</th>
+                                        <th>PAN Number</th>
+                                        <th>Email ID</th>
+                                        <th>Phone Number</th>
+                                        <th>Customer ID</th>
+                                        <td></td>
+                                    </tr>
+                                    @foreach (var item in Model.Participants)
+                                    {
+                                        <tr>
+                                            <td style="visibility:hidden">@Html.DisplayFor(modelItem => item.ID)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PAN)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Email_Id)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Phone_Number)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Customer_ID)</td>
+                                            <td>
+                                                <button type="submit" class="btn-link btn-remove" name="command" value="RMP-@item.ID-@item.Name+@item.Email_Id-@item.Phone_Number">Remove</button>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </table>
+
+                            </div>
+
+
+
+                        }
+
+                    </div>*@
+            </div>
+            <div id="Nav3" class="container tab-pane fade">
+                <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <div class="form-group">
+                                    <label style="font-size: 18px; font-weight: bold;">Estimated Cost </label>
+
+                                    @Html.TextBoxFor(m => m.Approximatecost, new { @class = "form-control", @type = "number", @tabindex = 9, id = "txtApproximatecost" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Room rate(if accommodation provided)</label>
+                                @Html.TextBoxFor(m => m.Roomrate, new { @class = "form-control", @type = "number", @tabindex = 10, id = "Roomrate" })
+                                @Html.ValidationMessageFor(x => x.Roomrate)
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Banquet room rate</label>
+                                @Html.TextBoxFor(m => m.Banquetroomrate, new { @class = "form-control", @type = "number", @tabindex = 11, id = "Banquetroomrate" })
+                                @Html.ValidationMessageFor(x => x.Banquetroomrate)
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <div class="form-group">
+                                    <label>Cost Per PAX</label>
+                                    @Html.TextBoxFor(m => m.CostPerPAX, new { @class = "form-control", @type = "number", @tabindex = 12, id = "CostPerPAX" })
+                                    @Html.ValidationMessageFor(x => x.CostPerPAX)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <div class="form-group">
+                                    <label>Approximate cost </label>
+                                    @Html.TextBoxFor(m => m.Approximatecost, new { @class = "form-control", @type = "number", @tabindex = 9, id = "txtApproximatecost" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Miscellaneous Name</label>
+                                @Html.TextBoxFor(m => m.MName, new { @class = "form-control", id = "mName", @tabindex = 16 })
+                                @Html.ValidationMessageFor(x => x.MName)
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Cost</label>
+                                @Html.TextBoxFor(m => m.MCost, new { @class = "form-control", @type = "number", id = "mCost", @tabindex = 17 })
+                                @Html.ValidationMessageFor(x => x.MCost)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <button type="submit" onclick="return setHCPType('');" class="btn add-btn" name="command" value="Add Miscellaneous" id="btnAddMisce">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.Miscellaneous != null && Model.Miscellaneous.Count > 0)
+                    {
+                        <div class="responsible-table">
+                            <h5 style="text-align:left;">Miscellaneous cost</h5>
+                            <table class="table">
+                                <tr>
+                                    <th style="visibility:hidden">ID</th>
+                                    <th>Name</th>
+                                    <th>Cost</th>
+                                    <th></th>
+                                </tr>
+                                @foreach (var item in Model.Miscellaneous)
+                                {
+                                    <tr>
+                                        <td style="visibility:hidden">@Html.DisplayFor(modelItem => item.Id)</td>
+                                        <td id="btnAddMis">@Html.DisplayFor(modelItem => item.Name)</td>
+                                        <td id="MiscellaneousCost" class="misc-cost-to-add">@Html.DisplayFor(modelItem => item.Cost)</td>
+                                        <td>
+                                            <button type="submit" class="btn-link btn-remove" name="command" value="RMMis-@item.Name+@item.Cost">Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    }
+                </div>
+                <div>
+
+                    @if (Model.HCPs != null && Model.HCPs.Count > 0)
+                    {
+                        <h5 style="text-align:left;">HCP cost</h5>
+                        <table class="table" id="tHCPNoH">
+
+                            <tr>
+                                <th style="visibility:hidden">ID</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>PAN</th>
+                                <th>Topic</th>
+                                <th>Cost</th>
+                            </tr>
+                            @foreach (var item in Model.HCPs)
+                            {
+                                <tr>
+                                    <td style="visibility:hidden">@Html.DisplayFor(modelItem => item.Id)</td>
+                                    <td id="hcpName">@Html.DisplayFor(modelItem => item.First_Name + item.Last_Name)</td>
+                                    @if (item.HCPAddress != null)
+                                    {
+                                        <td id="Hcpaddress">@Html.DisplayFor(modelItem => item.HCPAddress)</td>
+ }
+                                    else
+                                    {
+                                        <td></td>
+}
+                                    @if (item.TMF_No != "0000000000")
+                                    {
+                                        <td>@Html.DisplayFor(modelItem => item.TMF_No)</td>
+}
+                                    else
+                                    {
+                                        <td></td>
+}
+                                    <td>@Html.DisplayFor(modelItem => item.HCPtopic)</td>
+                                    @if (item.Cost != 0)
+                                    {
+                                        <td style=" text-align:right;">@Html.DisplayFor(modelItem => item.Cost)</td>
+ }
+                                    else
+                                    {
+                                        <td></td>
+}
+
+                                </tr>
+                            }
+                            @{
+                                var sum = Model.HCPs.Sum(x => x.Cost).ToString("0.00");
+                                if (sum != "0.00")
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>HCP Total cost</b></td>
+                                        <td style="text-align:right;"> @Html.DisplayTextFor(m => sum)</td>
+
+                                    </tr>
+                                }
+                            }
+
+                        </table>
+                    }
+                </div>
+            </div>
+            <div id="Nav4" class="container tab-pane fade">
+                <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Proposed Agenda and FMV <span class="mandatory-field" id="fmvStar">*</span></label>
+                                <div class="Auploads">
+                                    @Html.TextBoxFor(m => m.PAImageFile, new { type = "file", id = "file1" })
+                                    <label for="file1" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                    <span class="text-danger">@TempData["sPAImageFile"]</span>
+                                </div>
+                                @if (@Model.ImagePath.Where(s => s.Type == "PA").Count() <= 0)
+                                {
+
+                                    @Html.ValidationMessageFor(model => model.PAImageFile, "", new { @class = "text-danger", @id = "error_PAImageFile" })
+                                }
+                            </div>
+
+                            <span class="text-danger" id="file1size"></span>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative" id="divHotelQuotationDoc">
+                                <label>Hotel Quotation <span class="mandatory-field HQmandatory">*</span></label>
+                                <div class="Auploads">
+                                    @Html.TextBoxFor(m => m.HQImageFile, new { type = "file", id = "file2" })
+                                    <label for="file2" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                    <span class="text-danger">@TempData["sHQImageFile"]</span>
+                                </div>
+                                @if (@Model.ImagePath.Where(s => s.Type == "HQ").Count() <= 0)
+                                {
+
+                                    @Html.ValidationMessageFor(model => model.HQImageFile, "", new { @class = "text-danger", @id = "error_HQImageFile" })
+                                }
+                            </div>
+
+                            <span class="text-danger" id="file2size"></span>
+                        </div>
+                        @*<div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Activity Material</label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.LMImageFile, new { type = "file", id = "file3", multiple = "multiple", onchange = "javascript:updateListLM()" })
+                                        <label for="file3" class="m-0 upload-img" style="width: 100%; height: 46px;border-radius: 8px;">Choose file</label>
+                                    </div>
+
+
+                                </div>
+                                <span class="text-danger" id="file3size" style="margin-left: 05px;"></span>
+                            </div>*@
+                        <span class="text-danger">@TempData["ePAImageFile"]</span>
+                        @*<div class="col-md-8 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Comments </label>
+                                    @Html.TextBoxFor(m => m.Invoice_Comment, new { @class = "form-control textarea", @tabindex = 14, id = "Icomments" })
+                                    @Html.ValidationMessageFor(model => model.Invoice_Comment, "", new { @class = "text-danger" })
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="row align-items-center">
+                        @*<div class="col-md-4 mb-2">
+                                <div class="form-controls position-relative" id="divHotelQuotationDoc">
+                                    <label>Hotel Quotation <span class="mandatory-field HQmandatory">*</span></label>
+                                    <div class="Auploads">
+                                        @Html.TextBoxFor(m => m.HQImageFile, new { type = "file", id = "file2" })
+                                        <label for="file2" class="m-0 upload-img" style="width: 100%; height: 34px;border-radius: 8px;">Choose file</label>
+                                        <span class="text-danger">@TempData["sHQImageFile"]</span>
+                                    </div>
+                                    @if (@Model.ImagePath.Where(s => s.Type == "HQ").Count() <= 0)
+                                    {
+
+                                        @Html.ValidationMessageFor(model => model.HQImageFile, "", new { @class = "text-danger" ,@id= "error_HQImageFile" })
+                                    }
+                                </div>
+
+                                <span class="text-danger" id="file2size"></span>
+                            </div>*@
+                        <span class="text-danger">@TempData["eHQImageFile"]</span>
+                        @*<div class="col-md-8 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Comments </label>
+                                    @Html.TextBoxFor(m => m.HQ_Comment, new { @class = "form-control textarea", @tabindex = 14, id = "HQcomments" })
+                                    @Html.ValidationMessageFor(model => model.HQ_Comment, "", new { @class = "text-danger" })
+                                </div>
+                            </div>*@
+
+                    </div>
+                    <div class="row align-items-center" id="divLectureMaterial" style="display:none;">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>Activity Material</label>
+                                <div class="Auploads">
+                                    @Html.TextBoxFor(m => m.LMImageFile, new { type = "file", id = "file3", multiple = "multiple", onchange = "javascript:updateListLM()" })
+                                    <label for="file3" class="m-0 upload-img" style="width: 100%; height: 46px;border-radius: 8px;">Choose file</label>
+                                </div>
+
+
+                            </div>
+                            <span class="text-danger" id="file3size" style="margin-left: 05px;"></span>
+                        </div>
+                        <span class="text-danger">@TempData["eLMImageFile"]</span>
+                        @*<div class="col-md-8 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Comments </label>
+                                    @Html.TextBoxFor(m => m.AM_Comment, new { @class = "form-control textarea", @tabindex = 14, id = "AMcomments" })
+                                    @Html.ValidationMessageFor(model => model.AM_Comment, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="row align-items-center" id="divHotelExceptionRequest" style="display:none;">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-controls position-relative">
+                                <label>
+                                    <a title="DownLoad Form" href="@Url.Action("DownLoadFile", "CME", new { fileName = "HotelExceptionRequestForm.docx", downloadFileName = "HotelExceptionRequestForm.docx" })">Hotel Exception Request Form</a>
+                                    <span class="mandatory-field">*</span>
+                                </label>
+                                <div class="Auploads">
+                                    @Html.TextBoxFor(m => m.HERImageFile, new { type = "file", id = "file4" })
+                                    <label for="file4" class="m-0 upload-img" style="width: 100%; height: 46px;border-radius: 8px;">Choose file</label>
+
+
+                                </div>
+                                @if (Model.Hotel_Star && @Model.ImagePath.Where(s => s.Type == "HER").Count() <= 0)
+                                {
+                                    @Html.ValidationMessageFor(model => model.HERImageFile, "", new { @class = "text-danger", @id = "error_HERImageFile" })
+                                }
+
+                            </div>
+
+                            <span class="text-danger" id="file4size"></span>
+                        </div>
+                        <span class="text-danger" id="file4size"></span>
+                        @*<div class="col-md-8 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Comments </label>
+                                    @Html.TextBoxFor(m => m.HE_Comment, new { @class = "form-control textarea", @tabindex = 14, id = "HEcomments" })
+                                    @Html.ValidationMessageFor(model => model.HE_Comment, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>*@
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        @if (Model.ImagePath.Count() > 0)
+                        {
+                            <th>Attachments</th>
+                            foreach (var image in Model.ImagePath)
+                            {
+                                if (@image.Type == "NOH")
+                                {
+                                    if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                                    {
+                                        <td>
+                                            <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                <div class="upload-item">
+                                                    <i class="fa fa-picture-o"></i>
+                                                    <span>@image.DocName</span>
+                                                </div>
+                                            </a><br>
+                                        </td>
+                                    }
+                                    else if (@image.Extension.ToLower() == ".pdf")
+                                    {
+                                        <td>
+                                            <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                <div class="upload-item">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                    <span>@image.DocName</span>
+                                                </div>
+                                            </a><br>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                <div class="upload-item">
+                                                    <i class="fa fa-file fa-3"></i>
+                                                    <span>@image.DocName</span>
+                                                </div>
+                                            </a><br>
+                                        </td>
+                                    }
+                                }
+                                else
+                                {
+                                    if (@image.Extension.ToLower() == ".png" || @image.Extension.ToLower() == ".jpeg")
+                                    {
+                                        <td>
+                                            <div class="upload-item">
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeleteFile", new { id = Model.ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-picture-o"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a><br>
+                                            </div>
+                                        </td>
+                                    }
+                                    else if (@image.Extension.ToLower() == ".pdf")
+                                    {
+                                        <td>
+                                            <div class="upload-item">
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeleteFile", new { id = Model.ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-file-pdf-o"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a><br>
+                                            </div>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <div class="upload-item">
+                                                <a title="Remove" class="aRemoveFile" href="@Url.Action("DeleteFile", new { id = Model.ID, fileName = "PAF\\" + image.SavedDocName, fileType = image.Type })" style="font-weight: bold;">X</a>
+                                                <a href="@Url.Action("DownLoadFile", "CME", new { fileName = image.DocName, downloadFileName = "PAF\\" + image.SavedDocName })">
+                                                    <div class="upload-item">
+                                                        <i class="fa fa-file fa-3"></i>
+                                                        <span>@image.DocName</span>
+                                                    </div>
+                                                </a><br>
+                                            </div>
+                                        </td>
+                                    }
+                                }
+                            }
+
+                        }
+                    </tr>
+                    @*<tr>
+                            @if (Model.LMFiles != null && Model.LMFiles.Count() > 0)
+                            {
+
+                                <th style="text-align:left;" id="fileAttachmentsLM">Activity Material Attachments</th>
+                                foreach (var image in Model.LMFiles)
+                                {
+                                    <td>
+                                        <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = image.DocName, filePath = image.DocPath })">
+                                            <div class="upload-item">
+                                                <i class="fa fa-file fa-3"></i>
+                                                <span>@image.DocName</span>
+                                            </div>
+                                        </a>
+                                    </td>
+                                }
+
+                            }
+                        </tr>*@
+                    <tr>
+                        @if (Model.AssessmentDocName != null)
+                        {
+
+                            <th style="text-align:left;" id="fileAttachmentsLM">Assessment Attachments</th>
+                            <td>
+                                <a href="@Url.Action("DownLoadFileLM", "CME", new { fileName = Model.AssessmentDocName, filePath = Model.AssessmentDocPath })">
+
+                                    <div class="upload-item">
+                                        <i class="fa fa-file fa-3"></i>
+                                        <span>@Model.AssessmentDocName</span>
+                                    </div>
+                                </a>
+                            </td>
+
+                        }
+                    </tr>
+                    <tr id="tr_aRemoveFileMA">
+                        <th>Proposed Agenda and FMV</th>
+                        <td>
+                            <div id="div_aRemoveFileMA" class="upload-item">
+                                <label title="Remove" id="aRemoveFileMA" style="font-weight: bold;">X</label>
+                                <i id="file_MA_img" style="margin-bottom:-20px;"></i>
+                                <span id="fileMeetingAgenda" style="margin-bottom:-20px;"></span>
+                            </div>
+                        </td>
+                        @*<th>Comments</th>
+                            <td><span id="Invoice_Comment"></span></td>*@
+                    </tr>
+                    <tr id="tr_aRemoveFileHQ">
+                        <th>Hotel Quotation</th>
+                        <td>
+                            <div id="div_aRemoveFileHQ" class="upload-item">
+                                <label title="Remove" id="aRemoveFileHQ" style="font-weight: bold;">X</label>
+                                <i id="file_HQ_img" style="margin-bottom:-20px;"></i>
+                                <span id="fileHotelQuotation" style="margin-bottom:-20px;"></span>
+                            </div>
+                        </td>
+                        @*<th>Comments</th>
+                            <td><span id="HQ_Comment"></span></td>*@
+                    </tr>
+                    <tr id="tr_fileListLM">
+                        <th>Activity Material</th>
+                        <td>
+                            <div class="upload-item">
+                                <div id="fileListLM"></div>
+                            </div>
+                        </td>
+                        @*<th>Comments</th>
+                            <td><span id="AM_Comment"></span></td>*@
+                    </tr>
+                    <tr id="tr_HotelException">
+                        <th>Hotel Exception Request Form</th>
+                        <td>
+                            <div id="div_HotelException" class="upload-item">
+                                <label title="Remove" id="HotelException" style="font-weight: bold;">X</label>
+                                <i id="file_HE_img" style="margin-bottom:-20px;"></i>
+                                <span id="fileHotelException" style="margin-bottom:-20px;"></span>
+                            </div>
+                        </td>
+                        @*<th>Comments</th>
+                            <td><span id="HE_Comment"></span></td>*@
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="max-width: 90%;margin-left: 5%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Participant List</h5>
+                    <button id="pclose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="row align-items-center">
+                            <div class="col-md-3 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Participant Name <span class="mandatory-field">*</span></label>
+                                    @Html.TextBoxFor(m => m.PSearchName, new { @class = "form-control modalinput", id = "PSName" })
+                                    @Html.ValidationMessageFor(x => x.PSearchName, "", new { @class = "text-danger" })
+                                    <span class="text-danger">@TempData["Pname"]</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>City <span class="mandatory-field">*</span></label>
+                                    @Html.TextBoxFor(m => m.PSearchCity, new { @class = "form-control modalinput", id = "PSCity" })
+                                    @Html.ValidationMessageFor(x => x.PSearchCity, "", new { @class = "text-danger" })
+                                    <span class="text-danger">@TempData["pcity"]</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="form-controls position-relative">
+                                    <label>Customer ID <span class="mandatory-field">*</span></label>
+                                    @Html.TextBoxFor(m => m.PSearchCustomerID, new { @class = "form-control modalinput", id = "PSCID" })
+                                    @Html.ValidationMessageFor(x => x.PSearchCustomerID, "", new { @class = "text-danger" })
+                                    <span class="text-danger">@TempData["pcustomerid"]</span>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-md-3 mb-2">
+                                    <div class="form-controls position-relative" style=" padding-left:80px;padding-top:25px;">
+                                        <button type="button" class="btn add-btn" name="command" value="Search" id="Psearch">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(m => m.JsonParticipantsdata)
+
+                        <div id="Preview"></div>
+
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-2">
+                                <button type="submit" class="btn add-btn" name="command" value="Add Participants" id="btnParticipants" formaction=@Url.Action("Index", "CMENew", new { pdata = Model.JsonParticipantsdata })>Add participants</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/jqueryui")'></script>
+<script src='@System.Web.Optimization.Scripts.Url("~/bundles/validatemin")'></script>
+
+<script>
+    function submitPAFForm() {
+        var app = $("#txtApproximatecost").val();
+        var dd = $("#IsDateDeviation").val().toString();
+        var pv = $("#Policy_Violation").val().toString();
+        if (dd == "true" && pv == "true") { var CAPV = "contains Critical policy violation"; }
+        else if (dd == "true" && pv == "false") { var CAPV = "contains Acceptable policy violation"; }
+        else { var CAPV = "does not contains any violation"; }
+        var data = "Form total cost is " + app + " and " + CAPV + " . Are you sure you want send the form for approval ? ";
+        if (confirm(data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+        $(document).ready(function () {
+
+            $('.TabDisplay1').prop('disabled', true);
+            $('.TabDisplay2').prop('disabled', true);
+            $('.TabDisplay3').prop('disabled', true);
+            if ('@TempData["TabDisplay"]' == 'Valid1') {
+                $('.TabDisplay1').prop('disabled', false);
+                $('.nav-tabs li:eq(1) a').tab('show');
+              }
+            else if ('@TempData["TabDisplay"]' == 'Valid2') {
+                $('.TabDisplay1').prop('disabled', false);
+                $('.TabDisplay2').prop('disabled', false);
+                $('.nav-tabs li:eq(2) a').tab('show');
+            }
+            else if ('@TempData["TabDisplay"]' == 'Valid3') {
+                $('.TabDisplay1').prop('disabled', false);
+                $('.TabDisplay2').prop('disabled', false);
+                $('.TabDisplay3').prop('disabled', false);
+                $('.nav-tabs li:eq(3) a').tab('show');
+                $(".btn_save").show();
+                $(".btn_send").show();
+                $(".btn_Cancle").show();
+                $(".btn_Delete").show();
+                $(".btn_next").hide();
+                $("#dispaybuttons").show();
+         }
+
+       $("#Psearch").click(function () {
+             var Name = $("#PSName").val();
+             var City = $("#PSCity").val();
+             var CustomerID = $("#PSCID").val();
+             $.ajax({
+                 url: '@Url.Action("SearchParticipants")',
+                 contentType: 'application/html; charset=utf-8',
+                 type: 'GET',
+                 dataType: 'html',
+                 data: { Name: Name, City: City, CustomerID: CustomerID },
+                success: function (list) {
+                    $('#Preview').html(list);
+                    $('#Preview').show();
+                     $('#exampleModal').modal('show');
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve states.' + ex);
+                }
+            })
+       });
+
+         $('#pclose').click(function () {
+             $('input[type="text"]').val('');
+             $('#Preview').hide();
+         });
+
+            $("#Icomments").keyup(function () {
+             $('#Invoice_Comment').html($("#Icomments").val());
+         });
+
+            $("#HQcomments").keyup(function () {
+             $('#HQ_Comment').html($("#HQcomments").val());
+         });
+
+            $("#AMcomments").keyup(function () {
+
+             $('#AM_Comment').html($("#AMcomments").val());
+         });
+
+            $("#HEcomments").keyup(function () {
+
+             $('#HE_Comment').html($("#HEcomments").val());
+         });
+
+            $("#btnNext").click(function () {
+
+             var data = $('ul#apptabs li a.active').parent().attr('id');
+
+                if (data == 'PD') {
+                    $(this).val('DetailsNext');
+                }
+                else if (data == 'PHCP') {
+                    $(this).val('HCPNext');
+                }
+                else if (data == 'PC') {
+                    $(this).val('CostNext');
+                }
+                else {
+                    $(this).val('DetailsNext');
+                }
+            });
+
+        //for assesment file
+        $("#divAssessmentPartialView").hide();
+        $("#PVDate").hide();
+            $("#CPVDate").hide();
+            $("#tr_aRemoveFileMA").hide();
+            $("#tr_aRemoveFileHQ").hide();
+            $("#tr_fileListLM").hide();
+            $("#tr_HotelException").hide();
+            $("#aRemoveFileMA").hide();
+            $("#aRemoveFileHQ").hide();
+            $("#HotelException").hide();
+            $("#fileAttachments").hide();
+            $(".Htopicmandatory").hide();
+            $(".NoHtopicmandatory").hide();
+
+
+            $("#HCPTypeH").change(function () {
+                var hcprole = $("#HCPTypeH").val();
+                if (hcprole == 4) {
+                    $(".Htopicmandatory").show();
+                }
+                else {
+                    $(".Htopicmandatory").hide();
+                }
+
+            });
+
+            $("#HCPTypeNoH").change(function () {
+                var hcprole = $("#HCPTypeNoH").val();
+                if (hcprole == 4) {
+                    $(".NoHtopicmandatory").show();
+                }
+                else {
+                    $(".NoHtopicmandatory").hide();
+                }
+
+            });
+
+            if ('@Model.Policy_Violation' == 'True' && '@Model.IsDateDeviation' == 'True') {
+                $("#CPVDate").show();
+                $("#IsDateDeviation").val(true);
+                $("#Policy_Violation").val(true)
+        }
+        else if ('@Model.Policy_Violation' == 'False' && '@Model.IsDateDeviation' == 'True') {
+                $("#PVDate").show();
+                $("#IsDateDeviation").val(true);
+                $("#Policy_Violation").val(false);
+        }
+
+
+        if ('@Model.IsVirtual' == 'True') {
+            $(".spanbtc").hide();
+            $('.HQmandatory').hide();
+            $('#isBTC').removeAttr('checked');
+            $('#isNotBTC').removeAttr('checked');
+            $('#isBTC').attr("disabled", true);
+            $('#isNotBTC').attr("disabled", true);
+        }
+
+
+        $("#aRemoveFileMA").hide();
+        $("#aRemoveFileHQ").hide();
+        $("#HotelException").hide();
+        $("#fileAttachments").hide();
+
+        var Zone_Name = '@Session["LoginUserZone"]';
+
+            if (Zone_Name != "Rare Disease" || Zone_Name == "Rare Disease")
+        {
+            $("#stdT").show();
+            $("#NonstdT").hide();
+            $("#txtApproximatecost").attr('readonly', true);
+            //$("#Roomrate").addClass("add-approxcost");
+            //$("#Banquetroomrate").addClass("add-approxcost");
+            $("#CostPerPAX").addClass("add-approxcost");
+        }
+        //else
+        //    {
+
+        //    $("#stdT").hide();
+        //    $("#NonstdT").show();
+        //    $("#txtApproximatecost").attr('readonly', true);
+        //    //$("#Roomrate").addClass("add-approxcost");
+        //    //$("#Banquetroomrate").addClass("add-approxcost");
+        //    $("#CostPerPAX").addClass("add-approxcost");
+        //}
+        if ($("#rbSM").is(":checked")) {
+            $("#divBrand").show();
+            $("#divActivityName").hide();
+            $("#divEventList").show();
+            $("#divLecture").show();
+            $("#divMainActivity").removeClass("form-group");
+            $("#divMainActivity").addClass("form-group form-dropdown form-activity-dropdown");
+            $("#divLectureMaterial").hide();
+            $("#txtActivityName").val("");
+            $("#divdiseasearea").hide();
+        }
+        if ($("#rbNSM").is(":checked")) {
+            $("#divBrand").hide();
+            $("#divActivityName").show();
+            $("#divEventList").hide();
+            $("#divLecture").hide();
+            $("#divMainActivity").removeClass("form-group form-dropdown form-activity-dropdown");
+            $("#divMainActivity").addClass("form-group");
+            if (Zone_Name != "Rare Disease") { $("#divLectureMaterial").show(); }
+            if (Zone_Name == "Rare Disease") { $("#divdiseasearea").show(); }
+        }
+
+        $("#rbSM").click(function () {
+            $("#divBrand").show();
+            $("#divActivityName").hide();
+            $("#divEventList").show();
+            $("#divLecture").show();
+            $("#divMainActivity").removeClass("form-group");
+            $("#divMainActivity").addClass("form-group form-dropdown form-activity-dropdown");
+            $("#divLectureMaterial").hide();
+            $("#txtActivityName").val("");
+            $("#divdiseasearea").hide();
+        });
+        $("#rbNSM").click(function () {
+            $("#divBrand").hide();
+            $("#divActivityName").show();
+            $("#divEventList").hide();
+            $("#divLecture").hide();
+            $("#divMainActivity").removeClass("form-group form-dropdown form-activity-dropdown");
+            $("#divMainActivity").addClass("form-group");
+            if (Zone_Name != "Rare Disease") { $("#divLectureMaterial").show(); }
+            if (Zone_Name == "Rare Disease") { $("#divdiseasearea").show(); }
+        });
+        if ('@Model.IsPostPoned' == 'True') {
+            $('#cbHM').attr("style", "pointer-events: none;");
+            $('#changeStartDate').attr("style", "pointer-events: all;");
+            $('#changeEndDate').attr("style", "pointer-events: all;");
+            $('#clear-dates').attr("style", "pointer-events: all;");
+            var mins = '@Model.ActualStartDate';
+            var dateString = '@Model.ActualStartDate';
+            var dateParts = dateString.split("-");
+            var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+            dateObject.setDate(dateObject.getDate() + 10);
+            var yyyy = dateObject.getFullYear().toString();
+            var mm = (dateObject.getMonth() + 1).toString();
+            var dd = dateObject.getDate().toString();
+            var mmChars = mm.split('');
+            var ddChars = dd.split('');
+            var newClosingDate = (ddChars[1] ? dd : "0" + ddChars[0]) + '-' + (mmChars[1] ? mm : "0" + mmChars[0]) + '-' + yyyy;
+            var maxs = newClosingDate;
+
+            var mine = '@Model.ActualEndDate';
+            var dateStringe = '@Model.ActualEndDate';
+            var datePartse = dateStringe.split("-");
+            var dateObjecte = new Date(+datePartse[2], datePartse[1] - 1, +datePartse[0]);
+            dateObjecte.setDate(dateObjecte.getDate() + 10);
+            var yyyye = dateObjecte.getFullYear().toString();
+            var mme = (dateObjecte.getMonth() + 1).toString();
+            var dde = dateObjecte.getDate().toString();
+            var mmCharse = mme.split('');
+            var ddCharse = dde.split('');
+            var newClosingDatee = (ddCharse[1] ? dde : "0" + ddCharse[0]) + '-' + (mmCharse[1] ? mme : "0" + mmCharse[0]) + '-' + yyyye;
+            var maxe = newClosingDatee;
+        }
+
+        $('#cbHM').change(function () {
+            $.datepicker._clearDate('#startDate');
+            $.datepicker._clearDate('#endDate');
+            if (this.checked) {
+                $('#startDate').datepicker('option', 'minDate', 0);
+                $("#endDate").datepicker('option', 'minDate', 0);
+            }
+            else {
+                if (Zone_Name != "Rare Disease") {
+                    $('#startDate').datepicker('option', 'minDate', 0);
+                    $("#endDate").datepicker('option', 'minDate', 0);
+                }
+                else {
+                    $('#startDate').datepicker('option', 'minDate', 0);
+                    $("#endDate").datepicker('option', 'minDate', 0);}
+            }
+        });
+        $('#startDate').datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-10:+1",
+            minDate: 0,
+            onSelect: function (){
+                var date1 = new Date($('#startDate').val().replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+                var date2 = new Date($('#endDate').val().replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+                var Difference_In_Time = date2.getTime() - date1.getTime();
+                var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                if (typeof Difference_In_Days === "undefined") { Difference_In_Days = -1; }
+                $("#noDays").val(Difference_In_Days + 1);
+
+
+                //////////
+
+                var d = new Date();
+                var Difference_In_Time = date1.getTime() - d.getTime();
+                var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                if (typeof Difference_In_Days === "undefined") { Difference_In_Days = -1; }
+                var days = Difference_In_Days + 1
+
+                var HM = $('#cbHM').is(":checked")
+                var postponed= @Html.Raw(Json.Encode(Model.IsPostPoned));
+                var Hmindays= @Html.Raw(Json.Encode(Model.HMinDays));
+                var Hmaxdays= @Html.Raw(Json.Encode(Model.HMaxDays));
+                var Dmindays =@Html.Raw(Json.Encode(Model.DMinDays));
+                var Dmaxdays= @Html.Raw(Json.Encode(Model.DMaxDays));
+                if (postponed == false) {
+                    if (HM == true) {
+                        if (days <= Hmaxdays && days >= Hmindays) {
+                            $("#CPVDate").hide();
+                            $("#PVDate").show();
+                            $("#IsDateDeviation").val(true);
+                            $("#Policy_Violation").val(false);
+                        }
+                        else if (days <= Hmindays) {
+                            $("#PVDate").hide();
+                            $("#CPVDate").show();
+                            $("#IsDateDeviation").val(true);
+                            $("#Policy_Violation").val(true)
+                        }
+                        else {
+                            $("#PVDate").hide();
+                            $("#CPVDate").hide();
+                            $("#IsDateDeviation").val(false);
+                            $("#Policy_Violation").val(false)
+                        }
+
+                    }
+                    else {
+                        $("#HospitalMeeting").val(false);
+                        if (days <= Dmaxdays && days >= Dmindays) {
+                            $("#CPVDate").hide();
+                            $("#PVDate").show();
+                            $("#IsDateDeviation").val(true);
+                            $("#Policy_Violation").val(false);
+                        }
+                        else if (days <= Dmindays) {
+                            $("#PVDate").hide();
+                            $("#CPVDate").show();
+                            $("#IsDateDeviation").val(true);
+                            $("#Policy_Violation").val(true)
+                        }
+                        else {
+                            $("#PVDate").hide();
+                            $("#CPVDate").hide();
+                            $("#IsDateDeviation").val(false);
+                            $("#Policy_Violation").val(false)
+                        }
+                    }
+                }
+                else {
+                    $("#PVDate").hide();
+                    $("#CPVDate").hide();
+                    $("#IsDateDeviation").remove();
+                    $("#Policy_Violation").remove();
+                }
+
+            }
+        });
+
+
+        $("#endDate").datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-10:+1",
+            minDate: 0,
+            onSelect: function () {
+                var date1 = new Date($('#startDate').val().replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+                var date2 = new Date($('#endDate').val().replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+                // To calculate the time difference of two dates
+                var Difference_In_Time = date2.getTime() - date1.getTime();
+                // To calculate the no. of days between two dates
+                var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                if (typeof Difference_In_Days === "undefined") { Difference_In_Days = -1; }
+                $("#noDays").val(Difference_In_Days + 1);
+
+            }
+        });
+
+        $("#mAdd").click(function () {
+            $("#mName").val("");
+            $("#mCost").val(0);
+        });
+
+        if ($("#ckbHotelStar").is(":checked")) {
+            $("#divHotelExceptionRequest").show();
+        }
+
+        $("#ckbHotelStar").click(function () {
+            if ($("#ckbHotelStar").is(":checked")) {
+                $("#divHotelExceptionRequest").show();
+            }
+            else {
+                $("#divHotelExceptionRequest").hide();
+            }
+        });
+
+            if (Zone_Name != "Rare Disease") {
+        $("#ddTherapyArea").change(function () {
+            $("#ddBrand").empty();
+            $("#ddEvent").empty();
+            $("#ddLecture").empty();
+            $("#divPartialView").hide();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBrandByTAId")',
+                dataType: 'json',
+                data: { id: $("#ddTherapyArea").val() },
+                success: function (events) {
+                    $.each(events, function (i, event) {
+                        $("#ddBrand").append('<option value="'
+                            + event.Value + '">'
+                            + event.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    //alert('Failed to retrieve states.' + ex);
+                }
+            });
+            return false;
+            });
+        }
+
+        $("#ddBrand").change(function () {
+            $("#ddEvent").empty();
+            $("#ddLecture").empty();
+            $("#divPartialView").hide();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetEventsByBrandId")',
+                dataType: 'json',
+                data: { id: $("#ddBrand").val() },
+                success: function (events) {
+                    $.each(events, function (i, event) {
+                        $("#ddEvent").append('<option value="'
+                            + event.Value + '">'
+                            + event.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    //alert('Failed to retrieve states.' + ex);
+                }
+            })
+        });
+
+        $("#ddEvent").change(function () {
+            $("#ddLecture").empty();
+            $("#divPartialView").hide();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetLecturesById")',
+                dataType: 'json',
+                data: { id: $("#ddEvent").val() },
+                success: function (events) {
+                    $.each(events, function (i, event) {
+                        $("#ddLecture").append('<option value="'
+                            + event.Value + '">'
+                            + event.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    //alert('Failed to retrieve states.' + ex);
+                }
+            });
+            return false;
+        });
+
+        $("#ddLecture").change(function () {
+            $.ajax({
+                url: '@Url.Action("GetMaterialsById")',
+                contentType: 'application/html; charset=utf-8',
+                type: 'GET',
+                dataType: 'html',
+                data: { id: $("#ddLecture").val() }
+            }).success(function (result) {
+                $('#divPartialView').html(result);
+                })
+            $("#divPartialView").show();
+        });
+
+        $('.aRemoveFile').css('cursor', 'pointer');
+        $(".aRemoveFile").click(function () {
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('href'),
+                dataType: 'json',
+                success: function (result) {
+                    if (result.Success)
+                        window.location.reload();
+                },
+                error: function (ex) {
+                }
+            });
+        });
+
+        var maxFileSize = 104857600;
+        $('#file1').change(function () {
+            var fileName = $('#file1')[0].files[0].name;
+            var fileExtension = fileName.split('.').pop();
+            $("#fileAttachments").show();
+            if ($('#file1')[0].files[0].size != 0) {
+                if ($('#file1')[0].files[0].size < maxFileSize) {
+                    if (fileExtension == "png" || fileExtension == "jpeg") {
+                        $('#fileMeetingAgenda').html(fileName);
+                        $("#file_MA_img").addClass("fa fa-picture-o");
+                        $("#tr_aRemoveFileMA").show();
+                        $("#aRemoveFileMA").show();
+                    }
+                    else if (fileExtension == "pdf") {
+                        $('#fileMeetingAgenda').html(fileName);
+                        $("#file_MA_img").addClass("fa fa-file-pdf-o");
+                        $("#tr_aRemoveFileMA").show();
+                        $("#aRemoveFileMA").show();
+                    }
+                    else {
+                        $('#fileMeetingAgenda').html(fileName);
+                        $("#file_MA_img").addClass("fa fa-file fa-3");
+                        $("#tr_aRemoveFileMA").show();
+                        $("#aRemoveFileMA").show();
+                    }
+                }
+                else { $('#file1size').text('File too big ! Select file less than 100 MB') }
+            }
+            else { $('#file1size').text('File is invalid ! Please upload valid file.') }
+        });
+        $('#file2').change(function () {
+            var fileName = $('#file2')[0].files[0].name;
+            var fileExtension = fileName.split('.').pop();
+            $("#fileAttachments").show();
+            if ($('#file2')[0].files[0].size != 0) {
+                if ($('#file2')[0].files[0].size < maxFileSize) {
+                    if (fileExtension == "png" || fileExtension == "jpeg") {
+                        $('#fileHotelQuotation').html(fileName);
+                        $("#file_HQ_img").addClass("fa fa-picture-o");
+                        $("#tr_aRemoveFileHQ").show();
+                        $("#aRemoveFileHQ").show();
+                    }
+                    else if (fileExtension == "pdf") {
+                        $('#fileHotelQuotation').html(fileName);
+                        $("#file_HQ_img").addClass("fa fa-file-pdf-o");
+                        $("#tr_aRemoveFileHQ").show();
+                        $("#aRemoveFileHQ").show();
+                    }
+                    else {
+                        $('#fileHotelQuotation').html(fileName);
+                        $("#file_HQ_img").addClass("fa fa-file fa-3");
+                        $("#tr_aRemoveFileHQ").show();
+                        $("#aRemoveFileHQ").show();
+                    }
+                }
+                else { $('#file2size').text('File too big ! Select file less than 100 MB') }
+            }
+            else { $('#file2size').text('File is invalid ! Please upload valid file.') }
+        });
+
+        $('#file4').change(function () {
+            var fileName = $('#file4')[0].files[0].name;
+            var fileExtension = fileName.split('.').pop();
+            $('#file4size').text('');
+            if ($('#file4')[0].files[0].size != 0) {
+                if ($('#file4')[0].files[0].size < maxFileSize) {
+                    $("#fileAttachments").show();
+                    if (fileExtension == "png" || fileExtension == "jpeg") {
+                        $('#fileHotelException').html(fileName);
+                        $("#file_HE_img").addClass("fa fa-picture-o");
+                        $("#tr_HotelException").show();
+                        $("#HotelException").show();
+                    }
+                    else if (fileExtension == "pdf") {
+                        $('#fileHotelException').html(fileName);
+                        $("#file_HE_img").addClass("fa fa-file-pdf-o");
+                        $("#tr_HotelException").show();
+                        $("#HotelException").show();
+                    }
+                    else {
+                        $('#fileHotelException').html(fileName);
+                        $("#file_HE_img").addClass("fa fa-file fa-3");
+                        $("#tr_HotelException").show();
+                        $("#HotelException").show();
+                    }
+                }
+                else { $('#file4size').text('File too big ! Select file less than 100 MB')}
+            }
+            else { $('#file4size').text('File is invalid ! Please upload valid file.') }
+        });
+
+        $("#aRemoveFileMA").click(function () {
+            $("#fileMeetingAgenda").empty();
+            $("#file_MA_img").removeClass();
+            $("#aRemoveFileMA").hide();
+            var control = $("#file1");
+            clearBn = $("#div_aRemoveFileMA");
+            clearBn.on("click", function () {
+                control.replaceWith(control.val('').clone(true));
+            });
+        });
+
+        $("#aRemoveFileHQ").click(function () {
+            $("#fileHotelQuotation").empty();
+            $("#file_HQ_img").removeClass();
+            $("#aRemoveFileHQ").hide();
+            var control = $("#file2");
+            clearBn = $("#div_aRemoveFileHQ");
+            clearBn.on("click", function () {
+                control.replaceWith(control.val('').clone(true));
+            });
+        });
+
+        $("#HotelException").click(function () {
+            $("#fileHotelException").empty();
+            $("#file_HE_img").removeClass();
+            $("#HotelException").hide();
+            var control = $("#file4");
+            clearBn = $("#div_HotelException");
+            clearBn.on("click", function () {
+                control.replaceWith(control.val('').clone(true));
+            });
+        });
+
+        $('#hon').click(function () {
+            $("#HCPTypeNoH").val($("#HCPTypeNoH option:first").val());
+            $("#TmfNo").val("");
+            $("#HcpFNameNoH").val("");
+            $("#HcpLFNameNoH").val("");
+            $("#PtoHcp").val("");
+            $("#fileRemoveNOH").empty();
+            $("#file_NOH_img").removeClass();
+            $("#aRemoveFileNOH").hide();
+        });
+
+        $('#nohon').click(function () {
+            $("#HCPTypeH").val($("#HCPTypeH option:first").val());
+            $("#HCPNameH").val("");
+        });
+
+        if ($('#hcpType').val() == "NoHon") {
+            $(".tab ul li:last-child a").click();
+            $('#HCPTypeNoH').focus();
+            $('#HCPTypeNoH').blur();
+        }
+        else if ($('#hcpType').val() == "Hon") {
+            $(".tab ul li:first-child a").click();
+            $('#HCPTypeH').focus();
+            $('#HCPTypeH').blur();
+        }
+        else {
+            $("#HCPTypeNoH").val("");
+            $("#TmfNo").val("");
+            $("#HcpFNameNoH").val("");
+            $("#HcpLNameNoH").val("");
+            $("#PtoHcp").val("");
+            $("#HCPTypeH").val("");
+            $("#HCPNameH").val("");
+            if ($('#btnAddMis').text() != "") {
+                $('#mName').focus();
+                $('#mName').blur();
+            }
+        }
+
+        $('#clear-dates').on('click', function () {
+            var $dates = $('#changeStartDate, #changeEndDate').datepicker();
+            $dates.datepicker('setDate', null);
+        });
+            if (Zone_Name != "Rare Disease") {
+            //$('#ddTherapyArea option:not(:selected)').prop('disabled', true);
+           // $('#ddBrand').attr("style", "pointer-events: none; width: 220px;");
+           // $('#ddEvent').attr("style", "pointer-events: none; width: 230px;");
+           // $('#ddLecture').attr("style", "pointer-events: none; width: 250px;");
+            //$('#ddBrand option:not(:selected)').prop('disabled', true);
+            //$('#ddEvent option:not(:selected)').prop('disabled', true);
+            //$('#ddTherapyArea').change(function () {
+                //$('#ddBrand option:not(:selected)').prop('disabled', false);
+               // $('#ddBrand').attr("style", "pointer-events: auto; width: 220px;");
+            ////});
+            //$('#ddBrand').change(function () {
+            //    //$('#ddEvent option:not(:selected)').prop('disabled', false);
+            //    $('#ddEvent').attr("style", "pointer-events: auto; width: 230px;");
+            //});
+            //$('#ddEvent').change(function () {
+            //    //$('#ddEvent option:not(:selected)').prop('disabled', false);
+            //    $('#ddLecture').attr("style", "pointer-events: auto; width: 250px;");
+            //});
+
+            updateListLM = function () {
+                var input = document.getElementById('file3');
+                var output = document.getElementById('fileListLM');
+                var children = "";
+                for (var i = 0; i < input.files.length; ++i) {
+                    var fileName = $('#file3')[0].files[i].name;
+                    var fileExtension = fileName.split('.').pop();
+                    if ($('#file3')[0].files[i].size != 0) {
+                        if ($('#file3')[0].files[i].size < maxFileSize) {
+                            if (fileExtension == "png" || fileExtension == "jpeg") {
+                                children += '<div class="upload-item"><span class="fa fa-picture-o" style = "margin-bottom:-20px;" ></span ><span style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else if (fileExtension == "pdf") {
+                                children += '<div class="upload-item"><span class="fa fa-file-pdf-o" style = "margin-bottom:-20px;" ></span ><span style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                            else {
+                                children += '<div class="upload-item"><span class="fa fa-file fa-3" style = "margin-bottom:-20px;" ></span ><span style="margin-bottom:-20px;">'
+                                    + input.files.item(i).name + '</span></div>';
+                            }
+                        }
+                        else { $('#file3size').text('File too big ! Select file less than 100 MB') }
+                    }
+                    else { $('#file3size').text('File is invalid ! Please upload valid file.') }
+                }
+                output.innerHTML = children;
+                $("#tr_fileListLM").show();
+                $("#fileAttachments").show();
+            }
+        }
+        else {
+            var Lecture_Id = '@Model.LectureId';
+
+            if (Lecture_Id == "") {
+                //$('#ddBrand').attr("style"," width: 310px");
+                //$('#ddEvent').attr("style", "width: 310px");
+            }
+            else {
+                //$('#ddBrand').attr("style", "width: 220px");
+                //$('#ddEvent').attr("style", "width: 230px");
+                //$('#ddLecture').attr("style", "width : 250px");
+            }
+        }
+
+        updateListHCP = function () {
+            $('#file5size').text('');
+            var input = document.getElementById('file5');
+            var output = document.getElementById('fileListHCP');
+            var children = "";
+            for (var i = 0; i < input.files.length; ++i) {
+                var fileName = $('#file5')[0].files[i].name;
+                var fileExtension = fileName.split('.').pop();
+                if ($('#file5')[0].files[i].size != 0) {
+                    if ($('#file5')[0].files[i].size < maxFileSize) {
+                        if (fileExtension == "png" || fileExtension == "jpeg") {
+                            children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-picture-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                + input.files.item(i).name + '</span></div><br />';
+                        }
+                        else if (fileExtension == "pdf") {
+                            children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file-pdf-o" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                + input.files.item(i).name + '</span></div><br />';
+                        }
+                        else {
+                            children += '<div class="upload-item"><label title="Remove" class="RemoveFileICP" data-fileid="' + i + '" id="aRemoveFileICP' + i + '" style="font-weight: bold;">X</label><span class="fa fa-file fa-3" id="file_ICP_img' + i + '" style = "margin-bottom:-20px;" ></span ><span id="fileInvProof' + i + '" style="margin-bottom:-20px;">'
+                                + input.files.item(i).name + '</span></div><br />';
+                        }
+                    }
+                    else { $('#file5size').text('File too big ! Select file less than 100 MB') }
+                }
+                else { $('#file5size').text('File is invalid ! Please upload valid file.') }
+            }
+            output.innerHTML = children;
+            $("#fileAttachments").show();
+        }
+        if (Zone_Name == "Rare Disease") {
+            addapprox();
+        }
+        else {
+            addapprox();
+        }
+        $(document).on('click', '.RemoveFileICP', function () {
+
+            var id = $(this).data('fileid');
+
+            $("#fileInvProof" + id).empty();
+            $("#file_ICP_img" + id).removeClass();
+            $("#aRemoveFileICP" + id).hide();
+            $('#file5').prop("value", "");
+        });
+
+        $("#Proposednumberofattendee").on('input', function () {
+            var data = $("#CostPerPAX").val()
+            var calculated_total_sum = 0;
+            if (data != 0.00) {
+                calculated_total_sum += $("#CostPerPAX").val() * $("#Proposednumberofattendee").val()
+                $("#txtApproximatecost").val(calculated_total_sum);
+            }
+        });
+
+        $("#Assessment").change(function () {
+            $("#divLoadedAssesmentFile").hide();
+            var data = $("#Assessment").val();
+            if (data!="") {
+                $("#divAssessmentPartialView").show();
+                $.ajax({
+                    url: '@Url.Action("Assessment")',
+                    contentType: 'application/html; charset=utf-8',
+                    type: 'GET',
+                    dataType: 'html',
+                    data: { id: data }
+                }).success(function (result) {
+                    $('#divAssessmentPartialView').html(result);
+                });
+            }
+            else {
+                $("#divAssessmentPartialView").hide();
+            }
+        });
+
+        $('#ddMeetingType').change(function () {
+            var id = $('#ddMeetingType').val()
+            if (id == 1) {
+                $('#IsVirtual').val(true);
+                $(".spanbtc").hide();
+                $('.HQmandatory').hide();
+                $('#isBTC').removeAttr('checked');
+                $('#isNotBTC').removeAttr('checked');
+                $('#isBTC').attr("disabled", true);
+                $('#isNotBTC').attr("disabled", true);
+            }
+            else {
+                $('#IsVirtual').val(false);
+                $(".spanbtc").show();
+                $('.HQmandatory').show();
+                $('#isBTC').attr("disabled", false);
+                $('#isNotBTC').attr("disabled", false);
+            }
+        });
+
+
+        $("#btnParticipants").click(function () {
+            var values = new Array();
+            $.each($("input[type=checkbox]:checked"), function () {
+                var data = $(this).parents('tr:eq(0)');
+                values.push({ 'ID': $(data).find('td:eq(0)').text(), 'Name': $(data).find('td:eq(2)').text(), 'PAN': $(data).find('td:eq(3)').text(), 'Email_Id': $(data).find('td:eq(4)').text(), 'Phone_Number': $(data).find('td:eq(5)').text(), 'Customer_ID': $(data).find('td:eq(6)').text() });
+            });
+
+            $("#jsonParticipantsdata").val(JSON.stringify(values));
+        });
+    });
+
+    function setHCPType(t) {
+        $('#hcpType').val(t);
+        return true;
+    }
+    $(document).on('input', '.add-approxcost', function () {
+        addapprox();
+    });
+    function addapprox() {
+        var calculated_total_sum = 0;
+        $(".add-approxcost").each(function () {
+            var get_textbox_value = $(this).val();
+            if ($.isNumeric(get_textbox_value)) {
+               // calculated_total_sum += parseFloat(get_textbox_value);
+                calculated_total_sum += parseFloat(get_textbox_value) * $("#Proposednumberofattendee").val();
+            }
+
+        });
+        $(".misc-cost-to-add").each(function () {
+            var get_textbox_value = parseInt($(this).html());
+            if ($.isNumeric(get_textbox_value)) {
+                calculated_total_sum += parseFloat(get_textbox_value);
+            }
+        });
+        $(".hcp-cost-to-add").each(function () {
+            var get_textbox_value = parseInt($(this).html());
+            if ($.isNumeric(get_textbox_value)) {
+                calculated_total_sum += parseFloat(get_textbox_value);
+            }
+        });
+        $("#txtApproximatecost").val(calculated_total_sum);
+    }
+
+
+    $("#file1").on('click', function () {
+        $("#error_PAImageFile").hide();
+        //var value = $("#file1").val();
+        //if (value == "") {
+        //    // alert(value);
+        //    debugger
+        //    $("#error_PAImageFile").show();
+        //} else {
+
+        //}
+    });
+
+    $("#file2").on('click', function () {
+        $("#error_HQImageFile").hide();
+        //var value = $("#file2").val();
+        //if (value == "") {
+        //    // alert(value);
+        //   // debugger
+        //    $("#error_HQImageFile").show();
+        //} else {
+
+        //}
+    });
+
+    $("#file4").on('click', function () {
+        $("#error_HERImageFile").hide();
+        //var value = $("#file4").val();
+        //if (value == "" || value == null) {
+        //    //alert(value);
+        //    //ebugger
+        //    $("#error_HERImageFile").show();
+        //} else {
+
+        //}
+    });
+
+</script>
+
+

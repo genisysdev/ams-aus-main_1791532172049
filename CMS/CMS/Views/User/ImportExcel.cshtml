@@ -1,0 +1,77 @@
+﻿@model CME.Models.Excel
+
+@{
+    ViewBag.Title = "Import Excel";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+<h2 class="section-ttl" style="padding-top:20px;">Import Excel</h2>
+
+@using (Html.BeginForm("ImportExcel", "User", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="tab-content contentcolor">
+        <div class="form-otrcontainer">
+            <div class="row align-items-center">
+                @if (TempData["Message"] != null)
+                {
+                    <fieldset class="form-columns-3 col4-label-ht">
+                        <div class="alert @TempData["MessageClass"].ToString() alert-dismissable" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            @TempData["Message"]
+                        </div>
+                    </fieldset>
+                }
+                <div>
+                    <h5 class="mandatory-field">@ViewBag.Createddate</h5>
+                    <br />
+                </div>
+                <div class="col-md-6 mb-2">
+
+                </div>
+                <div class="form-group" id="divLMCreate">
+                    <label>Cost center file <span class="mandatory-field">*</span></label>
+                    @Html.TextBoxFor(m => m.FileUpload, new { type = "file", id = "file6", multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.FileUpload, "", new { @class = "text-danger" })
+                    <span class="text-danger" id="file6size"></span>
+                </div>
+                <div class="col-md-6 mb-2"></div>
+                <div class="form-group">
+                    <button type="submit" class="btn add-btn" id="Upload">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var maxFileSize = 104857600;
+        $('#file6').change(function () {
+            $('#file6size').text('');
+            var input = document.getElementById('file6');
+            var fileName = $('#file6')[0].files[0].name;
+            var fileExtension = fileName.split('.').pop();
+            if (fileExtension == "xls" || fileExtension == "xlsx") {
+                $("#Upload").attr("disabled", false);
+                for (var i = 0; i < input.files.length; ++i) {
+                    if ($('#file6')[0].files[i].size != 0) {
+                        if ($('#file6')[0].files[i].size > maxFileSize) {
+                            $('#file6size').text('File too big ! Select file less than 100 MB');
+                            $("#CreateLM").attr("disabled", true);
+                        }
+                        else { $('#CreateLM').attr("disabled", false); }
+                    }
+                    else { $('#file6size').text('File is invalid ! Please upload valid file.'); }
+                }
+            }
+            else {
+                $('#file6size').text('File is invalid ! Please upload excel file.').show();
+                $("#Upload").attr("disabled", true);
+            }
+        });
+    });
+
+</script>

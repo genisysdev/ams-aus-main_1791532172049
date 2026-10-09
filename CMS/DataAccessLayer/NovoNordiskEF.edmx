@@ -1,0 +1,2459 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="NovoNordiskModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AMS_Config">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Modified_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="AMS_RawData">
+          <Key>
+            <PropertyRef Name="TableName" />
+          </Key>
+          <Property Name="TableName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RawDataQuery" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="Assessment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Sort_Order" Type="int" />
+          <Property Name="File_Name" Type="varchar" MaxLength="500" />
+          <Property Name="File_Path" Type="varchar" MaxLength="1000" />
+          <Property Name="File_Type" Type="varchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Brand">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Therapy_Area_Id" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="Cost_Centre">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="12" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CostCentre_To_CT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CostCentre_Id" Type="int" />
+          <Property Name="User_Id" Type="int" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Deviation_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Division_To_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Division_Id" Type="int" Nullable="false" />
+          <Property Name="User_Id" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="250" />
+          <Property Name="Sort_Order" Type="int" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Brand_Id" Type="tinyint" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Cost_Centre" Type="varchar" MaxLength="12" />
+        </EntityType>
+        <EntityType Name="HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="First_Name" Type="varchar" MaxLength="50" />
+          <Property Name="Last_Name" Type="varchar" MaxLength="50" />
+          <Property Name="TMF_No" Type="varchar" MaxLength="10" />
+          <Property Name="Coupa_No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Vendor_No" Type="varchar" MaxLength="10" />
+          <Property Name="TA_Id" Type="tinyint" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="1000" />
+          <Property Name="Is_Contract" Type="bit" />
+          <Property Name="City" Type="varchar" MaxLength="30" />
+          <Property Name="Phone_Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Email_Id" Type="nvarchar" MaxLength="50" />
+          <Property Name="Contract_Start_Date" Type="datetime" />
+          <Property Name="Contract_End_Date" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Lecture_Materials">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Lecture_Id" Type="int" Nullable="false" />
+          <Property Name="Doc_Name" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Doc_Path" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Lectures">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Brand_Id" Type="tinyint" Nullable="false" />
+          <Property Name="Event_Id" Type="int" />
+          <Property Name="Lecture" Type="varchar" MaxLength="300" />
+          <Property Name="Package_Type_Id" Type="tinyint" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Miscellaneous_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Package_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Issued_By_Id" Type="int" Nullable="false" />
+          <Property Name="Issued_Date" Type="datetime" />
+          <Property Name="Request_Type_Id" Type="tinyint" Nullable="false" />
+          <Property Name="PAF_Status_Id" Type="tinyint" Nullable="false" />
+          <Property Name="Activity_Name" Type="varchar" MaxLength="250" />
+          <Property Name="Activity_Start_Date" Type="datetime" Nullable="false" />
+          <Property Name="Activity_End_Date" Type="datetime" Nullable="false" />
+          <Property Name="No_Of_Days" Type="int" Nullable="false" />
+          <Property Name="Actual_Start_Date" Type="datetime" Nullable="false" />
+          <Property Name="Actual_End_Date" Type="datetime" Nullable="false" />
+          <Property Name="Change_Start_Date" Type="datetime" />
+          <Property Name="Change_End_Date" Type="datetime" />
+          <Property Name="IsDateDeviation" Type="bit" Nullable="false" />
+          <Property Name="Proposed_Attendee_Count" Type="int" Nullable="false" />
+          <Property Name="Room_Rate" Type="smallmoney" Nullable="false" />
+          <Property Name="Banquet_Room_Rate" Type="smallmoney" Nullable="false" />
+          <Property Name="Cost_Per_Pax" Type="smallmoney" Nullable="false" />
+          <Property Name="Min_Guarantee_Count" Type="int" Nullable="false" />
+          <Property Name="Approximate_Count" Type="int" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
+          <Property Name="Hotel" Type="varchar" MaxLength="500" />
+          <Property Name="Hotel_Star" Type="decimal" Precision="3" Scale="2" />
+          <Property Name="Hotel_Document_Name" Type="varchar" MaxLength="50" />
+          <Property Name="Hotel_Document_Path" Type="varchar" MaxLength="50" />
+          <Property Name="CME_Type" Type="varchar" MaxLength="20" />
+          <Property Name="Brand_Id" Type="tinyint" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Therapy_Area_Id" Type="tinyint" />
+          <Property Name="TotalCost" Type="money" Nullable="false" />
+          <Property Name="City_Id" Type="int" />
+          <Property Name="Event_Id" Type="int" />
+          <Property Name="Approver" Type="varchar" MaxLength="100" />
+          <Property Name="IsDeviationApproved" Type="bit" Nullable="false" />
+          <Property Name="Hospital_Meeting" Type="bit" Nullable="false" />
+          <Property Name="Is_Postponed" Type="bit" Nullable="false" />
+          <Property Name="Disease_Area" Type="varchar" MaxLength="50" />
+          <Property Name="Is_DownloadSapFile" Type="bit" Nullable="false" />
+          <Property Name="Is_BTC" Type="bit" />
+          <Property Name="Lecture_Id" Type="int" />
+          <Property Name="IsVirtual" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="Cost_Centre" Type="varchar" MaxLength="200" />
+          <Property Name="Meetingtype_Id" Type="tinyint" />
+          <Property Name="Policy_Violation" Type="bit" />
+          <Property Name="WorkUnit_Id" Type="int" />
+          <Property Name="SAP_ReportGeneration" Type="varchar" MaxLength="30" />
+          <Property Name="Final_CME_Expenses" Type="money" />
+          <Property Name="Actual_Attendees" Type="int" />
+          <Property Name="Activity_Type_Id" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="PAF_ActivityType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_Attachment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="File_Name" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="File_Path" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="File_Type" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Saved_File_Name" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="25" />
+          <Property Name="HCP_Name" Type="varchar" MaxLength="50" />
+          <Property Name="Post_Type" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="PAF_Command">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="varchar" MaxLength="1000" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_Deviation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="Deviation_Type_Id" Type="tinyint" Nullable="false" />
+          <Property Name="DeviationBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="HCP_Id" Type="int" />
+          <Property Name="HCP_First_Name" Type="varchar" MaxLength="50" />
+          <Property Name="HCP_Last_Name" Type="varchar" MaxLength="50" />
+          <Property Name="TMF_No" Type="varchar" MaxLength="10" />
+          <Property Name="HCP_Payable" Type="money" Nullable="false" />
+          <Property Name="Is_Honorarium" Type="bit" Nullable="false" />
+          <Property Name="Invitation_Email" Type="varchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Type_Of_HCP_Id" Type="tinyint" />
+          <Property Name="HCP_Topic" Type="varchar" MaxLength="1000" />
+          <Property Name="Net_Amount" Type="money" />
+          <Property Name="Tax_Amount" Type="money" />
+          <Property Name="Total_Amount" Type="money" />
+          <Property Name="Invoice_No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Invoice_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PAF_Meetingtype">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PAF_Miscellaneous">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="Type_Id" Type="int" Nullable="false" />
+          <Property Name="Price" Type="smallmoney" Nullable="false" />
+          <Property Name="Comment" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_Participants">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" />
+          <Property Name="HCP_Id" Type="int" />
+          <Property Name="Participants_Name" Type="varchar" MaxLength="50" />
+          <Property Name="PAN_No" Type="varchar" MaxLength="10" />
+          <Property Name="Participants_Email_ID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Participants_Phone_Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Participants_Customer_ID" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PAF_Request_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PAF_Transaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAF_Id" Type="int" Nullable="false" />
+          <Property Name="Request_Type_Id" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="Profiles_To_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Profile_Id" Type="tinyint" Nullable="false" />
+          <Property Name="User_Id" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Therapy_Area">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort_Order" Type="tinyint" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Type_Of_HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="SurName" Type="varchar" MaxLength="50" />
+          <Property Name="Initials" Type="varchar" MaxLength="4" />
+          <Property Name="Mgr_Id" Type="int" />
+          <Property Name="Position" Type="varchar" MaxLength="150" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+          <Property Name="CC_Id" Type="int" Nullable="false" />
+          <Property Name="TA_Id" Type="tinyint" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="EmpId" Type="int" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK__Brand__Therapy_A">
+          <End Role="Therapy_Area" Type="Self.Therapy_Area" Multiplicity="0..1" />
+          <End Role="Brand" Type="Self.Brand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Brand">
+              <PropertyRef Name="Therapy_Area_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__User___03F0984C">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__User___08B54D69">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Event__Brand_Id">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="Brand_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PAF__ActivityType_Id">
+          <End Role="PAF_ActivityType" Type="Self.PAF_ActivityType" Multiplicity="0..1" />
+          <End Role="PAF" Type="Self.PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_ActivityType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Activity_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Division_To_User_User_Id">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Division_To_User" Type="Self.Division_To_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Division_To_User">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HCP_TA_Id">
+          <End Role="Therapy_Area" Type="Self.Therapy_Area" Multiplicity="1" />
+          <End Role="HCP" Type="Self.HCP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HCP">
+              <PropertyRef Name="TA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lecture_Materials_Lecture_Id">
+          <End Role="Lectures" Type="Self.Lectures" Multiplicity="1" />
+          <End Role="Lecture_Materials" Type="Self.Lecture_Materials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lectures">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lecture_Materials">
+              <PropertyRef Name="Lecture_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lectures_Brand_Id">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="1" />
+          <End Role="Lectures" Type="Self.Lectures" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lectures">
+              <PropertyRef Name="Brand_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lectures_Event_Id">
+          <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+          <End Role="Lectures" Type="Self.Lectures" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lectures">
+              <PropertyRef Name="Event_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lectures_PT_Id">
+          <End Role="Package_Type" Type="Self.Package_Type" Multiplicity="1" />
+          <End Role="Lectures" Type="Self.Lectures" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Package_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lectures">
+              <PropertyRef Name="Package_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Meetingtype_Id">
+          <End Role="PAF_Meetingtype" Type="Self.PAF_Meetingtype" Multiplicity="0..1" />
+          <End Role="PAF" Type="Self.PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Meetingtype">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Meetingtype_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_ModifiedBy">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="PAF" Type="Self.PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Request_Id">
+          <End Role="PAF_Request_Type" Type="Self.PAF_Request_Type" Multiplicity="1" />
+          <End Role="PAF" Type="Self.PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Request_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Request_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Status_Id">
+          <End Role="PAF_Status" Type="Self.PAF_Status" Multiplicity="1" />
+          <End Role="PAF" Type="Self.PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Status">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="PAF_Status_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_CreatedBy">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="PAF_Transaction" Type="Self.PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_PAF_Id">
+          <End Role="PAF" Type="Self.PAF" Multiplicity="1" />
+          <End Role="PAF_Transaction" Type="Self.PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="PAF_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_Request_Id">
+          <End Role="PAF_Request_Type" Type="Self.PAF_Request_Type" Multiplicity="1" />
+          <End Role="PAF_Transaction" Type="Self.PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Request_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="Request_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_CC_Id">
+          <End Role="Cost_Centre" Type="Self.Cost_Centre" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cost_Centre">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="CC_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Mgr_Id">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User1" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User1">
+              <PropertyRef Name="Mgr_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_TA_Id">
+          <End Role="Therapy_Area" Type="Self.Therapy_Area" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="TA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AutoIssueFix_MeetingType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pafId" Type="int" Mode="In" />
+          <Parameter Name="meetingType" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AutoIssueFix_PAF_Transaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pafId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetReportData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STARTDATE" Type="varchar" Mode="In" />
+          <Parameter Name="ENDDATE" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="GetReportFor_Compliance_tracker" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Initials" Type="nvarchar" Mode="In" />
+          <Parameter Name="Zone" Type="tinyint" Mode="In" />
+          <Parameter Name="Therapy" Type="tinyint" Mode="In" />
+          <Parameter Name="Brand" Type="tinyint" Mode="In" />
+          <Parameter Name="FromDt" Type="datetime" Mode="In" />
+          <Parameter Name="ToDt" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="GetReportFor_PAF" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Initials" Type="nvarchar" Mode="In" />
+          <Parameter Name="Manager" Type="nvarchar" Mode="In" />
+          <Parameter Name="Zone" Type="tinyint" Mode="In" />
+          <Parameter Name="Therapy" Type="tinyint" Mode="In" />
+          <Parameter Name="Brand" Type="tinyint" Mode="In" />
+          <Parameter Name="FromDt" Type="datetime" Mode="In" />
+          <Parameter Name="ToDt" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="GetReportFor_PAF_HCP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FromDt" Type="date" Mode="In" />
+          <Parameter Name="ToDt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="SP_SAP_Get_Request_Type_Id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PafId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_SAP_GetPAFforNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_SAP_TextFileReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="STARTDATE" Type="varchar" Mode="In" />
+          <Parameter Name="ENDDATE" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SP_Update_SAP_ReportGenaration" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="ufnGetAllCategories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="ParentProductCategoryName" Type="nvarchar" MaxLength="50" />
+                <Property Name="ProductCategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+                <Property Name="ProductCategoryID" Type="int" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="ufnGetSalesOrderStatusText" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="Status" Type="tinyint" Mode="In" />
+        </Function>
+        <Function Name="Usp_CreateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="varchar" Mode="In" />
+          <Parameter Name="SurName" Type="varchar" Mode="In" />
+          <Parameter Name="Initials" Type="varchar" Mode="In" />
+          <Parameter Name="Mgr_Id" Type="int" Mode="In" />
+          <Parameter Name="Position" Type="varchar" Mode="In" />
+          <Parameter Name="Status" Type="bit" Mode="In" />
+          <Parameter Name="IsAdmin" Type="bit" Mode="In" />
+          <Parameter Name="CC_Id" Type="int" Mode="In" />
+          <Parameter Name="TA_Id" Type="tinyint" Mode="In" />
+          <Parameter Name="CreatedBy" Type="int" Mode="In" />
+          <Parameter Name="EmpId" Type="int" Mode="In" />
+          <Parameter Name="Email" Type="varchar" Mode="In" />
+          <Parameter Name="Role_Id" Type="tinyint" Mode="In" />
+        </Function>
+        <Function Name="usp_GetDeviationReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Initials" Type="nvarchar" Mode="In" />
+          <Parameter Name="Manager" Type="nvarchar" Mode="In" />
+          <Parameter Name="Zone" Type="tinyint" Mode="In" />
+          <Parameter Name="Therapy" Type="tinyint" Mode="In" />
+          <Parameter Name="Brand" Type="tinyint" Mode="In" />
+          <Parameter Name="FromDt" Type="datetime" Mode="In" />
+          <Parameter Name="ToDt" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="usp_GetTableData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TableName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Initials" Type="nvarchar" Mode="In" />
+          <Parameter Name="Manager" Type="nvarchar" Mode="In" />
+          <Parameter Name="Zone" Type="tinyint" Mode="In" />
+          <Parameter Name="Therapy" Type="tinyint" Mode="In" />
+          <Parameter Name="Brand" Type="tinyint" Mode="In" />
+          <Parameter Name="FromDt" Type="datetime" Mode="In" />
+          <Parameter Name="ToDt" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="uspGetRawData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Initials" Type="nvarchar" Mode="In" />
+          <Parameter Name="Manager" Type="nvarchar" Mode="In" />
+          <Parameter Name="Zone" Type="tinyint" Mode="In" />
+          <Parameter Name="Therapy" Type="tinyint" Mode="In" />
+          <Parameter Name="Brand" Type="tinyint" Mode="In" />
+          <Parameter Name="FromDt" Type="datetime" Mode="In" />
+          <Parameter Name="ToDt" Type="datetime" Mode="In" />
+        </Function>
+        <EntityContainer Name="NovoNordiskModelStoreContainer">
+          <EntitySet Name="AMS_Config" EntityType="Self.AMS_Config" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AMS_RawData" EntityType="Self.AMS_RawData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Assessment" EntityType="Self.Assessment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Brand" EntityType="Self.Brand" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cost_Centre" EntityType="Self.Cost_Centre" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CostCentre_To_CT" EntityType="Self.CostCentre_To_CT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Deviation_Type" EntityType="Self.Deviation_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Division_To_User" EntityType="Self.Division_To_User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HCP" EntityType="Self.HCP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lecture_Materials" EntityType="Self.Lecture_Materials" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lectures" EntityType="Self.Lectures" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Miscellaneous_Type" EntityType="Self.Miscellaneous_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Package_Type" EntityType="Self.Package_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF" EntityType="Self.PAF" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_ActivityType" EntityType="Self.PAF_ActivityType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Attachment" EntityType="Self.PAF_Attachment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Command" EntityType="Self.PAF_Command" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Deviation" EntityType="Self.PAF_Deviation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_HCP" EntityType="Self.PAF_HCP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Meetingtype" EntityType="Self.PAF_Meetingtype" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Miscellaneous" EntityType="Self.PAF_Miscellaneous" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Participants" EntityType="Self.PAF_Participants" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Request_Type" EntityType="Self.PAF_Request_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Status" EntityType="Self.PAF_Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAF_Transaction" EntityType="Self.PAF_Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Profile" EntityType="Self.Profile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Profiles_To_User" EntityType="Self.Profiles_To_User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Therapy_Area" EntityType="Self.Therapy_Area" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Type_Of_HCP" EntityType="Self.Type_Of_HCP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Brand__Therapy_A" Association="Self.FK__Brand__Therapy_A">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="Brand" EntitySet="Brand" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__User___03F0984C" Association="Self.FK__CostCentr__User___03F0984C">
+            <End Role="User" EntitySet="User" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__User___08B54D69" Association="Self.FK__CostCentr__User___08B54D69">
+            <End Role="User" EntitySet="User" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Event__Brand_Id" Association="Self.FK__Event__Brand_Id">
+            <End Role="Brand" EntitySet="Brand" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PAF__ActivityType_Id" Association="Self.FK__PAF__ActivityType_Id">
+            <End Role="PAF_ActivityType" EntitySet="PAF_ActivityType" />
+            <End Role="PAF" EntitySet="PAF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Division_To_User_User_Id" Association="Self.FK_Division_To_User_User_Id">
+            <End Role="User" EntitySet="User" />
+            <End Role="Division_To_User" EntitySet="Division_To_User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HCP_TA_Id" Association="Self.FK_HCP_TA_Id">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="HCP" EntitySet="HCP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lecture_Materials_Lecture_Id" Association="Self.FK_Lecture_Materials_Lecture_Id">
+            <End Role="Lectures" EntitySet="Lectures" />
+            <End Role="Lecture_Materials" EntitySet="Lecture_Materials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lectures_Brand_Id" Association="Self.FK_Lectures_Brand_Id">
+            <End Role="Brand" EntitySet="Brand" />
+            <End Role="Lectures" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lectures_Event_Id" Association="Self.FK_Lectures_Event_Id">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Lectures" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lectures_PT_Id" Association="Self.FK_Lectures_PT_Id">
+            <End Role="Package_Type" EntitySet="Package_Type" />
+            <End Role="Lectures" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Meetingtype_Id" Association="Self.FK_PAF_Meetingtype_Id">
+            <End Role="PAF_Meetingtype" EntitySet="PAF_Meetingtype" />
+            <End Role="PAF" EntitySet="PAF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_ModifiedBy" Association="Self.FK_PAF_ModifiedBy">
+            <End Role="User" EntitySet="User" />
+            <End Role="PAF" EntitySet="PAF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Request_Id" Association="Self.FK_PAF_Request_Id">
+            <End Role="PAF_Request_Type" EntitySet="PAF_Request_Type" />
+            <End Role="PAF" EntitySet="PAF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Status_Id" Association="Self.FK_PAF_Status_Id">
+            <End Role="PAF_Status" EntitySet="PAF_Status" />
+            <End Role="PAF" EntitySet="PAF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_CreatedBy" Association="Self.FK_PAF_Transaction_CreatedBy">
+            <End Role="User" EntitySet="User" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_PAF_Id" Association="Self.FK_PAF_Transaction_PAF_Id">
+            <End Role="PAF" EntitySet="PAF" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_Request_Id" Association="Self.FK_PAF_Transaction_Request_Id">
+            <End Role="PAF_Request_Type" EntitySet="PAF_Request_Type" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_CC_Id" Association="Self.FK_User_CC_Id">
+            <End Role="Cost_Centre" EntitySet="Cost_Centre" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Mgr_Id" Association="Self.FK_User_Mgr_Id">
+            <End Role="User" EntitySet="User" />
+            <End Role="User1" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_TA_Id" Association="Self.FK_User_TA_Id">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NovoNordiskModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="ufnGetAllCategories_Result">
+          <Property Name="ParentProductCategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductCategoryID" Type="Int32" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="AMS_Config">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Modified_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="AMS_RawData">
+          <Key>
+            <PropertyRef Name="TableName" />
+          </Key>
+          <Property Name="TableName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RawDataQuery" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Assessment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sort_Order" Type="Int32" />
+          <Property Name="File_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="File_Path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="File_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Brand">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Therapy_Area_Id" Type="Byte" />
+          <NavigationProperty Name="Therapy_Area" Relationship="Self.FK__Brand__Therapy_A" FromRole="Brand" ToRole="Therapy_Area" />
+          <NavigationProperty Name="Events" Relationship="Self.FK__Event__Brand_Id" FromRole="Brand" ToRole="Event" />
+          <NavigationProperty Name="Lectures" Relationship="NovoNordiskModel.FK_Lectures_Brand_Id" FromRole="Brand" ToRole="Lecture" />
+        </EntityType>
+        <EntityType Name="Cost_Centre">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CostCentre_To_CT" Relationship="Self.FK__CostCentr__CostC__02FC7413" FromRole="Cost_Centre" ToRole="CostCentre_To_CT" />
+          <NavigationProperty Name="CostCentre_To_CT1" Relationship="Self.FK__CostCentr__CostC__07C12930" FromRole="Cost_Centre" ToRole="CostCentre_To_CT" />
+          <NavigationProperty Name="Users" Relationship="NovoNordiskModel.FK_User_CC_Id" FromRole="Cost_Centre" ToRole="User" />
+        </EntityType>
+        <EntityType Name="CostCentre_To_CT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CostCentre_Id" Type="Int32" />
+          <Property Name="User_Id" Type="Int32" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Cost_Centre" Relationship="Self.FK__CostCentr__CostC__02FC7413" FromRole="CostCentre_To_CT" ToRole="Cost_Centre" />
+          <NavigationProperty Name="Cost_Centre1" Relationship="Self.FK__CostCentr__CostC__07C12930" FromRole="CostCentre_To_CT" ToRole="Cost_Centre" />
+          <NavigationProperty Name="User" Relationship="Self.FK__CostCentr__User___03F0984C" FromRole="CostCentre_To_CT" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="Self.FK__CostCentr__User___08B54D69" FromRole="CostCentre_To_CT" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Deviation_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Division_To_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Division_Id" Type="Int32" Nullable="false" />
+          <Property Name="User_Id" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Division_To_User_User_Id" FromRole="Division_To_User" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Sort_Order" Type="Int32" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Brand_Id" Type="Byte" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Cost_Centre" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Brand" Relationship="Self.FK__Event__Brand_Id" FromRole="Event" ToRole="Brand" />
+          <NavigationProperty Name="Lectures" Relationship="NovoNordiskModel.FK_Lectures_Event_Id" FromRole="Event" ToRole="Lecture" />
+        </EntityType>
+        <EntityType Name="Lecture_Materials">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Lecture_Id" Type="Int32" Nullable="false" />
+          <Property Name="Doc_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Doc_Path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Lecture" Relationship="NovoNordiskModel.FK_Lecture_Materials_Lecture_Id" FromRole="Lecture_Materials" ToRole="Lecture" />
+        </EntityType>
+        <EntityType Name="Lecture">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Brand_Id" Type="Byte" Nullable="false" />
+          <Property Name="Event_Id" Type="Int32" />
+          <Property Name="Lecture1" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Package_Type_Id" Type="Byte" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Brand" Relationship="NovoNordiskModel.FK_Lectures_Brand_Id" FromRole="Lecture" ToRole="Brand" />
+          <NavigationProperty Name="Event" Relationship="NovoNordiskModel.FK_Lectures_Event_Id" FromRole="Lecture" ToRole="Event" />
+          <NavigationProperty Name="Package_Type" Relationship="NovoNordiskModel.FK_Lectures_PT_Id" FromRole="Lecture" ToRole="Package_Type" />
+          <NavigationProperty Name="Lecture_Materials" Relationship="NovoNordiskModel.FK_Lecture_Materials_Lecture_Id" FromRole="Lecture" ToRole="Lecture_Materials" />
+        </EntityType>
+        <EntityType Name="Miscellaneous_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Package_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Lectures" Relationship="NovoNordiskModel.FK_Lectures_PT_Id" FromRole="Package_Type" ToRole="Lecture" />
+        </EntityType>
+        <EntityType Name="PAF">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Issued_By_Id" Type="Int32" Nullable="false" />
+          <Property Name="Issued_Date" Type="DateTime" Precision="3" />
+          <Property Name="Request_Type_Id" Type="Byte" Nullable="false" />
+          <Property Name="PAF_Status_Id" Type="Byte" Nullable="false" />
+          <Property Name="Activity_Name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Activity_Start_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Activity_End_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="No_Of_Days" Type="Int32" Nullable="false" />
+          <Property Name="Actual_Start_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Actual_End_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Change_Start_Date" Type="DateTime" Precision="3" />
+          <Property Name="Change_End_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsDateDeviation" Type="Boolean" Nullable="false" />
+          <Property Name="Proposed_Attendee_Count" Type="Int32" Nullable="false" />
+          <Property Name="Room_Rate" Type="Decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="Banquet_Room_Rate" Type="Decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="Cost_Per_Pax" Type="Decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="Min_Guarantee_Count" Type="Int32" Nullable="false" />
+          <Property Name="Approximate_Count" Type="Int32" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Hotel" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Hotel_Star" Type="Decimal" Precision="3" Scale="2" />
+          <Property Name="Hotel_Document_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Hotel_Document_Path" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CME_Type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Brand_Id" Type="Byte" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Therapy_Area_Id" Type="Byte" />
+          <Property Name="TotalCost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="City_Id" Type="Int32" />
+          <Property Name="Event_Id" Type="Int32" />
+          <Property Name="Approver" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsDeviationApproved" Type="Boolean" Nullable="false" />
+          <Property Name="Hospital_Meeting" Type="Boolean" Nullable="false" />
+          <Property Name="Is_Postponed" Type="Boolean" Nullable="false" />
+          <Property Name="Disease_Area" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Is_DownloadSapFile" Type="Boolean" Nullable="false" />
+          <Property Name="Is_BTC" Type="Boolean" />
+          <Property Name="Lecture_Id" Type="Int32" />
+          <Property Name="IsVirtual" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="Cost_Centre" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Meetingtype_Id" Type="Byte" />
+          <Property Name="Policy_Violation" Type="Boolean" />
+          <Property Name="SAP_ReportGeneration" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PAF_Meetingtype" Relationship="NovoNordiskModel.FK_PAF_Meetingtype_Id" FromRole="PAF" ToRole="PAF_Meetingtype" />
+          <NavigationProperty Name="User" Relationship="NovoNordiskModel.FK_PAF_ModifiedBy" FromRole="PAF" ToRole="User" />
+          <NavigationProperty Name="PAF_Request_Type" Relationship="NovoNordiskModel.FK_PAF_Request_Id" FromRole="PAF" ToRole="PAF_Request_Type" />
+          <NavigationProperty Name="PAF_Status" Relationship="NovoNordiskModel.FK_PAF_Status_Id" FromRole="PAF" ToRole="PAF_Status" />
+          <Property Name="Final_CME_Expenses" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Actual_Attendees" Type="Int32" />
+          <NavigationProperty Name="PAF_Transaction" Relationship="NovoNordiskModel.FK_PAF_Transaction_PAF_Id" FromRole="PAF" ToRole="PAF_Transaction" />
+          <Property Name="Activity_Type_Id" Type="Byte" />
+          <NavigationProperty Name="PAF_ActivityType" Relationship="NovoNordiskModel.FK__PAF__ActivityType_Id" FromRole="PAF" ToRole="PAF_ActivityType" />
+        </EntityType>
+        <EntityType Name="PAF_Attachment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="File_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="File_Path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="File_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Saved_File_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HCP_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Post_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PAF_Command">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="PAF_Deviation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="Deviation_Type_Id" Type="Byte" Nullable="false" />
+          <Property Name="DeviationBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="PAF_HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="HCP_Id" Type="Int32" />
+          <Property Name="HCP_Payable" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Is_Honorarium" Type="Boolean" Nullable="false" />
+          <Property Name="Invitation_Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Type_Of_HCP_Id" Type="Byte" />
+          <Property Name="HCP_Topic" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Net_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Tax_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Total_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Invoice_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Invoice_Date" Type="DateTime" Precision="3" />
+          <Property Name="TMF_No" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="HCP_First_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HCP_Last_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PAF_Meetingtype">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PAFs" Relationship="NovoNordiskModel.FK_PAF_Meetingtype_Id" FromRole="PAF_Meetingtype" ToRole="PAF" />
+        </EntityType>
+        <EntityType Name="PAF_Miscellaneous">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="Type_Id" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="4" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="PAF_Participants">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" />
+          <Property Name="HCP_Id" Type="Int32" />
+          <Property Name="Participants_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PAN_No" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Participants_Email_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Participants_Phone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Participants_Customer_ID" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PAF_Request_Type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="PAFs" Relationship="NovoNordiskModel.FK_PAF_Request_Id" FromRole="PAF_Request_Type" ToRole="PAF" />
+          <NavigationProperty Name="PAF_Transaction" Relationship="NovoNordiskModel.FK_PAF_Transaction_Request_Id" FromRole="PAF_Request_Type" ToRole="PAF_Transaction" />
+        </EntityType>
+        <EntityType Name="PAF_Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="PAFs" Relationship="NovoNordiskModel.FK_PAF_Status_Id" FromRole="PAF_Status" ToRole="PAF" />
+        </EntityType>
+        <EntityType Name="PAF_Transaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAF_Id" Type="Int32" Nullable="false" />
+          <Property Name="Request_Type_Id" Type="Byte" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="PAF" Relationship="NovoNordiskModel.FK_PAF_Transaction_PAF_Id" FromRole="PAF_Transaction" ToRole="PAF" />
+          <NavigationProperty Name="PAF_Request_Type" Relationship="NovoNordiskModel.FK_PAF_Transaction_Request_Id" FromRole="PAF_Transaction" ToRole="PAF_Request_Type" />
+          <NavigationProperty Name="User" Relationship="NovoNordiskModel.FK_PAF_Transaction_CreatedBy" FromRole="PAF_Transaction" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Profile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Profiles_To_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Profile_Id" Type="Byte" Nullable="false" />
+          <Property Name="User_Id" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Therapy_Area">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sort_Order" Type="Byte" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Brands" Relationship="Self.FK__Brand__Therapy_A" FromRole="Therapy_Area" ToRole="Brand" />
+          <NavigationProperty Name="HCPs" Relationship="NovoNordiskModel.FK_HCP_TA_Id" FromRole="Therapy_Area" ToRole="HCP" />
+          <NavigationProperty Name="Users" Relationship="NovoNordiskModel.FK_User_TA_Id" FromRole="Therapy_Area" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Type_Of_HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SurName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Initials" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Mgr_Id" Type="Int32" />
+          <Property Name="Position" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="CC_Id" Type="Int32" Nullable="false" />
+          <Property Name="TA_Id" Type="Byte" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EmpId" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CostCentre_To_CT" Relationship="Self.FK__CostCentr__User___03F0984C" FromRole="User" ToRole="CostCentre_To_CT" />
+          <NavigationProperty Name="CostCentre_To_CT1" Relationship="Self.FK__CostCentr__User___08B54D69" FromRole="User" ToRole="CostCentre_To_CT" />
+          <NavigationProperty Name="Division_To_User" Relationship="Self.FK_Division_To_User_User_Id" FromRole="User" ToRole="Division_To_User" />
+          <NavigationProperty Name="Cost_Centre" Relationship="NovoNordiskModel.FK_User_CC_Id" FromRole="User" ToRole="Cost_Centre" />
+          <NavigationProperty Name="Therapy_Area" Relationship="NovoNordiskModel.FK_User_TA_Id" FromRole="User" ToRole="Therapy_Area" />
+          <NavigationProperty Name="User1" Relationship="NovoNordiskModel.FK_User_Mgr_Id" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="User2" Relationship="NovoNordiskModel.FK_User_Mgr_Id" FromRole="User1" ToRole="User" />
+          <NavigationProperty Name="PAFs" Relationship="NovoNordiskModel.FK_PAF_ModifiedBy" FromRole="User" ToRole="PAF" />
+          <NavigationProperty Name="PAF_Transaction" Relationship="NovoNordiskModel.FK_PAF_Transaction_CreatedBy" FromRole="User" ToRole="PAF_Transaction" />
+        </EntityType>
+        <Association Name="FK__Brand__Therapy_A">
+          <End Role="Therapy_Area" Type="Self.Therapy_Area" Multiplicity="0..1" />
+          <End Role="Brand" Type="Self.Brand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Brand">
+              <PropertyRef Name="Therapy_Area_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Event__Brand_Id">
+          <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="Brand_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__CostC__02FC7413">
+          <End Role="Cost_Centre" Type="Self.Cost_Centre" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cost_Centre">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="CostCentre_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__CostC__07C12930">
+          <End Role="Cost_Centre" Type="Self.Cost_Centre" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cost_Centre">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="CostCentre_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__User___03F0984C">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CostCentr__User___08B54D69">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="CostCentre_To_CT" Type="Self.CostCentre_To_CT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CostCentre_To_CT">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Division_To_User_User_Id">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Division_To_User" Type="Self.Division_To_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Division_To_User">
+              <PropertyRef Name="User_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NovoNordiskEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AMS_Config" EntityType="Self.AMS_Config" />
+          <EntitySet Name="AMS_RawData" EntityType="Self.AMS_RawData" />
+          <EntitySet Name="Assessments" EntityType="Self.Assessment" />
+          <EntitySet Name="Brands" EntityType="Self.Brand" />
+          <EntitySet Name="Cost_Centre" EntityType="Self.Cost_Centre" />
+          <EntitySet Name="CostCentre_To_CT" EntityType="Self.CostCentre_To_CT" />
+          <EntitySet Name="Deviation_Type" EntityType="Self.Deviation_Type" />
+          <EntitySet Name="Division_To_User" EntityType="Self.Division_To_User" />
+          <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="Lecture_Materials" EntityType="Self.Lecture_Materials" />
+          <EntitySet Name="Lectures" EntityType="Self.Lecture" />
+          <EntitySet Name="Miscellaneous_Type" EntityType="Self.Miscellaneous_Type" />
+          <EntitySet Name="Package_Type" EntityType="Self.Package_Type" />
+          <EntitySet Name="PAFs" EntityType="Self.PAF" />
+          <EntitySet Name="PAF_Attachment" EntityType="Self.PAF_Attachment" />
+          <EntitySet Name="PAF_Command" EntityType="Self.PAF_Command" />
+          <EntitySet Name="PAF_Deviation" EntityType="Self.PAF_Deviation" />
+          <EntitySet Name="PAF_HCP" EntityType="Self.PAF_HCP" />
+          <EntitySet Name="PAF_Meetingtype" EntityType="Self.PAF_Meetingtype" />
+          <EntitySet Name="PAF_Miscellaneous" EntityType="Self.PAF_Miscellaneous" />
+          <EntitySet Name="PAF_Participants" EntityType="Self.PAF_Participants" />
+          <EntitySet Name="PAF_Request_Type" EntityType="Self.PAF_Request_Type" />
+          <EntitySet Name="PAF_Status" EntityType="Self.PAF_Status" />
+          <EntitySet Name="PAF_Transaction" EntityType="Self.PAF_Transaction" />
+          <EntitySet Name="Profiles" EntityType="Self.Profile" />
+          <EntitySet Name="Profiles_To_User" EntityType="Self.Profiles_To_User" />
+          <EntitySet Name="Therapy_Area" EntityType="Self.Therapy_Area" />
+          <EntitySet Name="Type_Of_HCP" EntityType="Self.Type_Of_HCP" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK__Brand__Therapy_A" Association="Self.FK__Brand__Therapy_A">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="Brand" EntitySet="Brands" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Event__Brand_Id" Association="Self.FK__Event__Brand_Id">
+            <End Role="Brand" EntitySet="Brands" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__CostC__02FC7413" Association="Self.FK__CostCentr__CostC__02FC7413">
+            <End Role="Cost_Centre" EntitySet="Cost_Centre" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__CostC__07C12930" Association="Self.FK__CostCentr__CostC__07C12930">
+            <End Role="Cost_Centre" EntitySet="Cost_Centre" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__User___03F0984C" Association="Self.FK__CostCentr__User___03F0984C">
+            <End Role="User" EntitySet="Users" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CostCentr__User___08B54D69" Association="Self.FK__CostCentr__User___08B54D69">
+            <End Role="User" EntitySet="Users" />
+            <End Role="CostCentre_To_CT" EntitySet="CostCentre_To_CT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Division_To_User_User_Id" Association="Self.FK_Division_To_User_User_Id">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Division_To_User" EntitySet="Division_To_User" />
+          </AssociationSet>
+          <FunctionImport Name="ufnGetAllCategories" IsComposable="true" ReturnType="Collection(NovoNordiskModel.ufnGetAllCategories_Result)" />
+          <FunctionImport Name="AutoIssueFix_MeetingType" ReturnType="Collection(Int32)">
+            <Parameter Name="pafId" Mode="In" Type="Int32" />
+            <Parameter Name="meetingType" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AutoIssueFix_PAF_Transaction" ReturnType="Collection(Int32)">
+          <Parameter Name="pafId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetReportData">
+            <Parameter Name="STARTDATE" Mode="In" Type="String" />
+            <Parameter Name="ENDDATE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetReportFor_Compliance_tracker">
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Zone" Mode="In" Type="Byte" />
+            <Parameter Name="Therapy" Mode="In" Type="Byte" />
+            <Parameter Name="Brand" Mode="In" Type="Byte" />
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="GetReportFor_PAF">
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Manager" Mode="In" Type="String" />
+            <Parameter Name="Zone" Mode="In" Type="Byte" />
+            <Parameter Name="Therapy" Mode="In" Type="Byte" />
+            <Parameter Name="Brand" Mode="In" Type="Byte" />
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="GetReportFor_PAF_HCP">
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SAP_Get_Request_Type_Id" ReturnType="Collection(Byte)">
+          <Parameter Name="PafId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_SAP_GetPAFforNo" />
+          <FunctionImport Name="SP_SAP_TextFileReport">
+            <Parameter Name="STARTDATE" Mode="In" Type="String" />
+            <Parameter Name="ENDDATE" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Update_SAP_ReportGenaration">
+          <Parameter Name="id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_CreateUser">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="SurName" Mode="In" Type="String" />
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Mgr_Id" Mode="In" Type="Int32" />
+            <Parameter Name="Position" Mode="In" Type="String" />
+            <Parameter Name="Status" Mode="In" Type="Boolean" />
+            <Parameter Name="IsAdmin" Mode="In" Type="Boolean" />
+            <Parameter Name="CC_Id" Mode="In" Type="Int32" />
+            <Parameter Name="TA_Id" Mode="In" Type="Byte" />
+            <Parameter Name="CreatedBy" Mode="In" Type="Int32" />
+            <Parameter Name="EmpId" Mode="In" Type="Int32" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Role_Id" Mode="In" Type="Byte" />
+          </FunctionImport>
+          <FunctionImport Name="usp_GetDeviationReport" ReturnType="Collection(NovoNordiskModel.usp_GetDeviationReport_Result)">
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Manager" Mode="In" Type="String" />
+            <Parameter Name="Zone" Mode="In" Type="Byte" />
+            <Parameter Name="Therapy" Mode="In" Type="Byte" />
+            <Parameter Name="Brand" Mode="In" Type="Byte" />
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_GetTableData">
+            <Parameter Name="TableName" Mode="In" Type="String" />
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Manager" Mode="In" Type="String" />
+            <Parameter Name="Zone" Mode="In" Type="Byte" />
+            <Parameter Name="Therapy" Mode="In" Type="Byte" />
+            <Parameter Name="Brand" Mode="In" Type="Byte" />
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="uspGetRawData" ReturnType="Collection(NovoNordiskModel.uspGetRawData_Result)">
+            <Parameter Name="Initials" Mode="In" Type="String" />
+            <Parameter Name="Manager" Mode="In" Type="String" />
+            <Parameter Name="Zone" Mode="In" Type="Byte" />
+            <Parameter Name="Therapy" Mode="In" Type="Byte" />
+            <Parameter Name="Brand" Mode="In" Type="Byte" />
+            <Parameter Name="FromDt" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <AssociationSet Name="FK_Lectures_Brand_Id" Association="NovoNordiskModel.FK_Lectures_Brand_Id">
+            <End Role="Brand" EntitySet="Brands" />
+            <End Role="Lecture" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lectures_Event_Id" Association="NovoNordiskModel.FK_Lectures_Event_Id">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Lecture" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lectures_PT_Id" Association="NovoNordiskModel.FK_Lectures_PT_Id">
+            <End Role="Package_Type" EntitySet="Package_Type" />
+            <End Role="Lecture" EntitySet="Lectures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Lecture_Materials_Lecture_Id" Association="NovoNordiskModel.FK_Lecture_Materials_Lecture_Id">
+            <End Role="Lecture" EntitySet="Lectures" />
+            <End Role="Lecture_Materials" EntitySet="Lecture_Materials" />
+          </AssociationSet>
+          <EntitySet Name="HCPs" EntityType="NovoNordiskModel.HCP" />
+          <AssociationSet Name="FK_HCP_TA_Id" Association="NovoNordiskModel.FK_HCP_TA_Id">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="HCP" EntitySet="HCPs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_CC_Id" Association="NovoNordiskModel.FK_User_CC_Id">
+            <End Role="Cost_Centre" EntitySet="Cost_Centre" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_TA_Id" Association="NovoNordiskModel.FK_User_TA_Id">
+            <End Role="Therapy_Area" EntitySet="Therapy_Area" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Mgr_Id" Association="NovoNordiskModel.FK_User_Mgr_Id">
+            <End Role="User" EntitySet="Users" />
+            <End Role="User1" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Meetingtype_Id" Association="NovoNordiskModel.FK_PAF_Meetingtype_Id">
+            <End Role="PAF_Meetingtype" EntitySet="PAF_Meetingtype" />
+            <End Role="PAF" EntitySet="PAFs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_ModifiedBy" Association="NovoNordiskModel.FK_PAF_ModifiedBy">
+            <End Role="User" EntitySet="Users" />
+            <End Role="PAF" EntitySet="PAFs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Request_Id" Association="NovoNordiskModel.FK_PAF_Request_Id">
+            <End Role="PAF_Request_Type" EntitySet="PAF_Request_Type" />
+            <End Role="PAF" EntitySet="PAFs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Status_Id" Association="NovoNordiskModel.FK_PAF_Status_Id">
+            <End Role="PAF_Status" EntitySet="PAF_Status" />
+            <End Role="PAF" EntitySet="PAFs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_PAF_Id" Association="NovoNordiskModel.FK_PAF_Transaction_PAF_Id">
+            <End Role="PAF" EntitySet="PAFs" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_Request_Id" Association="NovoNordiskModel.FK_PAF_Transaction_Request_Id">
+            <End Role="PAF_Request_Type" EntitySet="PAF_Request_Type" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PAF_Transaction_CreatedBy" Association="NovoNordiskModel.FK_PAF_Transaction_CreatedBy">
+            <End Role="User" EntitySet="Users" />
+            <End Role="PAF_Transaction" EntitySet="PAF_Transaction" />
+          </AssociationSet>
+          <EntitySet Name="PAF_ActivityType" EntityType="NovoNordiskModel.PAF_ActivityType" />
+          <AssociationSet Name="FK__PAF__ActivityType_Id" Association="NovoNordiskModel.FK__PAF__ActivityType_Id">
+            <End Role="PAF_ActivityType" EntitySet="PAF_ActivityType" />
+            <End Role="PAF" EntitySet="PAFs" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="usp_GetDeviationReport_Result">
+          <Property Type="Int32" Name="PAF_Id" Nullable="false" />
+          <Property Type="String" Name="MeetingType" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="IssuedBy_Id" Nullable="true" />
+          <Property Type="String" Name="IssuedBy_Initials" Nullable="true" MaxLength="4" />
+          <Property Type="Byte" Name="Deviation_Id" Nullable="false" />
+          <Property Type="String" Name="Deviation_Name" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="Deviation_Date" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="DeviationBy_Id" Nullable="true" />
+          <Property Type="String" Name="DeviationBy_Initials" Nullable="true" MaxLength="4" />
+        </ComplexType>
+        <ComplexType Name="uspGetRawData_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="Issued_By_Id" Nullable="false" />
+          <Property Type="String" Name="Issued_By_Initials" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="Issued_By_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Issued_By_SurName" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="Issued_Date" Nullable="true" Precision="23" />
+          <Property Type="Byte" Name="Request_Type_Id" Nullable="false" />
+          <Property Type="String" Name="Request_Type_Name" Nullable="true" MaxLength="50" />
+          <Property Type="Byte" Name="PAF_Status_Id" Nullable="false" />
+          <Property Type="String" Name="PAF_Status_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Activity_Name" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="Activity_Start_Date" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="Activity_End_Date" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="No_Of_Days" Nullable="false" />
+          <Property Type="DateTime" Name="Actual_Start_Date" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="Actual_End_Date" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="Change_Start_Date" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="Change_End_Date" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsDateDeviation" Nullable="false" />
+          <Property Type="Int32" Name="Proposed_Attendee_Count" Nullable="false" />
+          <Property Type="Decimal" Name="Room_Rate" Nullable="false" Precision="10" />
+          <Property Type="Decimal" Name="Banquet_Room_Rate" Nullable="false" Precision="10" />
+          <Property Type="Decimal" Name="Cost_Per_Pax" Nullable="false" Precision="10" />
+          <Property Type="Int32" Name="Min_Guarantee_Count" Nullable="false" />
+          <Property Type="Int32" Name="Approximate_Count" Nullable="false" />
+          <Property Type="String" Name="City" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Hotel" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="Hotel_Star" Nullable="true" Precision="3" Scale="2" />
+          <Property Type="String" Name="Hotel_Document_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Hotel_Document_Path" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CME_Type" Nullable="true" MaxLength="20" />
+          <Property Type="Byte" Name="Brand_Id" Nullable="true" />
+          <Property Type="String" Name="Brand_Name" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="ModifiedBy" Nullable="false" />
+          <Property Type="DateTime" Name="ModifiedDate" Nullable="false" Precision="23" />
+          <Property Type="Byte" Name="Therapy_Area_Id" Nullable="true" />
+          <Property Type="String" Name="Therapy_Area_Name" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="TotalCost" Nullable="false" Precision="19" />
+          <Property Type="Int32" Name="City_Id" Nullable="true" />
+          <Property Type="String" Name="City_Name" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Event_Id" Nullable="true" />
+          <Property Type="String" Name="Event_Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Approver" Nullable="true" MaxLength="100" />
+          <Property Type="Boolean" Name="IsDeviationApproved" Nullable="false" />
+        </ComplexType>
+        <Association Name="FK_Lectures_Brand_Id">
+          <End Type="NovoNordiskModel.Brand" Role="Brand" Multiplicity="1" />
+          <End Type="NovoNordiskModel.Lecture" Role="Lecture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Brand">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lecture">
+              <PropertyRef Name="Brand_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lectures_Event_Id">
+          <End Type="NovoNordiskModel.Event" Role="Event" Multiplicity="0..1" />
+          <End Type="NovoNordiskModel.Lecture" Role="Lecture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lecture">
+              <PropertyRef Name="Event_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lectures_PT_Id">
+          <End Type="NovoNordiskModel.Package_Type" Role="Package_Type" Multiplicity="1" />
+          <End Type="NovoNordiskModel.Lecture" Role="Lecture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Package_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lecture">
+              <PropertyRef Name="Package_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Lecture_Materials_Lecture_Id">
+          <End Type="NovoNordiskModel.Lecture" Role="Lecture" Multiplicity="1" />
+          <End Type="NovoNordiskModel.Lecture_Materials" Role="Lecture_Materials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lecture">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Lecture_Materials">
+              <PropertyRef Name="Lecture_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="HCP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Vendor_No" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TA_Id" Type="Byte" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Address" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Is_Contract" Type="Boolean" />
+          <Property Name="City" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Phone_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email_Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Contract_Start_Date" Type="DateTime" Precision="3" />
+          <Property Name="Contract_End_Date" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Therapy_Area" Relationship="NovoNordiskModel.FK_HCP_TA_Id" FromRole="HCP" ToRole="Therapy_Area" />
+          <Property Name="First_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Last_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TMF_No" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Coupa_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_HCP_TA_Id">
+          <End Type="NovoNordiskModel.Therapy_Area" Role="Therapy_Area" Multiplicity="1" />
+          <End Type="NovoNordiskModel.HCP" Role="HCP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HCP">
+              <PropertyRef Name="TA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_CC_Id">
+          <End Type="NovoNordiskModel.Cost_Centre" Role="Cost_Centre" Multiplicity="1" />
+          <End Type="NovoNordiskModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cost_Centre">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="CC_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_TA_Id">
+          <End Type="NovoNordiskModel.Therapy_Area" Role="Therapy_Area" Multiplicity="0..1" />
+          <End Type="NovoNordiskModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Therapy_Area">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="TA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Mgr_Id">
+          <End Type="NovoNordiskModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="NovoNordiskModel.User" Role="User1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User1">
+              <PropertyRef Name="Mgr_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Meetingtype_Id">
+          <End Type="NovoNordiskModel.PAF_Meetingtype" Role="PAF_Meetingtype" Multiplicity="0..1" />
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Meetingtype">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Meetingtype_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_ModifiedBy">
+          <End Type="NovoNordiskModel.User" Role="User" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Request_Id">
+          <End Type="NovoNordiskModel.PAF_Request_Type" Role="PAF_Request_Type" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Request_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Request_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Status_Id">
+          <End Type="NovoNordiskModel.PAF_Status" Role="PAF_Status" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Status">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="PAF_Status_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_PAF_Id">
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF_Transaction" Role="PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="PAF_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_Request_Id">
+          <End Type="NovoNordiskModel.PAF_Request_Type" Role="PAF_Request_Type" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF_Transaction" Role="PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_Request_Type">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="Request_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PAF_Transaction_CreatedBy">
+          <End Type="NovoNordiskModel.User" Role="User" Multiplicity="1" />
+          <End Type="NovoNordiskModel.PAF_Transaction" Role="PAF_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PAF_Transaction">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PAF_ActivityType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PAFs" Relationship="NovoNordiskModel.FK__PAF__ActivityType_Id" FromRole="PAF_ActivityType" ToRole="PAF" />
+        </EntityType>
+        <Association Name="FK__PAF__ActivityType_Id">
+          <End Type="NovoNordiskModel.PAF_ActivityType" Role="PAF_ActivityType" Multiplicity="0..1" />
+          <End Type="NovoNordiskModel.PAF" Role="PAF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAF_ActivityType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PAF">
+              <PropertyRef Name="Activity_Type_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NovoNordiskModelStoreContainer" CdmEntityContainer="NovoNordiskEntities">
+          <EntitySetMapping Name="AMS_Config">
+            <EntityTypeMapping TypeName="NovoNordiskModel.AMS_Config">
+              <MappingFragment StoreEntitySet="AMS_Config">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Modified_Date" ColumnName="Modified_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AMS_RawData">
+            <EntityTypeMapping TypeName="NovoNordiskModel.AMS_RawData">
+              <MappingFragment StoreEntitySet="AMS_RawData">
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="RawDataQuery" ColumnName="RawDataQuery" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Assessments">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Assessment">
+              <MappingFragment StoreEntitySet="Assessment">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="File_Name" ColumnName="File_Name" />
+                <ScalarProperty Name="File_Path" ColumnName="File_Path" />
+                <ScalarProperty Name="File_Type" ColumnName="File_Type" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Brands">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Brand">
+              <MappingFragment StoreEntitySet="Brand">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Therapy_Area_Id" ColumnName="Therapy_Area_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cost_Centre">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Cost_Centre">
+              <MappingFragment StoreEntitySet="Cost_Centre">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CostCentre_To_CT">
+            <EntityTypeMapping TypeName="NovoNordiskModel.CostCentre_To_CT">
+              <MappingFragment StoreEntitySet="CostCentre_To_CT">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CostCentre_Id" ColumnName="CostCentre_Id" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Deviation_Type">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Deviation_Type">
+              <MappingFragment StoreEntitySet="Deviation_Type">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Division_To_User">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Division_To_User">
+              <MappingFragment StoreEntitySet="Division_To_User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Division_Id" ColumnName="Division_Id" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Events">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Event">
+              <MappingFragment StoreEntitySet="Event">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Brand_Id" ColumnName="Brand_Id" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Cost_Centre" ColumnName="Cost_Centre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lecture_Materials">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Lecture_Materials">
+              <MappingFragment StoreEntitySet="Lecture_Materials">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Lecture_Id" ColumnName="Lecture_Id" />
+                <ScalarProperty Name="Doc_Name" ColumnName="Doc_Name" />
+                <ScalarProperty Name="Doc_Path" ColumnName="Doc_Path" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lectures">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Lecture">
+              <MappingFragment StoreEntitySet="Lectures">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Brand_Id" ColumnName="Brand_Id" />
+                <ScalarProperty Name="Event_Id" ColumnName="Event_Id" />
+                <ScalarProperty Name="Lecture1" ColumnName="Lecture" />
+                <ScalarProperty Name="Package_Type_Id" ColumnName="Package_Type_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Miscellaneous_Type">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Miscellaneous_Type">
+              <MappingFragment StoreEntitySet="Miscellaneous_Type">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Package_Type">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Package_Type">
+              <MappingFragment StoreEntitySet="Package_Type">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAFs">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF">
+              <MappingFragment StoreEntitySet="PAF">
+                <ScalarProperty Name="Activity_Type_Id" ColumnName="Activity_Type_Id" />
+                <ScalarProperty Name="Actual_Attendees" ColumnName="Actual_Attendees" />
+                <ScalarProperty Name="Final_CME_Expenses" ColumnName="Final_CME_Expenses" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Issued_By_Id" ColumnName="Issued_By_Id" />
+                <ScalarProperty Name="Issued_Date" ColumnName="Issued_Date" />
+                <ScalarProperty Name="Request_Type_Id" ColumnName="Request_Type_Id" />
+                <ScalarProperty Name="PAF_Status_Id" ColumnName="PAF_Status_Id" />
+                <ScalarProperty Name="Activity_Name" ColumnName="Activity_Name" />
+                <ScalarProperty Name="Activity_Start_Date" ColumnName="Activity_Start_Date" />
+                <ScalarProperty Name="Activity_End_Date" ColumnName="Activity_End_Date" />
+                <ScalarProperty Name="No_Of_Days" ColumnName="No_Of_Days" />
+                <ScalarProperty Name="Actual_Start_Date" ColumnName="Actual_Start_Date" />
+                <ScalarProperty Name="Actual_End_Date" ColumnName="Actual_End_Date" />
+                <ScalarProperty Name="Change_Start_Date" ColumnName="Change_Start_Date" />
+                <ScalarProperty Name="Change_End_Date" ColumnName="Change_End_Date" />
+                <ScalarProperty Name="IsDateDeviation" ColumnName="IsDateDeviation" />
+                <ScalarProperty Name="Proposed_Attendee_Count" ColumnName="Proposed_Attendee_Count" />
+                <ScalarProperty Name="Room_Rate" ColumnName="Room_Rate" />
+                <ScalarProperty Name="Banquet_Room_Rate" ColumnName="Banquet_Room_Rate" />
+                <ScalarProperty Name="Cost_Per_Pax" ColumnName="Cost_Per_Pax" />
+                <ScalarProperty Name="Min_Guarantee_Count" ColumnName="Min_Guarantee_Count" />
+                <ScalarProperty Name="Approximate_Count" ColumnName="Approximate_Count" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Hotel" ColumnName="Hotel" />
+                <ScalarProperty Name="Hotel_Star" ColumnName="Hotel_Star" />
+                <ScalarProperty Name="Hotel_Document_Name" ColumnName="Hotel_Document_Name" />
+                <ScalarProperty Name="Hotel_Document_Path" ColumnName="Hotel_Document_Path" />
+                <ScalarProperty Name="CME_Type" ColumnName="CME_Type" />
+                <ScalarProperty Name="Brand_Id" ColumnName="Brand_Id" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Therapy_Area_Id" ColumnName="Therapy_Area_Id" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Event_Id" ColumnName="Event_Id" />
+                <ScalarProperty Name="Approver" ColumnName="Approver" />
+                <ScalarProperty Name="IsDeviationApproved" ColumnName="IsDeviationApproved" />
+                <ScalarProperty Name="Hospital_Meeting" ColumnName="Hospital_Meeting" />
+                <ScalarProperty Name="Is_Postponed" ColumnName="Is_Postponed" />
+                <ScalarProperty Name="Disease_Area" ColumnName="Disease_Area" />
+                <ScalarProperty Name="Is_DownloadSapFile" ColumnName="Is_DownloadSapFile" />
+                <ScalarProperty Name="Is_BTC" ColumnName="Is_BTC" />
+                <ScalarProperty Name="Lecture_Id" ColumnName="Lecture_Id" />
+                <ScalarProperty Name="IsVirtual" ColumnName="IsVirtual" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="Cost_Centre" ColumnName="Cost_Centre" />
+                <ScalarProperty Name="Meetingtype_Id" ColumnName="Meetingtype_Id" />
+                <ScalarProperty Name="Policy_Violation" ColumnName="Policy_Violation" />
+                <ScalarProperty Name="SAP_ReportGeneration" ColumnName="SAP_ReportGeneration" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Attachment">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Attachment">
+              <MappingFragment StoreEntitySet="PAF_Attachment">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="File_Name" ColumnName="File_Name" />
+                <ScalarProperty Name="File_Path" ColumnName="File_Path" />
+                <ScalarProperty Name="File_Type" ColumnName="File_Type" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Saved_File_Name" ColumnName="Saved_File_Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="HCP_Name" ColumnName="HCP_Name" />
+                <ScalarProperty Name="Post_Type" ColumnName="Post_Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Command">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Command">
+              <MappingFragment StoreEntitySet="PAF_Command">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Deviation">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Deviation">
+              <MappingFragment StoreEntitySet="PAF_Deviation">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="Deviation_Type_Id" ColumnName="Deviation_Type_Id" />
+                <ScalarProperty Name="DeviationBy" ColumnName="DeviationBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_HCP">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_HCP">
+              <MappingFragment StoreEntitySet="PAF_HCP">
+                <ScalarProperty Name="HCP_Last_Name" ColumnName="HCP_Last_Name" />
+                <ScalarProperty Name="HCP_First_Name" ColumnName="HCP_First_Name" />
+                <ScalarProperty Name="TMF_No" ColumnName="TMF_No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="HCP_Id" ColumnName="HCP_Id" />
+                <ScalarProperty Name="HCP_Payable" ColumnName="HCP_Payable" />
+                <ScalarProperty Name="Is_Honorarium" ColumnName="Is_Honorarium" />
+                <ScalarProperty Name="Invitation_Email" ColumnName="Invitation_Email" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Type_Of_HCP_Id" ColumnName="Type_Of_HCP_Id" />
+                <ScalarProperty Name="HCP_Topic" ColumnName="HCP_Topic" />
+                <ScalarProperty Name="Net_Amount" ColumnName="Net_Amount" />
+                <ScalarProperty Name="Tax_Amount" ColumnName="Tax_Amount" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+                <ScalarProperty Name="Invoice_No" ColumnName="Invoice_No" />
+                <ScalarProperty Name="Invoice_Date" ColumnName="Invoice_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Meetingtype">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Meetingtype">
+              <MappingFragment StoreEntitySet="PAF_Meetingtype">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Miscellaneous">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Miscellaneous">
+              <MappingFragment StoreEntitySet="PAF_Miscellaneous">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="Type_Id" ColumnName="Type_Id" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Participants">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Participants">
+              <MappingFragment StoreEntitySet="PAF_Participants">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="HCP_Id" ColumnName="HCP_Id" />
+                <ScalarProperty Name="Participants_Name" ColumnName="Participants_Name" />
+                <ScalarProperty Name="PAN_No" ColumnName="PAN_No" />
+                <ScalarProperty Name="Participants_Email_ID" ColumnName="Participants_Email_ID" />
+                <ScalarProperty Name="Participants_Phone_Number" ColumnName="Participants_Phone_Number" />
+                <ScalarProperty Name="Participants_Customer_ID" ColumnName="Participants_Customer_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Request_Type">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Request_Type">
+              <MappingFragment StoreEntitySet="PAF_Request_Type">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Status">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Status">
+              <MappingFragment StoreEntitySet="PAF_Status">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_Transaction">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_Transaction">
+              <MappingFragment StoreEntitySet="PAF_Transaction">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="Request_Type_Id" ColumnName="Request_Type_Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Profiles">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Profile">
+              <MappingFragment StoreEntitySet="Profile">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Profiles_To_User">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Profiles_To_User">
+              <MappingFragment StoreEntitySet="Profiles_To_User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Profile_Id" ColumnName="Profile_Id" />
+                <ScalarProperty Name="User_Id" ColumnName="User_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Therapy_Area">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Therapy_Area">
+              <MappingFragment StoreEntitySet="Therapy_Area">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort_Order" ColumnName="Sort_Order" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Type_Of_HCP">
+            <EntityTypeMapping TypeName="NovoNordiskModel.Type_Of_HCP">
+              <MappingFragment StoreEntitySet="Type_Of_HCP">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="NovoNordiskModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SurName" ColumnName="SurName" />
+                <ScalarProperty Name="Initials" ColumnName="Initials" />
+                <ScalarProperty Name="Mgr_Id" ColumnName="Mgr_Id" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="CC_Id" ColumnName="CC_Id" />
+                <ScalarProperty Name="TA_Id" ColumnName="TA_Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="NovoNordiskModel.Store.ufnGetAllCategories" FunctionImportName="ufnGetAllCategories">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="NovoNordiskModel.ufnGetAllCategories_Result">
+                <ScalarProperty Name="ParentProductCategoryName" ColumnName="ParentProductCategoryName" />
+                <ScalarProperty Name="ProductCategoryName" ColumnName="ProductCategoryName" />
+                <ScalarProperty Name="ProductCategoryID" ColumnName="ProductCategoryID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="AutoIssueFix_MeetingType" FunctionName="NovoNordiskModel.Store.AutoIssueFix_MeetingType" />
+          <FunctionImportMapping FunctionImportName="AutoIssueFix_PAF_Transaction" FunctionName="NovoNordiskModel.Store.AutoIssueFix_PAF_Transaction" />
+          <FunctionImportMapping FunctionImportName="GetReportData" FunctionName="NovoNordiskModel.Store.GetReportData" />
+          <FunctionImportMapping FunctionImportName="GetReportFor_Compliance_tracker" FunctionName="NovoNordiskModel.Store.GetReportFor_Compliance_tracker" />
+          <FunctionImportMapping FunctionImportName="GetReportFor_PAF" FunctionName="NovoNordiskModel.Store.GetReportFor_PAF" />
+          <FunctionImportMapping FunctionImportName="GetReportFor_PAF_HCP" FunctionName="NovoNordiskModel.Store.GetReportFor_PAF_HCP" />
+          <FunctionImportMapping FunctionImportName="SP_SAP_Get_Request_Type_Id" FunctionName="NovoNordiskModel.Store.SP_SAP_Get_Request_Type_Id" />
+          <FunctionImportMapping FunctionImportName="SP_SAP_GetPAFforNo" FunctionName="NovoNordiskModel.Store.SP_SAP_GetPAFforNo" />
+          <FunctionImportMapping FunctionImportName="SP_SAP_TextFileReport" FunctionName="NovoNordiskModel.Store.SP_SAP_TextFileReport" />
+          <FunctionImportMapping FunctionImportName="SP_Update_SAP_ReportGenaration" FunctionName="NovoNordiskModel.Store.SP_Update_SAP_ReportGenaration" />
+          <FunctionImportMapping FunctionImportName="Usp_CreateUser" FunctionName="NovoNordiskModel.Store.Usp_CreateUser" />
+          <FunctionImportMapping FunctionImportName="usp_GetDeviationReport" FunctionName="NovoNordiskModel.Store.usp_GetDeviationReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="NovoNordiskModel.usp_GetDeviationReport_Result">
+                <ScalarProperty Name="PAF_Id" ColumnName="PAF_Id" />
+                <ScalarProperty Name="MeetingType" ColumnName="MeetingType" />
+                <ScalarProperty Name="IssuedBy_Id" ColumnName="IssuedBy_Id" />
+                <ScalarProperty Name="IssuedBy_Initials" ColumnName="IssuedBy_Initials" />
+                <ScalarProperty Name="Deviation_Id" ColumnName="Deviation_Id" />
+                <ScalarProperty Name="Deviation_Name" ColumnName="Deviation_Name" />
+                <ScalarProperty Name="Deviation_Date" ColumnName="Deviation_Date" />
+                <ScalarProperty Name="DeviationBy_Id" ColumnName="DeviationBy_Id" />
+                <ScalarProperty Name="DeviationBy_Initials" ColumnName="DeviationBy_Initials" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetTableData" FunctionName="NovoNordiskModel.Store.usp_GetTableData" />
+          <FunctionImportMapping FunctionImportName="uspGetRawData" FunctionName="NovoNordiskModel.Store.uspGetRawData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="NovoNordiskModel.uspGetRawData_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Issued_By_Id" ColumnName="Issued_By_Id" />
+                <ScalarProperty Name="Issued_By_Initials" ColumnName="Issued_By_Initials" />
+                <ScalarProperty Name="Issued_By_Name" ColumnName="Issued_By_Name" />
+                <ScalarProperty Name="Issued_By_SurName" ColumnName="Issued_By_SurName" />
+                <ScalarProperty Name="Issued_Date" ColumnName="Issued_Date" />
+                <ScalarProperty Name="Request_Type_Id" ColumnName="Request_Type_Id" />
+                <ScalarProperty Name="Request_Type_Name" ColumnName="Request_Type_Name" />
+                <ScalarProperty Name="PAF_Status_Id" ColumnName="PAF_Status_Id" />
+                <ScalarProperty Name="PAF_Status_Name" ColumnName="PAF_Status_Name" />
+                <ScalarProperty Name="Activity_Name" ColumnName="Activity_Name" />
+                <ScalarProperty Name="Activity_Start_Date" ColumnName="Activity_Start_Date" />
+                <ScalarProperty Name="Activity_End_Date" ColumnName="Activity_End_Date" />
+                <ScalarProperty Name="No_Of_Days" ColumnName="No_Of_Days" />
+                <ScalarProperty Name="Actual_Start_Date" ColumnName="Actual_Start_Date" />
+                <ScalarProperty Name="Actual_End_Date" ColumnName="Actual_End_Date" />
+                <ScalarProperty Name="Change_Start_Date" ColumnName="Change_Start_Date" />
+                <ScalarProperty Name="Change_End_Date" ColumnName="Change_End_Date" />
+                <ScalarProperty Name="IsDateDeviation" ColumnName="IsDateDeviation" />
+                <ScalarProperty Name="Proposed_Attendee_Count" ColumnName="Proposed_Attendee_Count" />
+                <ScalarProperty Name="Room_Rate" ColumnName="Room_Rate" />
+                <ScalarProperty Name="Banquet_Room_Rate" ColumnName="Banquet_Room_Rate" />
+                <ScalarProperty Name="Cost_Per_Pax" ColumnName="Cost_Per_Pax" />
+                <ScalarProperty Name="Min_Guarantee_Count" ColumnName="Min_Guarantee_Count" />
+                <ScalarProperty Name="Approximate_Count" ColumnName="Approximate_Count" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Hotel" ColumnName="Hotel" />
+                <ScalarProperty Name="Hotel_Star" ColumnName="Hotel_Star" />
+                <ScalarProperty Name="Hotel_Document_Name" ColumnName="Hotel_Document_Name" />
+                <ScalarProperty Name="Hotel_Document_Path" ColumnName="Hotel_Document_Path" />
+                <ScalarProperty Name="CME_Type" ColumnName="CME_Type" />
+                <ScalarProperty Name="Brand_Id" ColumnName="Brand_Id" />
+                <ScalarProperty Name="Brand_Name" ColumnName="Brand_Name" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Therapy_Area_Id" ColumnName="Therapy_Area_Id" />
+                <ScalarProperty Name="Therapy_Area_Name" ColumnName="Therapy_Area_Name" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="City_Name" ColumnName="City_Name" />
+                <ScalarProperty Name="Event_Id" ColumnName="Event_Id" />
+                <ScalarProperty Name="Event_Name" ColumnName="Event_Name" />
+                <ScalarProperty Name="Approver" ColumnName="Approver" />
+                <ScalarProperty Name="IsDeviationApproved" ColumnName="IsDeviationApproved" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="HCPs">
+            <EntityTypeMapping TypeName="NovoNordiskModel.HCP">
+              <MappingFragment StoreEntitySet="HCP">
+                <ScalarProperty Name="Coupa_No" ColumnName="Coupa_No" />
+                <ScalarProperty Name="TMF_No" ColumnName="TMF_No" />
+                <ScalarProperty Name="Last_Name" ColumnName="Last_Name" />
+                <ScalarProperty Name="First_Name" ColumnName="First_Name" />
+                <ScalarProperty Name="Contract_End_Date" ColumnName="Contract_End_Date" />
+                <ScalarProperty Name="Contract_Start_Date" ColumnName="Contract_Start_Date" />
+                <ScalarProperty Name="Email_Id" ColumnName="Email_Id" />
+                <ScalarProperty Name="Phone_Number" ColumnName="Phone_Number" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Is_Contract" ColumnName="Is_Contract" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="TA_Id" ColumnName="TA_Id" />
+                <ScalarProperty Name="Vendor_No" ColumnName="Vendor_No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAF_ActivityType">
+            <EntityTypeMapping TypeName="NovoNordiskModel.PAF_ActivityType">
+              <MappingFragment StoreEntitySet="PAF_ActivityType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
